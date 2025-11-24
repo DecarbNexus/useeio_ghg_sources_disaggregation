@@ -1,0 +1,29 @@
+name: Update GitHub Pages Data
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'outputs/GHG_national_2022_m2_DecarbNexus_sunburst.json'
+      - 'data/sector_classification.csv'
+  workflow_dispatch:
+
+jobs:
+  update-docs-data:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        
+      - name: Copy data files to docs
+        run: |
+          mkdir -p docs/data
+          cp outputs/GHG_national_2022_m2_DecarbNexus_sunburst.json docs/data/
+          cp data/sector_classification.csv docs/data/
+          
+      - name: Commit and push if changed
+        run: |
+          git config --global user.name 'GitHub Actions'
+          git config --global user.email 'actions@github.com'
+          git add docs/data/
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Update GitHub Pages data files" && git push)

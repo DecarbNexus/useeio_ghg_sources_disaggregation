@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.dll
+*.egg-info/
+.eggs/
+.pytest_cache/
+.mypy_cache/
+
+# Environments
+.venv/
+.env/
+venv/
+ENV/
+
+# VS Code
+.vscode/
+
+# Outputs and local scratch
+outputs/
+local/
+
+# Logs
+logs/
+*.log
+
+# But keep docs/data for GitHub Pages
+!docs/data/
+
+# Chained disaggregation sunburst (WIP, not ready for publish)
+docs/chained/
+
+# Notebooks
+.ipynb_checkpoints/
+
+# OS files
+.DS_Store
+Thumbs.db

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>USEEIO GHG Sources Disaggregation – Sunburst</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css?v=20251107-4" />
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+  </head>
+  <body>
+    <header>
+      <h1>USEEIO GHG Sources Disaggregation – Interactive Sunburst</h1>
+      <p>
+        Explore Scope 1 emissions of embedded Sectors contributions by GHG source. Data sourced from the
+        <a href="https://github.com/DecarbNexus/Flowsa_extract_GHG_sources" target="_blank" rel="noopener">Flowsa_extract_GHG_sources repository</a>.
+      </p>
+    </header>
+
+    <section class="controls">
+      <div class="control-row">
+        <label for="sectorSelect">USEEIO Sector:</label>
+        <input id="sectorSearch" type="search" placeholder="Type to filter sectors…" aria-label="Search sectors" />
+        <select id="sectorSelect"></select>
+      </div>
+
+      <div class="control-row">
+        <label for="minPct">Minimum contribution to display (%)</label>
+        <input id="minPct" type="number" min="0" max="5" step="0.01" value="0" />
+        <button id="redrawBtn">Redraw</button>
+      </div>
+    </section>
+
+    <section class="figure-meta">
+      <h2 id="figureTitle" class="figure-title"></h2>
+    </section>
+
+    <main>
+      <div id="chart-container">
+        <div id="chart">
+          <div id="centerLabel"></div>
+        </div>
+        <div class="ring-breakdown" id="ringBreakdown"></div>
+      </div>
+    </main>
+
+    <div id="tooltip" class="tooltip" style="opacity:0;"></div>
+    <div id="breadcrumb" class="breadcrumb"></div>
+
+    <footer>
+      <p>
+        Source code: <a href="https://github.com/DecarbNexus/Flowsa_extract_GHG_sources">README</a>
+        · Data license: <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a>
+        · Credits:
+        <a href="https://github.com/USEPA/useeior/" target="_blank" rel="noopener">USEEIO</a> &
+        <a href="https://github.com/USEPA/flowsa" target="_blank" rel="noopener">FLOWSA</a>
+        · Developed by <a href="https://decarbnexus.com" target="_blank" rel="noopener">DecarbNexus</a>
+      </p>
+    </footer>
+
+    <script src="sunburst.js?v=20251107-3"></script>
+  </body>
+</html>

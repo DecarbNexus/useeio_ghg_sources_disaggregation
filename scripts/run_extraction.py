@@ -16,10 +16,11 @@ import os
 import argparse
 from pathlib import Path
 
-# Add current directory to path for imports
+# Add parent directory to path for imports (config.py is at root)
 current_dir = Path(__file__).parent
-sys.path.append(str(current_dir))
-sys.path.append(str(current_dir / "scripts"))
+parent_dir = current_dir.parent
+sys.path.insert(0, str(parent_dir))  # Add parent dir first for config.py
+sys.path.append(str(current_dir))  # Add scripts dir for script imports
 
 
 def print_banner():
@@ -86,7 +87,7 @@ def run_metadata_extraction():
     print("\nStep 1: Extracting EPA GHGI metadata...")
     
     try:
-        from scripts.extract_meta_from_EPA_GHGI import main as extract_main
+        from extract_meta_from_EPA_GHGI import main as extract_main
         extract_main()
         print("SUCCESS: Metadata extraction completed!")
         return True
@@ -101,7 +102,7 @@ def run_data_enrichment():
     print("This may take several minutes depending on your model...")
     
     try:
-        from scripts.enrich_fbs_with_meta import main as enrich_main
+        from enrich_fbs_with_meta import main as enrich_main
         enrich_main()
         print("SUCCESS: Data enrichment completed!")
         return True

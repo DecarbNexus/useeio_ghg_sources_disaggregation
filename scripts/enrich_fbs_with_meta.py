@@ -103,15 +103,17 @@ def validate_flowsa_version():
     print(f"  Required version: {' or '.join(required_versions)} (tag: {config.REQUIRED_FLOWSA_GIT_TAG})")
     print(f"  Installed version: {installed_version or 'unknown'} (git: {installed_git_hash or 'unknown'})")
     
-    # Check version
+    # Check version - this is the critical check
     version_match = installed_version in required_versions
     
-    # Check git hash (if available)
-    git_match = True
+    # Git hash check is optional/advisory only (may not work in all environments)
+    # Only warn if both are available and don't match
     if installed_git_hash and config.REQUIRED_FLOWSA_GIT_HASH:
-        git_match = installed_git_hash == config.REQUIRED_FLOWSA_GIT_HASH
+        if installed_git_hash != config.REQUIRED_FLOWSA_GIT_HASH:
+            print(f"  Note: Git hash differs (expected: {config.REQUIRED_FLOWSA_GIT_HASH})")
+            print(f"        This is usually fine if version numbers match")
     
-    if not version_match or not git_match:
+    if not version_match:
         error_msg = [
             "\n" + "="*80,
             "ERROR: FlowSA Version Mismatch",

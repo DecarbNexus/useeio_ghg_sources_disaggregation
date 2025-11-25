@@ -1,4 +1,4 @@
-﻿MetaSources,ActivityProducedBy,IPCC/UNFCCC Category,US GHGI Table Name,Activity Category,Activity Subcategory,Activity Type
+﻿MetaSources,ActivityProducedBy,IPCC/UNFCCC Category,US GHGI Table Name,Activity Category,  ,Activity Type
 EPA_GHGI_T_2_1.carbonate_use,,Industrial Processes and Product Use,Table 2-1:  Recent Trends in U.S. Greenhouse Gas Emissions and Sinks (MMT CO2 Eq.),Process & Fugitive Gases,Industrial Production Processes,Carbonate Use
 EPA_GHGI_T_2_1.direct,Abandoned Oil and Gas Wells,Industrial Processes and Product Use,Table 2-1:  Recent Trends in U.S. Greenhouse Gas Emissions and Sinks (MMT CO2 Eq.),Process & Fugitive Gases,Fossil Fuels Production & Distribution,Oil and Gas
 EPA_GHGI_T_2_1.direct,Abandoned Underground Coal Mines,Industrial Processes and Product Use,Table 2-1:  Recent Trends in U.S. Greenhouse Gas Emissions and Sinks (MMT CO2 Eq.),Process & Fugitive Gases,Fossil Fuels Production & Distribution,Coal Production & Distribution
@@ -151,10 +151,10 @@ EPA_GHGI_T_A_5.natural_gas_manufacturing,,Energy,Table A-5: 2022 Energy Consumpt
 EPA_GHGI_T_A_5.non_manufacturing_coal,,Energy,Table A-5: 2022 Energy Consumption Data and CO2 Emissions from Fossil Fuel Combustion by Fuel Type,Fuels Combustion,Stationary Combustion,Coal Combustion for Non-Manufacturing Purposes
 EPA_GHGI_T_A_5.non_manufacturing_natural_gas,,Energy,Table A-5: 2022 Energy Consumption Data and CO2 Emissions from Fossil Fuel Combustion by Fuel Type,Fuels Combustion,Stationary Combustion,Natural Gas Combustion for Non-Manufacturing Purposes
 EPA_GHGI_T_A_5.petroleum,,Energy,Table A-5: 2022 Energy Consumption Data and CO2 Emissions from Fossil Fuel Combustion by Fuel Type,Fuels Combustion,Stationary Combustion,Petroleum Combustion
-EPA_GHGI_T_A_89.comfort_cooling,School and Tour Buses,Industrial Processes and Product Use,Table A-89: HFC Emissions from Transportation Sources (MMT CO2 Eq.),Process & Fugitive Gases,Product Use,Refrigerant Use
-EPA_GHGI_T_A_89.mobile_ac,Heavy-Duty Vehicles,Industrial Processes and Product Use,Table A-89: HFC Emissions from Transportation Sources (MMT CO2 Eq.),Process & Fugitive Gases,Product Use,Refrigerant Use
-EPA_GHGI_T_A_89.mobile_ac,Light-Duty Trucks - Households,Industrial Processes and Product Use,Table A-89: HFC Emissions from Transportation Sources (MMT CO2 Eq.),Process & Fugitive Gases,Product Use,Refrigerant Use
-EPA_GHGI_T_A_89.mobile_ac,Passenger Cars - Households,Industrial Processes and Product Use,Table A-89: HFC Emissions from Transportation Sources (MMT CO2 Eq.),Process & Fugitive Gases,Product Use,Refrigerant Use
-EPA_GHGI_T_A_89.refrigerated_transport,Medium- and Heavy-Duty Trucks,Industrial Processes and Product Use,Table A-89: HFC Emissions from Transportation Sources (MMT CO2 Eq.),Process & Fugitive Gases,Product Use,Refrigerant Use
-EPA_GHGI_T_A_89.refrigerated_transport,Rail,Industrial Processes and Product Use,Table A-89: HFC Emissions from Transportation Sources (MMT CO2 Eq.),Process & Fugitive Gases,Product Use,Refrigerant Use
-EPA_GHGI_T_A_89.refrigerated_transport,Ships and Boats,Industrial Processes and Product Use,Table A-89: HFC Emissions from Transportation Sources (MMT CO2 Eq.),Process & Fugitive Gases,Product Use,Refrigerant Use
+EPA_GHGI_T_A_89,School and Tour Buses,Industrial Processes and Product Use,Table A-89: HFC Emissions from Transportation Sources (MMT CO2 Eq.),Process & Fugitive Gases,Product Use,Refrigerant Use
+EPA_GHGI_T_A_89,Heavy-Duty Vehicles,Industrial Processes and Product Use,Table A-89: HFC Emissions from Transportation Sources (MMT CO2 Eq.),Process & Fugitive Gases,Product Use,Refrigerant Use
+EPA_GHGI_T_A_89,Light-Duty Trucks - Households,Industrial Processes and Product Use,Table A-89: HFC Emissions from Transportation Sources (MMT CO2 Eq.),Process & Fugitive Gases,Product Use,Refrigerant Use
+EPA_GHGI_T_A_89,Passenger Cars - Households,Industrial Processes and Product Use,Table A-89: HFC Emissions from Transportation Sources (MMT CO2 Eq.),Process & Fugitive Gases,Product Use,Refrigerant Use
+EPA_GHGI_T_A_89,Medium- and Heavy-Duty Trucks,Industrial Processes and Product Use,Table A-89: HFC Emissions from Transportation Sources (MMT CO2 Eq.),Process & Fugitive Gases,Product Use,Refrigerant Use
+EPA_GHGI_T_A_89,Rail,Industrial Processes and Product Use,Table A-89: HFC Emissions from Transportation Sources (MMT CO2 Eq.),Process & Fugitive Gases,Product Use,Refrigerant Use
+EPA_GHGI_T_A_89,Ships and Boats,Industrial Processes and Product Use,Table A-89: HFC Emissions from Transportation Sources (MMT CO2 Eq.),Process & Fugitive Gases,Product Use,Refrigerant Use

@@ -10,7 +10,7 @@ Modify the values here to customize the analysis for different models or years.
 # =============================================================================
 
 # Primary model to process
-MODELNAME = "GHG_national_2022_m2_DecarbNexus"
+MODELNAME = "GHG_national_2022_m2"
 
 # Corresponding parquet file name (should match the model)
 FILE_NAME_PARQUET = "GHG_national_2022_m2_v2.0.3_1cb504c.parquet"
@@ -82,14 +82,10 @@ IPCC_CONTEXT = "emission/air"  # Context for GWP lookup
 # FLOWSA PROCESSING OPTIONS
 # =============================================================================
 
-# Whether to download source data if not available locally
-DOWNLOAD_SOURCES_OK = True
-
-# Whether to retain activity columns in the output
-RETAIN_ACTIVITY_COLUMNS = True
-
-# Whether to append sector names to the output
-APPEND_SECTOR_NAMES = False
+# Note: FlowBySector generation parameters are now constants in the code:
+#   - download_sources_ok=True (always download FlowByActivity data)
+#   - retain_activity_columns=True (preserve activity details for enrichment)
+#   - append_sector_names=False (we add USEEIO names during enrichment)
 
 # =============================================================================
 # OUTPUT CONFIGURATION

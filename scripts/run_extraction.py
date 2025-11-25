@@ -96,14 +96,78 @@ def run_metadata_extraction():
         return False
 
 
-def run_data_enrichment():
-    """Run the main data enrichment process.""" 
-    print("\nStep 2: Generating and enriching FlowBySector data...")
-    print("This may take several minutes depending on your model...")
+def generate_flowbysector_data(modelname):
+    """
+    Generate FlowBySector data using FlowSA.
+    
+    This function generates fresh FBS data each time it's called.
+    FlowSA will download FlowByActivity source data and cache it locally.
+    
+    Parameters:
+    -----------
+    modelname : str
+        FlowSA model name (e.g., 'GHG_national_2022_m2')
+        
+    Returns:
+    --------
+    pandas.DataFrame
+        Generated FlowBySector data with activity columns retained
+    """
+    import flowsa
+    import pandas as pd
+    
+    print("\nGenerating FlowBySector data using FlowSA...")
+    print("This downloads FlowByActivity data and generates FBS...")
+    print("This may take several minutes...")
+    
+    # Generate FlowBySector data using FlowSA
+    # Constants (not configurable - required for this workflow):
+    #   - download_sources_ok=True: Download FlowByActivity source data
+    #   - retain_activity_columns=True: Preserve activity details for enrichment
+    #   - append_sector_names=False: We add USEEIO names during enrichment
+    fbs_data = pd.DataFrame(flowsa.flowbysector.FlowBySector.generateFlowBySector(
+        modelname,
+        download_sources_ok=True,
+        retain_activity_columns=True,
+        append_sector_names=False
+    ))
+    
+    print(f"✓ Generated {len(fbs_data):,} records using FlowSA")
+    
+    return fbs_data
+
+
+def run_fbs_generation():
+    """Generate FlowBySector data with activity details retained."""
+    import config
+    
+    print("\nStep 2: Generating FlowBySector data...")
+    print("This will download FlowByActivity source data and generate FBS...")
+    print("This may take several minutes...")
+    
+    try:
+        fbs_data = generate_flowbysector_data(config.MODELNAME)
+        print(f"SUCCESS: Generated {len(fbs_data):,} FBS records!")
+        return fbs_data
+    except Exception as e:
+        print(f"ERROR: FBS generation failed: {e}")
+        return None
+
+
+def run_data_enrichment(fbs_data):
+    """Run the main data enrichment process.
+    
+    Parameters:
+    -----------
+    fbs_data : pandas.DataFrame
+        Generated FlowBySector data to enrich
+    """ 
+    print("\nStep 3: Enriching FlowBySector data with metadata...")
+    print("This may take a few minutes...")
     
     try:
         from enrich_fbs_with_meta import main as enrich_main
-        enrich_main()
+        enrich_main(fbs_calculated=fbs_data)
         print("SUCCESS: Data enrichment completed!")
         return True
     except Exception as e:
@@ -208,9 +272,15 @@ To switch models/years, edit MODELNAME in config.py
             print(f"WARNING: Metadata file not found at {metadata_path}")
             print("   Consider running without --skip-metadata flag")
     
-    # Step 2: Generate and enrich data
+    # Step 2: Generate FlowBySector data
+    fbs_data = None
     if success:
-        success &= run_data_enrichment()
+        fbs_data = run_fbs_generation()
+        success = fbs_data is not None
+    
+    # Step 3: Enrich data with metadata
+    if success and fbs_data is not None:
+        success &= run_data_enrichment(fbs_data)
     
     # Show results
     if success:

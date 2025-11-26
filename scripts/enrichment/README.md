@@ -66,7 +66,7 @@ enriched = enrich_with_useeio(df, naics_to_useeio_dict)
 
 ## 🔧 Current Status
 
-**Phase 1 Complete** (Nov 25, 2025):
+**Phase 1 Complete** (Nov 26, 2025):
 - ✅ Package infrastructure created
 - ✅ Core utility functions migrated (4 functions)
 - ✅ Validation functions migrated (3 functions)
@@ -74,6 +74,10 @@ enriched = enrich_with_useeio(df, naics_to_useeio_dict)
 - ✅ Initial enrichers created (4 function skeletons)
 - ✅ Initial exporters created (3 function skeletons)
 - ✅ All modules import successfully
+- ✅ COLUMN_MAPPING removed - using direct column names throughout
+- ✅ GHG classification export (CSV + JSON-LD)
+- ✅ Comprehensive Excel metadata tabs (Author_Info, Model_Specs, reference data)
+- ✅ Licensing documentation (CC BY 4.0 for data, MIT for dependencies)
 
 **Incremental Migration**:
 - Original functions remain in `enrich_fbs_with_meta.py` for backward compatibility

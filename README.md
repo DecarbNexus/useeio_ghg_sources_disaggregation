@@ -20,29 +20,53 @@ The main outputs are Excel workbooks, CSVs, Parquet files, and JSON-LD with abso
 
 Download the latest files from the `outputs/` folder:
 
-- **Excel** (all-in-one workbook): `outputs/industry/GHG_national_2022_m2_DecarbNexus_industry.xlsx`
+- **Excel** (comprehensive workbook): `outputs/industry/GHG_national_2022_m2_DecarbNexus_industry.xlsx`
+  - 📋 **Author_Info** - Attribution, license, citations
+  - 📋 **Model_Specs** - Configuration, EPA GHGI source links
+  - 📋 **Enriched** - Main emission data with full metadata
+  - 📋 **Baseline** - Original FlowBySector for QC (optional)
+  - 📋 **GHG_Classification** - Activity hierarchy (unique combinations)
+  - 📋 **Sector_Classification** - USEEIO sector definitions
+  - 📋 **NAICS_to_USEEIO** - Sector crosswalk mapping
+  - 📋 **V_n_Matrix** - Market share matrix (403×403)
+  - 📋 **x_Vector** - Industry output in USD
+
 - **CSV** (flat tables): `outputs/industry/`
   - Main emissions: `GHG_national_2022_m2_DecarbNexus_industry.csv`
   - Baseline FlowBySector: `GHG_national_2022_m2_DecarbNexus_industry_baseline.csv`
+
 - **Parquet** (columnar, data science): `outputs/industry/GHG_national_2022_m2_DecarbNexus_industry.parquet`
+
 - **JSON** (hierarchical): `outputs/industry/GHG_national_2022_m2_DecarbNexus_industry_sunburst.json`
+
 - **JSON-LD** (RDF-ready): `outputs/industry/GHG_national_2022_m2_DecarbNexus_industry.jsonld`
 
-Open Excel files in your spreadsheet tool or explore the enriched data with full GHG source metadata.
+- **GHG Classification** (separate folder): `outputs/ghg_source_classification/`
+  - CSV format: `GHG_national_2022_m2_ghg_source_classification.csv`
+  - JSON-LD format: `GHG_national_2022_m2_ghg_source_classification.jsonld`
+
+- **License & Attribution**: `outputs/`
+  - `LICENSE.txt` - CC BY 4.0 license for data
+  - `THIRD_PARTY_LICENSES.txt` - MIT licenses (FlowSA, USEEIOR)
+  - `CITATION.md` - Complete citation guide with BibTeX
+
+Open Excel files in your spreadsheet tool or explore the enriched data with full GHG source metadata. All reference data and classifications are included for complete reproducibility.
 
 #### Format guide
 
-- **Excel/CSV**: Flat tables, best for spreadsheet users and simple imports
+- **Excel/CSV**: Flat tables, best for spreadsheet users and simple imports. Excel includes comprehensive metadata tabs with attribution, model specs, and all reference data.
 - **Parquet**: Snappy-compressed columnar format; optimized for pandas, Polars, DuckDB, Apache Spark. ~10× faster reads than CSV
 - **JSON**: Nested hierarchy (sector > category > gas); ideal for web APIs, JavaScript/Python data science pipelines
 - **JSON-LD**: RDF-ready with `@context` vocabulary; can be ingested into triple stores (Apache Jena, RDF4J) or converted to Turtle/N-Triples for knowledge graphs
 
 What's inside (high level):
-- Emissions by sector show how each USEEIO sector's emissions break down by GHG source, activity, and gas
-- "Absolute" columns are emissions in kg, kgCO2e, or MTCO2e for the specified model year (typically 2022)
-- "Relative contribution" shows the percentage split across all GHG sources for a given sector (sums to 100%)
-- "Emissions Intensity" shows kgCO2e per USD of sector output for the specified IO year
-- The baseline CSV provides the original FlowBySector data for quality checks
+- **Enriched emissions** show how each USEEIO sector's emissions break down by GHG source, activity, and gas
+- **"Absolute" columns** are emissions in kg, kgCO2e, or MTCO2e for the specified model year (typically 2022)
+- **"Relative contribution"** shows the percentage split across all GHG sources for a given sector (sums to 100%)
+- **"Emissions Intensity"** shows kgCO2e per USD of sector output for the specified IO year
+- **Baseline CSV** provides the original FlowBySector data for quality checks
+- **Excel tabs** include complete documentation: author info, model specs, reference data (classifications, crosswalks, matrices)
+- **GHG Classification** files provide the unique activity/gas combinations as standalone datasets
 
 ### Use cases
 
@@ -138,17 +162,33 @@ EXCLUDE_QC_COLUMNS = False  # Set to True to exclude QC columns from final outpu
 
 ## How to use the outputs (practical guide)
 
-1) Open the Excel file in `outputs/industry/`
-2) Explore the enriched data with columns like:
+1) **Open the Excel file** in `outputs/industry/`
+   - Start with **Author_Info** tab for licensing and attribution requirements
+   - Check **Model_Specs** tab for model configuration and EPA GHGI source links
+   
+2) **Explore the enriched data** (Enriched tab) with columns like:
    - `USEEIO Sector Name`: Human-readable sector name (e.g., "Oilseed farming")
    - `Activity Category`: High-level GHG source type (e.g., "Stationary Combustion")
    - `Activity`: Specific emission source (e.g., "Natural Gas Combustion")
    - `Gas`: Greenhouse gas species (e.g., "Carbon dioxide", "Methane")
    - `Emissions (MTCO2e)`: Emissions in metric tons CO2 equivalent
    - `Contribution to USEEIO Sector's Scope 1 (%)`: Percentage of sector's total emissions
-3) Use "Relative Contribution" to disaggregate your sector emissions: multiply your sector's total emissions by the "Contribution to USEEIO Sector's Scope 1 (%)" values to identify the largest emission sources
-4) Use the "Activity Category" field to distinguish combustion vs. process vs. fugitive emissions
-5) Use the "IPCC/UNFCCC Category" field for international reporting categories
+   
+3) **Use "Relative Contribution"** to disaggregate your sector emissions: multiply your sector's total emissions by the "Contribution to USEEIO Sector's Scope 1 (%)" values to identify the largest emission sources
+
+4) **Reference data tabs** provide complete context:
+   - **GHG_Classification**: Unique activity/gas combinations (standalone classification)
+   - **Sector_Classification**: USEEIO sector definitions
+   - **NAICS_to_USEEIO**: Crosswalk for mapping NAICS codes to USEEIO sectors
+   - **V_n_Matrix**: Market share matrix for commodity transformation
+   - **x_Vector**: Industry output for intensity calculations
+
+5) **Use categorization fields** for analysis:
+   - "Activity Category" to distinguish combustion vs. process vs. fugitive emissions
+   - "IPCC/UNFCCC Category" for international reporting categories
+   - "Fuel Consumed" to identify fuel-specific emissions (where applicable)
+
+6) **Check the Baseline tab** (if included) to verify against original FlowBySector data
 6) Check the "Baseline" tab (or baseline CSV) for the original FlowBySector data used as input
 
 Deeper dive (optional columns):
@@ -256,10 +296,53 @@ We're learning with you. Please use the repository's Discussions tab to ask ques
 
 Peer review status: We aim to have this workflow and its outputs peer-reviewed over the next few months. If you're interested in participating in the review or testing the methods on your data, please open a Discussion or contact us via the repository.
 
-## License
+## License and Attribution
 
-- Code: MIT License. See `LICENSE`
-- Data (files under `outputs/` and data attached to GitHub releases): CC BY 4.0. See https://creativecommons.org/licenses/by/4.0/
+### This Project
+
+- **Code**: MIT License (see `LICENSE` in repository root)
+- **Output Data**: CC BY 4.0 (see `outputs/LICENSE.txt`)
+  - All files under `outputs/` folder
+  - Data attached to GitHub releases
+  - Creative Commons Attribution 4.0: https://creativecommons.org/licenses/by/4.0/
+
+### Required Attribution
+
+When using the enriched data from this project, please cite:
+
+**DecarbNexus (2025). U.S. Greenhouse Gas Emissions by USEEIO Sector - Enriched EPA GHGI Data. https://github.com/damienlieber-dnexus/flowsa-ghg-extraction**
+
+You must also acknowledge the original data sources:
+- EPA GHGI 2022 (U.S. EPA, public domain)
+- FlowSA v2.0.3 (U.S. EPA, MIT License)
+- USEEIOR (U.S. EPA, MIT License)
+
+See `outputs/CITATION.md` for complete citation information and BibTeX entries.
+
+### Third-Party Dependencies
+
+This project uses the following open-source software:
+
+- **FlowSA** (v2.0.3): MIT License - Copyright (c) 2022 U.S. EPA
+- **USEEIOR**: MIT License - Copyright (c) 2021 U.S. EPA
+- **EPA GHGI Data**: Public domain (U.S. federal government work)
+- **BEA Input-Output Data**: Public domain (U.S. federal government work)
+
+Full license texts and compliance information: `outputs/THIRD_PARTY_LICENSES.txt`
+
+### License Compliance
+
+✓ **MIT License Compliance** (FlowSA & USEEIOR):
+- Copyright notices preserved in THIRD_PARTY_LICENSES.txt
+- Permission granted for commercial and non-commercial use
+- Attribution provided in all documentation and outputs
+
+✓ **CC BY 4.0 Compliance** (Output Data):
+- Attribution information in every output file
+- Changes clearly indicated in documentation
+- License URL provided in all distribution materials
+
+All license requirements are fully satisfied. See licensing files in `outputs/` folder for details.
 
 ## Credits and acknowledgement
 
@@ -280,5 +363,5 @@ This project focuses on disaggregating sector emissions into GHG sources. You ca
 
 When used together, you can organize Scope 3 in the intuitive language of Scope 1 & 2 - by sector, tier, and source.
 
-**Last Updated:** November 24, 2025  
+**Last Updated:** November 26, 2025  
 **Repository:** https://github.com/DecarbNexus/useeio_ghg_sources_disaggregation

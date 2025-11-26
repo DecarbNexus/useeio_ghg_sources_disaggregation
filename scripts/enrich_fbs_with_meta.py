@@ -3029,6 +3029,47 @@ def build_ghg_source_classification_jsonld(df):
     return jsonld
 
 
+def build_ghg_source_classification_csv(df):
+    """
+    Build GHG source classification as CSV with unique combinations.
+    
+    Extracts unique combinations of classification columns from enriched data.
+    
+    Parameters:
+    -----------
+    df : pandas.DataFrame
+        Enriched data with GHG classification columns
+        
+    Returns:
+    --------
+    pandas.DataFrame
+        DataFrame with unique classification combinations
+    """
+    print("Building GHG source classification CSV...")
+    
+    # Define classification columns
+    classification_columns = [
+        'Activity Category',
+        'IPCC/UNFCCC Category',
+        'Activity Subcategory',
+        'Activity Type',
+        'Activity',
+        'Fuel Consumed',
+        'Gas Category',
+        'Gas'
+    ]
+    
+    # Get unique combinations (drop duplicates)
+    classification_df = df[classification_columns].drop_duplicates().sort_values(by=classification_columns)
+    
+    # Reset index to get clean row numbers
+    classification_df = classification_df.reset_index(drop=True)
+    
+    print(f"✓ Built GHG source classification CSV with {len(classification_df)} unique combinations")
+    
+    return classification_df
+
+
 def generate_event_id(row):
     """
     Generate composite event ID: useeio_activity_gas_fuel
@@ -3496,17 +3537,164 @@ def save_outputs(fbs_parquet, fbs_calculated, enriched_data, config_dict, commod
         # -------------------------------------------------------------------------
         excel_path = os.path.join(subdir, f"{base_filename}.xlsx")
         try:
+            # Create metadata sheets
+            author_info = pd.DataFrame({
+                'Field': [
+                    'Author',
+                    'Organization',
+                    'Website',
+                    'Contact',
+                    'Open-source repository',
+                    'Q&A + Discussion',
+                    'Data License',
+                    'License URL',
+                    '',  # Blank row
+                    'Required Attribution',
+                    'Cite This Dataset',
+                    'Cite EPA GHGI',
+                    'Cite FlowSA',
+                    'Cite USEEIOR',
+                    '',  # Blank row
+                    'License Compliance',
+                    'Third-Party Licenses',
+                    'Full Citation Info'
+                ],
+                'Value': [
+                    'DecarbNexus',
+                    'DecarbNexus LLC',
+                    'decarbnexus.com',
+                    'contact@decarbnexus.com',
+                    'https://github.com/DecarbNexus/useeio_ghg_sources_disaggregation',
+                    'https://github.com/DecarbNexus/useeio_ghg_sources_disaggregation/discussions',
+                    'CC BY 4.0',
+                    'https://creativecommons.org/licenses/by/4.0/',
+                    '',  # Blank
+                    'You must cite this dataset AND the original sources (EPA GHGI, FlowSA, USEEIOR)',
+                    'DecarbNexus (2025). U.S. GHG Emissions by USEEIO Sector. DecarbNexus.',
+                    'EPA (2024). Inventory of U.S. GHG Emissions and Sinks: 1990-2022. EPA 430-R-24-004',
+                    'Birney et al. (2023). FlowSA v2.0.3. U.S. EPA. MIT License.',
+                    'Li et al. (2022). useeior. Applied Sciences 12(9):4469. MIT License.',
+                    '',  # Blank
+                    'FlowSA and USEEIOR are MIT licensed. Full license texts in outputs/THIRD_PARTY_LICENSES.txt',
+                    'See outputs/THIRD_PARTY_LICENSES.txt for MIT license text (FlowSA, USEEIOR)',
+                    'See outputs/CITATION.md for complete BibTeX citations and attribution guide'
+                ]
+            })
+            
+            # Determine perspective type
+            perspective = 'Industry' if suffix == '' else 'Commodity'
+            
+            model_specs = pd.DataFrame({
+                'Field': [
+                    'Dataset Version',
+                    'Release Year',
+                    '',  # Blank row
+                    'Model Name',
+                    'Model Description',
+                    'Model Year',
+                    'FlowSA Version',
+                    'Reference File',
+                    'IPCC Indicator',
+                    'IPCC GWP Data File',
+                    'Input-Output Perspective',
+                    '',  # Blank row
+                    'EPA GHGI Report (2022)',
+                    'Main Text Tables (zip)',
+                    'All Annexes (pdf)',
+                    'Annex Tables (zip)',
+                    'GHG Inventory Data Explorer'
+                ],
+                'Value': [
+                    '1.0',
+                    '2025',
+                    '',  # Blank
+                    config.MODELNAME,
+                    config.MODEL_DESCRIPTION,
+                    str(config.MODEL_YEAR),
+                    config.REQUIRED_FLOWSA_VERSION,
+                    config.FILE_NAME_PARQUET,
+                    config.IPCC_INDICATOR,
+                    config.IPCC_AR5_100_PARQUET,
+                    perspective,
+                    '',  # Blank
+                    'https://www.epa.gov/ghgemissions/inventory-us-greenhouse-gas-emissions-and-sinks-1990-2022',
+                    'https://www.epa.gov/system/files/other-files/2024-06/2024-main-text-tables.zip',
+                    'https://www.epa.gov/system/files/documents/2024-04/us-ghg-inventory-2024-annexes.pdf',
+                    'https://www.epa.gov/system/files/other-files/2024-06/2024-annex-tables.zip',
+                    'https://cfpub.epa.gov/ghgdata/inventoryexplorer/chartindex.html'
+                ]
+            })
+            
+            # Load reference data for additional tabs
+            # GHG source classification - use the final classification we just built
+            ghg_classification_df = build_ghg_source_classification_csv(export_data)
+            
+            try:
+                # Sector classification
+                sector_classification_df = pd.read_csv(config.SECTOR_CLASSIFICATION_CSV)
+            except:
+                sector_classification_df = None
+            
+            try:
+                # NAICS to USEEIO crosswalk
+                naics_useeio_df = pd.read_csv(config.NAICS_TO_USEEIO_CSV)
+            except:
+                naics_useeio_df = None
+            
+            try:
+                # V_n matrix (market share)
+                v_n_df = pd.read_csv('data/V_n.csv', index_col=0)
+            except:
+                v_n_df = None
+            
+            try:
+                # x vector (industry output)
+                x_df = pd.read_csv('data/x.csv')
+            except:
+                x_df = None
+            
             # Check if baseline tab should be included
             if config.INCLUDE_BASELINE_TAB and fbs_parquet is not None:
                 # Export with multiple sheets
                 with pd.ExcelWriter(excel_path, engine='openpyxl') as writer:
+                    # Front matter
+                    author_info.to_excel(writer, sheet_name='Author_Info', index=False)
+                    model_specs.to_excel(writer, sheet_name='Model_Specs', index=False)
+                    # Main data
                     export_data.to_excel(writer, sheet_name='Enriched', index=False)
                     fbs_parquet.to_excel(writer, sheet_name='Baseline', index=False)
-                print(f"  ✓ Excel: {base_filename}.xlsx (with Baseline tab)")
+                    # Reference data
+                    if ghg_classification_df is not None:
+                        ghg_classification_df.to_excel(writer, sheet_name='GHG_Classification', index=False)
+                    if sector_classification_df is not None:
+                        sector_classification_df.to_excel(writer, sheet_name='Sector_Classification', index=False)
+                    if naics_useeio_df is not None:
+                        naics_useeio_df.to_excel(writer, sheet_name='NAICS_to_USEEIO', index=False)
+                    if v_n_df is not None:
+                        v_n_df.to_excel(writer, sheet_name='V_n_Matrix', index=True)
+                    if x_df is not None:
+                        x_df.to_excel(writer, sheet_name='x_Vector', index=False)
+                print(f"  ✓ Excel: {base_filename}.xlsx (with Author_Info, Model_Specs, Baseline, and reference data tabs)")
             else:
                 # Export single sheet
-                export_data.to_excel(excel_path, index=False, engine='openpyxl')
-                print(f"  ✓ Excel: {base_filename}.xlsx")
+                with pd.ExcelWriter(excel_path, engine='openpyxl') as writer:
+                    # Front matter
+                    author_info.to_excel(writer, sheet_name='Author_Info', index=False)
+                    model_specs.to_excel(writer, sheet_name='Model_Specs', index=False)
+                    # Main data
+                    export_data.to_excel(writer, sheet_name='Enriched', index=False)
+                    # Reference data
+                    if ghg_classification_df is not None:
+                        ghg_classification_df.to_excel(writer, sheet_name='GHG_Classification', index=False)
+                    if sector_classification_df is not None:
+                        sector_classification_df.to_excel(writer, sheet_name='Sector_Classification', index=False)
+                    if naics_useeio_df is not None:
+                        naics_useeio_df.to_excel(writer, sheet_name='NAICS_to_USEEIO', index=False)
+                    if v_n_df is not None:
+                        v_n_df.to_excel(writer, sheet_name='V_n_Matrix', index=True)
+                    if x_df is not None:
+                        x_df.to_excel(writer, sheet_name='x_Vector', index=False)
+                print(f"  ✓ Excel: {base_filename}.xlsx (with Author_Info, Model_Specs, and reference data tabs)")
         except PermissionError:
             print(f"  ⚠ Excel export skipped - file is open")
         except Exception as e:
@@ -3612,7 +3800,7 @@ def save_outputs(fbs_parquet, fbs_calculated, enriched_data, config_dict, commod
         except Exception as e:
             print(f"  ⚠ Sunburst JSON export failed: {str(e)}")
     
-    # Export GHG source classification JSON-LD (separate from sector-based data)
+    # Export GHG source classification (separate from sector-based data)
     print("\n" + "-"*80)
     print("Exporting GHG Source Classification...")
     print("-"*80)
@@ -3620,21 +3808,35 @@ def save_outputs(fbs_parquet, fbs_calculated, enriched_data, config_dict, commod
     ghg_classification_dir = os.path.join(config_dict["output_dir"], "ghg_source_classification")
     os.makedirs(ghg_classification_dir, exist_ok=True)
     
-    ghg_classification_path = os.path.join(
+    # Build classification structures from industry form data (most complete)
+    ghg_classification_csv_df = build_ghg_source_classification_csv(enriched_data)
+    ghg_classification_jsonld = build_ghg_source_classification_jsonld(enriched_data)
+    
+    # Export CSV
+    ghg_classification_csv_path = os.path.join(
+        ghg_classification_dir,
+        f"{config.MODELNAME}_ghg_source_classification.csv"
+    )
+    try:
+        ghg_classification_csv_df.to_csv(ghg_classification_csv_path, index=False)
+        print(f"✓ GHG source classification CSV saved: {os.path.basename(ghg_classification_csv_path)}")
+    except PermissionError:
+        print(f"⚠ Permission denied: Close {os.path.basename(ghg_classification_csv_path)} if it's open")
+    except Exception as e:
+        print(f"⚠ Error saving GHG classification CSV: {e}")
+    
+    # Export JSON-LD
+    ghg_classification_jsonld_path = os.path.join(
         ghg_classification_dir,
         f"{config.MODELNAME}_ghg_source_classification.jsonld"
     )
-    
     try:
-        # Build classification structure from industry form data (most complete)
-        ghg_classification_jsonld = build_ghg_source_classification_jsonld(enriched_data)
-        
-        with open(ghg_classification_path, 'w') as f:
+        with open(ghg_classification_jsonld_path, 'w') as f:
             import json
             json.dump(ghg_classification_jsonld, f, indent=2)
-        print(f"✓ GHG source classification JSON-LD saved: {os.path.basename(ghg_classification_path)}")
+        print(f"✓ GHG source classification JSON-LD saved: {os.path.basename(ghg_classification_jsonld_path)}")
     except PermissionError:
-        print(f"⚠ Permission denied: Close {os.path.basename(ghg_classification_path)} if it's open")
+        print(f"⚠ Permission denied: Close {os.path.basename(ghg_classification_jsonld_path)} if it's open")
     except Exception as e:
         print(f"⚠ Error saving GHG classification JSON-LD: {e}")
     

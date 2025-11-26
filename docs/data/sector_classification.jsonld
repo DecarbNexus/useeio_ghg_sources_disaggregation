@@ -1,0 +1,2618 @@
+{
+  "@context": {
+    "@vocab": "http://useeio.org/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#"
+  },
+  "@graph": [
+    {
+      "category_code": "11",
+      "category_name": "Agriculture, Forestry, Fishing",
+      "subcategories": [
+        {
+          "subcategory_code": "111",
+          "subcategory_name": "Agriculture, Forestry, Fishing - 111",
+          "sectors": [
+            {
+              "sector_code": "1111A0",
+              "sector_name": "Oilseed farming",
+              "commodity_name": "Oilseed farming"
+            },
+            {
+              "sector_code": "1111B0",
+              "sector_name": "Grain farming",
+              "commodity_name": "Grain farming"
+            },
+            {
+              "sector_code": "111200",
+              "sector_name": "Vegetable and melon farming",
+              "commodity_name": "Vegetable and melon farming"
+            },
+            {
+              "sector_code": "111300",
+              "sector_name": "Fruit and tree nut farming",
+              "commodity_name": "Fruit and tree nut farming"
+            },
+            {
+              "sector_code": "111400",
+              "sector_name": "Greenhouse, nursery, and floriculture production",
+              "commodity_name": "Greenhouse, nursery, and floriculture production"
+            },
+            {
+              "sector_code": "111900",
+              "sector_name": "Other crop farming",
+              "commodity_name": "Other crop farming"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "112",
+          "subcategory_name": "Agriculture, Forestry, Fishing - 112",
+          "sectors": [
+            {
+              "sector_code": "112120",
+              "sector_name": "Dairy cattle and milk production",
+              "commodity_name": "Dairy cattle and milk production"
+            },
+            {
+              "sector_code": "1121A0",
+              "sector_name": "Beef cattle ranching and farming, including feedlots and dual-purpose ranching and farming",
+              "commodity_name": "Beef cattle ranching and farming, including feedlots and dual-purpose ranching and farming"
+            },
+            {
+              "sector_code": "112300",
+              "sector_name": "Poultry and egg production",
+              "commodity_name": "Poultry and egg production"
+            },
+            {
+              "sector_code": "112A00",
+              "sector_name": "Animal production, except cattle and poultry and eggs",
+              "commodity_name": "Animal production, except cattle and poultry and eggs"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "113",
+          "subcategory_name": "Agriculture, Forestry, Fishing - 113",
+          "sectors": [
+            {
+              "sector_code": "113000",
+              "sector_name": "Forestry and logging",
+              "commodity_name": "Forestry and logging"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "114",
+          "subcategory_name": "Agriculture, Forestry, Fishing - 114",
+          "sectors": [
+            {
+              "sector_code": "114000",
+              "sector_name": "Fishing, hunting and trapping",
+              "commodity_name": "Fishing, hunting and trapping"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "115",
+          "subcategory_name": "Agriculture, Forestry, Fishing - 115",
+          "sectors": [
+            {
+              "sector_code": "115000",
+              "sector_name": "Support activities for agriculture and forestry",
+              "commodity_name": "Support activities for agriculture and forestry"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "category_code": "21",
+      "category_name": "Mining, Quarrying, Oil and Gas",
+      "subcategories": [
+        {
+          "subcategory_code": "211",
+          "subcategory_name": "Mining, Quarrying, Oil and Gas - 211",
+          "sectors": [
+            {
+              "sector_code": "211000",
+              "sector_name": "Oil and gas extraction",
+              "commodity_name": "Oil and gas extraction"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "212",
+          "subcategory_name": "Mining, Quarrying, Oil and Gas - 212",
+          "sectors": [
+            {
+              "sector_code": "212100",
+              "sector_name": "Coal mining",
+              "commodity_name": "Coal mining"
+            },
+            {
+              "sector_code": "212230",
+              "sector_name": "Copper, nickel, lead, and zinc mining",
+              "commodity_name": "Copper, nickel, lead, and zinc mining"
+            },
+            {
+              "sector_code": "2122A0",
+              "sector_name": "Iron, gold, silver, and other metal ore mining",
+              "commodity_name": "Iron, gold, silver, and other metal ore mining"
+            },
+            {
+              "sector_code": "212310",
+              "sector_name": "Stone mining and quarrying",
+              "commodity_name": "Stone mining and quarrying"
+            },
+            {
+              "sector_code": "2123A0",
+              "sector_name": "Other nonmetallic mineral mining and quarrying",
+              "commodity_name": "Other nonmetallic mineral mining and quarrying"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "213",
+          "subcategory_name": "Mining, Quarrying, Oil and Gas - 213",
+          "sectors": [
+            {
+              "sector_code": "213111",
+              "sector_name": "Drilling oil and gas wells",
+              "commodity_name": "Drilling oil and gas wells"
+            },
+            {
+              "sector_code": "21311A",
+              "sector_name": "Other support activities for mining",
+              "commodity_name": "Other support activities for mining"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "category_code": "22",
+      "category_name": "Utilities",
+      "subcategories": [
+        {
+          "subcategory_code": "221",
+          "subcategory_name": "Utilities - 221",
+          "sectors": [
+            {
+              "sector_code": "221100",
+              "sector_name": "Electric power generation, transmission, and distribution",
+              "commodity_name": "Electric power generation, transmission, and distribution"
+            },
+            {
+              "sector_code": "221200",
+              "sector_name": "Natural gas distribution",
+              "commodity_name": "Natural gas distribution"
+            },
+            {
+              "sector_code": "221300",
+              "sector_name": "Water, sewage and other systems",
+              "commodity_name": "Water, sewage and other systems"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "category_code": "23",
+      "category_name": "Construction",
+      "subcategories": [
+        {
+          "subcategory_code": "230",
+          "subcategory_name": "Construction - 230",
+          "sectors": [
+            {
+              "sector_code": "230302",
+              "sector_name": "Residential maintenance and repair",
+              "commodity_name": "Residential maintenance and repair"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "233",
+          "subcategory_name": "Construction - 233",
+          "sectors": [
+            {
+              "sector_code": "233230",
+              "sector_name": "Manufacturing structures",
+              "commodity_name": "Manufacturing structures"
+            },
+            {
+              "sector_code": "233240",
+              "sector_name": "Power and communication structures",
+              "commodity_name": "Power and communication structures"
+            },
+            {
+              "sector_code": "2332A0",
+              "sector_name": "Office and commercial structures",
+              "commodity_name": "Office and commercial structures"
+            },
+            {
+              "sector_code": "2332C0",
+              "sector_name": "Transportation structures and highways and streets",
+              "commodity_name": "Transportation structures and highways and streets"
+            },
+            {
+              "sector_code": "2332D0",
+              "sector_name": "Other nonresidential structures",
+              "commodity_name": "Other nonresidential structures"
+            },
+            {
+              "sector_code": "233411",
+              "sector_name": "Single-family residential structures",
+              "commodity_name": "Single-family residential structures"
+            },
+            {
+              "sector_code": "233412",
+              "sector_name": "Multifamily residential structures",
+              "commodity_name": "Multifamily residential structures"
+            },
+            {
+              "sector_code": "2334A0",
+              "sector_name": "Other residential structures",
+              "commodity_name": "Other residential structures"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "category_code": "31",
+      "category_name": "Manufacturing",
+      "subcategories": [
+        {
+          "subcategory_code": "311",
+          "subcategory_name": "Manufacturing - 311",
+          "sectors": [
+            {
+              "sector_code": "311111",
+              "sector_name": "Dog and cat food manufacturing",
+              "commodity_name": "Dog and cat food manufacturing"
+            },
+            {
+              "sector_code": "311119",
+              "sector_name": "Other animal food manufacturing",
+              "commodity_name": "Other animal food manufacturing"
+            },
+            {
+              "sector_code": "311210",
+              "sector_name": "Flour milling and malt manufacturing",
+              "commodity_name": "Flour milling and malt manufacturing"
+            },
+            {
+              "sector_code": "311221",
+              "sector_name": "Wet corn milling",
+              "commodity_name": "Wet corn milling"
+            },
+            {
+              "sector_code": "311224",
+              "sector_name": "Soybean and other oilseed processing",
+              "commodity_name": "Soybean and other oilseed processing"
+            },
+            {
+              "sector_code": "311225",
+              "sector_name": "Fats and oils refining and blending",
+              "commodity_name": "Fats and oils refining and blending"
+            },
+            {
+              "sector_code": "311230",
+              "sector_name": "Breakfast cereal manufacturing",
+              "commodity_name": "Breakfast cereal manufacturing"
+            },
+            {
+              "sector_code": "311300",
+              "sector_name": "Sugar and confectionery product manufacturing",
+              "commodity_name": "Sugar and confectionery product manufacturing"
+            },
+            {
+              "sector_code": "311410",
+              "sector_name": "Frozen food manufacturing",
+              "commodity_name": "Frozen food manufacturing"
+            },
+            {
+              "sector_code": "311420",
+              "sector_name": "Fruit and vegetable canning, pickling, and drying",
+              "commodity_name": "Fruit and vegetable canning, pickling, and drying"
+            },
+            {
+              "sector_code": "311513",
+              "sector_name": "Cheese manufacturing",
+              "commodity_name": "Cheese manufacturing"
+            },
+            {
+              "sector_code": "311514",
+              "sector_name": "Dry, condensed, and evaporated dairy product manufacturing",
+              "commodity_name": "Dry, condensed, and evaporated dairy product manufacturing"
+            },
+            {
+              "sector_code": "31151A",
+              "sector_name": "Fluid milk and butter manufacturing",
+              "commodity_name": "Fluid milk and butter manufacturing"
+            },
+            {
+              "sector_code": "311520",
+              "sector_name": "Ice cream and frozen dessert manufacturing",
+              "commodity_name": "Ice cream and frozen dessert manufacturing"
+            },
+            {
+              "sector_code": "311615",
+              "sector_name": "Poultry processing",
+              "commodity_name": "Poultry processing"
+            },
+            {
+              "sector_code": "31161A",
+              "sector_name": "Animal (except poultry) slaughtering, rendering, and processing",
+              "commodity_name": "Animal (except poultry) slaughtering, rendering, and processing"
+            },
+            {
+              "sector_code": "311700",
+              "sector_name": "Seafood product preparation and packaging",
+              "commodity_name": "Seafood product preparation and packaging"
+            },
+            {
+              "sector_code": "311810",
+              "sector_name": "Bread and bakery product manufacturing",
+              "commodity_name": "Bread and bakery product manufacturing"
+            },
+            {
+              "sector_code": "3118A0",
+              "sector_name": "Cookie, cracker, pasta, and tortilla manufacturing",
+              "commodity_name": "Cookie, cracker, pasta, and tortilla manufacturing"
+            },
+            {
+              "sector_code": "311910",
+              "sector_name": "Snack food manufacturing",
+              "commodity_name": "Snack food manufacturing"
+            },
+            {
+              "sector_code": "311920",
+              "sector_name": "Coffee and tea manufacturing",
+              "commodity_name": "Coffee and tea manufacturing"
+            },
+            {
+              "sector_code": "311930",
+              "sector_name": "Flavoring syrup and concentrate manufacturing",
+              "commodity_name": "Flavoring syrup and concentrate manufacturing"
+            },
+            {
+              "sector_code": "311940",
+              "sector_name": "Seasoning and dressing manufacturing",
+              "commodity_name": "Seasoning and dressing manufacturing"
+            },
+            {
+              "sector_code": "311990",
+              "sector_name": "All other food manufacturing",
+              "commodity_name": "All other food manufacturing"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "312",
+          "subcategory_name": "Manufacturing - 312",
+          "sectors": [
+            {
+              "sector_code": "312110",
+              "sector_name": "Soft drink and ice manufacturing",
+              "commodity_name": "Soft drink and ice manufacturing"
+            },
+            {
+              "sector_code": "312120",
+              "sector_name": "Breweries",
+              "commodity_name": "Breweries"
+            },
+            {
+              "sector_code": "312130",
+              "sector_name": "Wineries",
+              "commodity_name": "Wineries"
+            },
+            {
+              "sector_code": "312140",
+              "sector_name": "Distilleries",
+              "commodity_name": "Distilleries"
+            },
+            {
+              "sector_code": "312200",
+              "sector_name": "Tobacco manufacturing",
+              "commodity_name": "Tobacco manufacturing"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "313",
+          "subcategory_name": "Manufacturing - 313",
+          "sectors": [
+            {
+              "sector_code": "313100",
+              "sector_name": "Fiber, yarn, and thread mills",
+              "commodity_name": "Fiber, yarn, and thread mills"
+            },
+            {
+              "sector_code": "313200",
+              "sector_name": "Fabric mills",
+              "commodity_name": "Fabric mills"
+            },
+            {
+              "sector_code": "313300",
+              "sector_name": "Textile and fabric finishing and fabric coating mills",
+              "commodity_name": "Textile and fabric finishing and fabric coating mills"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "314",
+          "subcategory_name": "Manufacturing - 314",
+          "sectors": [
+            {
+              "sector_code": "314110",
+              "sector_name": "Carpet and rug mills",
+              "commodity_name": "Carpet and rug mills"
+            },
+            {
+              "sector_code": "314120",
+              "sector_name": "Curtain and linen mills",
+              "commodity_name": "Curtain and linen mills"
+            },
+            {
+              "sector_code": "314900",
+              "sector_name": "Other textile product mills",
+              "commodity_name": "Other textile product mills"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "315",
+          "subcategory_name": "Manufacturing - 315",
+          "sectors": [
+            {
+              "sector_code": "315000",
+              "sector_name": "Apparel manufacturing",
+              "commodity_name": "Apparel manufacturing"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "316",
+          "subcategory_name": "Manufacturing - 316",
+          "sectors": [
+            {
+              "sector_code": "316000",
+              "sector_name": "Leather and allied product manufacturing",
+              "commodity_name": "Leather and allied product manufacturing"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "category_code": "32",
+      "category_name": "Manufacturing",
+      "subcategories": [
+        {
+          "subcategory_code": "321",
+          "subcategory_name": "Manufacturing - 321",
+          "sectors": [
+            {
+              "sector_code": "321100",
+              "sector_name": "Sawmills and wood preservation",
+              "commodity_name": "Sawmills and wood preservation"
+            },
+            {
+              "sector_code": "321200",
+              "sector_name": "Veneer, plywood, and engineered wood product manufacturing",
+              "commodity_name": "Veneer, plywood, and engineered wood product manufacturing"
+            },
+            {
+              "sector_code": "321910",
+              "sector_name": "Millwork",
+              "commodity_name": "Millwork"
+            },
+            {
+              "sector_code": "3219A0",
+              "sector_name": "All other wood product manufacturing",
+              "commodity_name": "All other wood product manufacturing"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "322",
+          "subcategory_name": "Manufacturing - 322",
+          "sectors": [
+            {
+              "sector_code": "322110",
+              "sector_name": "Pulp mills",
+              "commodity_name": "Pulp mills"
+            },
+            {
+              "sector_code": "322120",
+              "sector_name": "Paper mills",
+              "commodity_name": "Paper mills"
+            },
+            {
+              "sector_code": "322130",
+              "sector_name": "Paperboard mills",
+              "commodity_name": "Paperboard mills"
+            },
+            {
+              "sector_code": "322210",
+              "sector_name": "Paperboard container manufacturing",
+              "commodity_name": "Paperboard container manufacturing"
+            },
+            {
+              "sector_code": "322220",
+              "sector_name": "Paper bag and coated and treated paper manufacturing",
+              "commodity_name": "Paper bag and coated and treated paper manufacturing"
+            },
+            {
+              "sector_code": "322230",
+              "sector_name": "Stationery product manufacturing",
+              "commodity_name": "Stationery product manufacturing"
+            },
+            {
+              "sector_code": "322291",
+              "sector_name": "Sanitary paper product manufacturing",
+              "commodity_name": "Sanitary paper product manufacturing"
+            },
+            {
+              "sector_code": "322299",
+              "sector_name": "All other converted paper product manufacturing",
+              "commodity_name": "All other converted paper product manufacturing"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "323",
+          "subcategory_name": "Manufacturing - 323",
+          "sectors": [
+            {
+              "sector_code": "323110",
+              "sector_name": "Printing",
+              "commodity_name": "Printing"
+            },
+            {
+              "sector_code": "323120",
+              "sector_name": "Support activities for printing",
+              "commodity_name": "Support activities for printing"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "324",
+          "subcategory_name": "Manufacturing - 324",
+          "sectors": [
+            {
+              "sector_code": "324110",
+              "sector_name": "Petroleum refineries",
+              "commodity_name": "Petroleum refineries"
+            },
+            {
+              "sector_code": "324121",
+              "sector_name": "Asphalt paving mixture and block manufacturing",
+              "commodity_name": "Asphalt paving mixture and block manufacturing"
+            },
+            {
+              "sector_code": "324122",
+              "sector_name": "Asphalt shingle and coating materials manufacturing",
+              "commodity_name": "Asphalt shingle and coating materials manufacturing"
+            },
+            {
+              "sector_code": "324190",
+              "sector_name": "Other petroleum and coal products manufacturing",
+              "commodity_name": "Other petroleum and coal products manufacturing"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "325",
+          "subcategory_name": "Manufacturing - 325",
+          "sectors": [
+            {
+              "sector_code": "325110",
+              "sector_name": "Petrochemical manufacturing",
+              "commodity_name": "Petrochemical manufacturing"
+            },
+            {
+              "sector_code": "325120",
+              "sector_name": "Industrial gas manufacturing",
+              "commodity_name": "Industrial gas manufacturing"
+            },
+            {
+              "sector_code": "325130",
+              "sector_name": "Synthetic dye and pigment manufacturing",
+              "commodity_name": "Synthetic dye and pigment manufacturing"
+            },
+            {
+              "sector_code": "325180",
+              "sector_name": "Other basic inorganic chemical manufacturing",
+              "commodity_name": "Other basic inorganic chemical manufacturing"
+            },
+            {
+              "sector_code": "325190",
+              "sector_name": "Other basic organic chemical manufacturing",
+              "commodity_name": "Other basic organic chemical manufacturing"
+            },
+            {
+              "sector_code": "325211",
+              "sector_name": "Plastics material and resin manufacturing",
+              "commodity_name": "Plastics material and resin manufacturing"
+            },
+            {
+              "sector_code": "3252A0",
+              "sector_name": "Synthetic rubber and artificial and synthetic fibers and filaments manufacturing",
+              "commodity_name": "Synthetic rubber and artificial and synthetic fibers and filaments manufacturing"
+            },
+            {
+              "sector_code": "325310",
+              "sector_name": "Fertilizer manufacturing",
+              "commodity_name": "Fertilizer manufacturing"
+            },
+            {
+              "sector_code": "325320",
+              "sector_name": "Pesticide and other agricultural chemical manufacturing",
+              "commodity_name": "Pesticide and other agricultural chemical manufacturing"
+            },
+            {
+              "sector_code": "325411",
+              "sector_name": "Medicinal and botanical manufacturing",
+              "commodity_name": "Medicinal and botanical manufacturing"
+            },
+            {
+              "sector_code": "325412",
+              "sector_name": "Pharmaceutical preparation manufacturing",
+              "commodity_name": "Pharmaceutical preparation manufacturing"
+            },
+            {
+              "sector_code": "325413",
+              "sector_name": "In-vitro diagnostic substance manufacturing",
+              "commodity_name": "In-vitro diagnostic substance manufacturing"
+            },
+            {
+              "sector_code": "325414",
+              "sector_name": "Biological product (except diagnostic) manufacturing",
+              "commodity_name": "Biological product (except diagnostic) manufacturing"
+            },
+            {
+              "sector_code": "325510",
+              "sector_name": "Paint and coating manufacturing",
+              "commodity_name": "Paint and coating manufacturing"
+            },
+            {
+              "sector_code": "325520",
+              "sector_name": "Adhesive manufacturing",
+              "commodity_name": "Adhesive manufacturing"
+            },
+            {
+              "sector_code": "325610",
+              "sector_name": "Soap and cleaning compound manufacturing",
+              "commodity_name": "Soap and cleaning compound manufacturing"
+            },
+            {
+              "sector_code": "325620",
+              "sector_name": "Toilet preparation manufacturing",
+              "commodity_name": "Toilet preparation manufacturing"
+            },
+            {
+              "sector_code": "325910",
+              "sector_name": "Printing ink manufacturing",
+              "commodity_name": "Printing ink manufacturing"
+            },
+            {
+              "sector_code": "3259A0",
+              "sector_name": "All other chemical product and preparation manufacturing",
+              "commodity_name": "All other chemical product and preparation manufacturing"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "326",
+          "subcategory_name": "Manufacturing - 326",
+          "sectors": [
+            {
+              "sector_code": "326110",
+              "sector_name": "Plastics packaging materials and unlaminated film and sheet manufacturing",
+              "commodity_name": "Plastics packaging materials and unlaminated film and sheet manufacturing"
+            },
+            {
+              "sector_code": "326120",
+              "sector_name": "Plastics pipe, pipe fitting, and unlaminated profile shape manufacturing",
+              "commodity_name": "Plastics pipe, pipe fitting, and unlaminated profile shape manufacturing"
+            },
+            {
+              "sector_code": "326130",
+              "sector_name": "Laminated plastics plate, sheet (except packaging), and shape manufacturing",
+              "commodity_name": "Laminated plastics plate, sheet (except packaging), and shape manufacturing"
+            },
+            {
+              "sector_code": "326140",
+              "sector_name": "Polystyrene foam product manufacturing",
+              "commodity_name": "Polystyrene foam product manufacturing"
+            },
+            {
+              "sector_code": "326150",
+              "sector_name": "Urethane and other foam product (except polystyrene) manufacturing",
+              "commodity_name": "Urethane and other foam product (except polystyrene) manufacturing"
+            },
+            {
+              "sector_code": "326160",
+              "sector_name": "Plastics bottle manufacturing",
+              "commodity_name": "Plastics bottle manufacturing"
+            },
+            {
+              "sector_code": "326190",
+              "sector_name": "Other plastics product manufacturing",
+              "commodity_name": "Other plastics product manufacturing"
+            },
+            {
+              "sector_code": "326210",
+              "sector_name": "Tire manufacturing",
+              "commodity_name": "Tire manufacturing"
+            },
+            {
+              "sector_code": "326220",
+              "sector_name": "Rubber and plastics hoses and belting manufacturing",
+              "commodity_name": "Rubber and plastics hoses and belting manufacturing"
+            },
+            {
+              "sector_code": "326290",
+              "sector_name": "Other rubber product manufacturing",
+              "commodity_name": "Other rubber product manufacturing"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "327",
+          "subcategory_name": "Manufacturing - 327",
+          "sectors": [
+            {
+              "sector_code": "327100",
+              "sector_name": "Clay product and refractory manufacturing",
+              "commodity_name": "Clay product and refractory manufacturing"
+            },
+            {
+              "sector_code": "327200",
+              "sector_name": "Glass and glass product manufacturing",
+              "commodity_name": "Glass and glass product manufacturing"
+            },
+            {
+              "sector_code": "327310",
+              "sector_name": "Cement manufacturing",
+              "commodity_name": "Cement manufacturing"
+            },
+            {
+              "sector_code": "327320",
+              "sector_name": "Ready-mix concrete manufacturing",
+              "commodity_name": "Ready-mix concrete manufacturing"
+            },
+            {
+              "sector_code": "327330",
+              "sector_name": "Concrete pipe, brick, and block manufacturing",
+              "commodity_name": "Concrete pipe, brick, and block manufacturing"
+            },
+            {
+              "sector_code": "327390",
+              "sector_name": "Other concrete product manufacturing",
+              "commodity_name": "Other concrete product manufacturing"
+            },
+            {
+              "sector_code": "327400",
+              "sector_name": "Lime and gypsum product manufacturing",
+              "commodity_name": "Lime and gypsum product manufacturing"
+            },
+            {
+              "sector_code": "327910",
+              "sector_name": "Abrasive product manufacturing",
+              "commodity_name": "Abrasive product manufacturing"
+            },
+            {
+              "sector_code": "327991",
+              "sector_name": "Cut stone and stone product manufacturing",
+              "commodity_name": "Cut stone and stone product manufacturing"
+            },
+            {
+              "sector_code": "327992",
+              "sector_name": "Ground or treated mineral and earth manufacturing",
+              "commodity_name": "Ground or treated mineral and earth manufacturing"
+            },
+            {
+              "sector_code": "327993",
+              "sector_name": "Mineral wool manufacturing",
+              "commodity_name": "Mineral wool manufacturing"
+            },
+            {
+              "sector_code": "327999",
+              "sector_name": "Miscellaneous nonmetallic mineral products",
+              "commodity_name": "Miscellaneous nonmetallic mineral products"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "category_code": "33",
+      "category_name": "Manufacturing",
+      "subcategories": [
+        {
+          "subcategory_code": "331",
+          "subcategory_name": "Manufacturing - 331",
+          "sectors": [
+            {
+              "sector_code": "331110",
+              "sector_name": "Iron and steel mills and ferroalloy manufacturing",
+              "commodity_name": "Iron and steel mills and ferroalloy manufacturing"
+            },
+            {
+              "sector_code": "331200",
+              "sector_name": "Steel product manufacturing from purchased steel",
+              "commodity_name": "Steel product manufacturing from purchased steel"
+            },
+            {
+              "sector_code": "331313",
+              "sector_name": "Alumina refining and primary aluminum production",
+              "commodity_name": "Alumina refining and primary aluminum production"
+            },
+            {
+              "sector_code": "331314",
+              "sector_name": "Secondary smelting and alloying of aluminum",
+              "commodity_name": "Secondary smelting and alloying of aluminum"
+            },
+            {
+              "sector_code": "33131B",
+              "sector_name": "Aluminum product manufacturing from purchased aluminum",
+              "commodity_name": "Aluminum product manufacturing from purchased aluminum"
+            },
+            {
+              "sector_code": "331410",
+              "sector_name": "Nonferrous metal (except aluminum) smelting and refining",
+              "commodity_name": "Nonferrous metal (except aluminum) smelting and refining"
+            },
+            {
+              "sector_code": "331420",
+              "sector_name": "Copper rolling, drawing, extruding and alloying",
+              "commodity_name": "Copper rolling, drawing, extruding and alloying"
+            },
+            {
+              "sector_code": "331490",
+              "sector_name": "Nonferrous metal (except copper and aluminum) rolling, drawing, extruding and alloying",
+              "commodity_name": "Nonferrous metal (except copper and aluminum) rolling, drawing, extruding and alloying"
+            },
+            {
+              "sector_code": "331510",
+              "sector_name": "Ferrous metal foundries",
+              "commodity_name": "Ferrous metal foundries"
+            },
+            {
+              "sector_code": "331520",
+              "sector_name": "Nonferrous metal foundries",
+              "commodity_name": "Nonferrous metal foundries"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "332",
+          "subcategory_name": "Manufacturing - 332",
+          "sectors": [
+            {
+              "sector_code": "332114",
+              "sector_name": "Custom roll forming",
+              "commodity_name": "Custom roll forming"
+            },
+            {
+              "sector_code": "332119",
+              "sector_name": "Metal crown, closure, and other metal stamping (except automotive)",
+              "commodity_name": "Metal crown, closure, and other metal stamping (except automotive)"
+            },
+            {
+              "sector_code": "33211A",
+              "sector_name": "All other forging, stamping, and sintering",
+              "commodity_name": "All other forging, stamping, and sintering"
+            },
+            {
+              "sector_code": "332200",
+              "sector_name": "Cutlery and handtool manufacturing",
+              "commodity_name": "Cutlery and handtool manufacturing"
+            },
+            {
+              "sector_code": "332310",
+              "sector_name": "Plate work and fabricated structural product manufacturing",
+              "commodity_name": "Plate work and fabricated structural product manufacturing"
+            },
+            {
+              "sector_code": "332320",
+              "sector_name": "Ornamental and architectural metal products manufacturing",
+              "commodity_name": "Ornamental and architectural metal products manufacturing"
+            },
+            {
+              "sector_code": "332410",
+              "sector_name": "Power boiler and heat exchanger manufacturing",
+              "commodity_name": "Power boiler and heat exchanger manufacturing"
+            },
+            {
+              "sector_code": "332420",
+              "sector_name": "Metal tank (heavy gauge) manufacturing",
+              "commodity_name": "Metal tank (heavy gauge) manufacturing"
+            },
+            {
+              "sector_code": "332430",
+              "sector_name": "Metal can, box, and other metal container (light gauge) manufacturing",
+              "commodity_name": "Metal can, box, and other metal container (light gauge) manufacturing"
+            },
+            {
+              "sector_code": "332500",
+              "sector_name": "Hardware manufacturing",
+              "commodity_name": "Hardware manufacturing"
+            },
+            {
+              "sector_code": "332600",
+              "sector_name": "Spring and wire product manufacturing",
+              "commodity_name": "Spring and wire product manufacturing"
+            },
+            {
+              "sector_code": "332710",
+              "sector_name": "Machine shops",
+              "commodity_name": "Machine shops"
+            },
+            {
+              "sector_code": "332720",
+              "sector_name": "Turned product and screw, nut, and bolt manufacturing",
+              "commodity_name": "Turned product and screw, nut, and bolt manufacturing"
+            },
+            {
+              "sector_code": "332800",
+              "sector_name": "Coating, engraving, heat treating and allied activities",
+              "commodity_name": "Coating, engraving, heat treating and allied activities"
+            },
+            {
+              "sector_code": "332913",
+              "sector_name": "Plumbing fixture fitting and trim manufacturing",
+              "commodity_name": "Plumbing fixture fitting and trim manufacturing"
+            },
+            {
+              "sector_code": "33291A",
+              "sector_name": "Valve and fittings other than plumbing",
+              "commodity_name": "Valve and fittings other than plumbing"
+            },
+            {
+              "sector_code": "332991",
+              "sector_name": "Ball and roller bearing manufacturing",
+              "commodity_name": "Ball and roller bearing manufacturing"
+            },
+            {
+              "sector_code": "332996",
+              "sector_name": "Fabricated pipe and pipe fitting manufacturing",
+              "commodity_name": "Fabricated pipe and pipe fitting manufacturing"
+            },
+            {
+              "sector_code": "332999",
+              "sector_name": "Other fabricated metal manufacturing",
+              "commodity_name": "Other fabricated metal manufacturing"
+            },
+            {
+              "sector_code": "33299A",
+              "sector_name": "Ammunition, arms, ordnance, and accessories manufacturing",
+              "commodity_name": "Ammunition, arms, ordnance, and accessories manufacturing"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "333",
+          "subcategory_name": "Manufacturing - 333",
+          "sectors": [
+            {
+              "sector_code": "333111",
+              "sector_name": "Farm machinery and equipment manufacturing",
+              "commodity_name": "Farm machinery and equipment manufacturing"
+            },
+            {
+              "sector_code": "333112",
+              "sector_name": "Lawn and garden equipment manufacturing",
+              "commodity_name": "Lawn and garden equipment manufacturing"
+            },
+            {
+              "sector_code": "333120",
+              "sector_name": "Construction machinery manufacturing",
+              "commodity_name": "Construction machinery manufacturing"
+            },
+            {
+              "sector_code": "333130",
+              "sector_name": "Mining and oil and gas field machinery manufacturing",
+              "commodity_name": "Mining and oil and gas field machinery manufacturing"
+            },
+            {
+              "sector_code": "333242",
+              "sector_name": "Semiconductor machinery manufacturing",
+              "commodity_name": "Semiconductor machinery manufacturing"
+            },
+            {
+              "sector_code": "33329A",
+              "sector_name": "Other industrial machinery manufacturing",
+              "commodity_name": "Other industrial machinery manufacturing"
+            },
+            {
+              "sector_code": "333314",
+              "sector_name": "Optical instrument and lens manufacturing",
+              "commodity_name": "Optical instrument and lens manufacturing"
+            },
+            {
+              "sector_code": "333316",
+              "sector_name": "Photographic and photocopying equipment manufacturing",
+              "commodity_name": "Photographic and photocopying equipment manufacturing"
+            },
+            {
+              "sector_code": "333318",
+              "sector_name": "Other commercial and service industry machinery manufacturing",
+              "commodity_name": "Other commercial and service industry machinery manufacturing"
+            },
+            {
+              "sector_code": "333413",
+              "sector_name": "Industrial and commercial fan and blower and air purification equipment manufacturing",
+              "commodity_name": "Industrial and commercial fan and blower and air purification equipment manufacturing"
+            },
+            {
+              "sector_code": "333414",
+              "sector_name": "Heating equipment (except warm air furnaces) manufacturing",
+              "commodity_name": "Heating equipment (except warm air furnaces) manufacturing"
+            },
+            {
+              "sector_code": "333415",
+              "sector_name": "Air conditioning, refrigeration, and warm air heating equipment manufacturing",
+              "commodity_name": "Air conditioning, refrigeration, and warm air heating equipment manufacturing"
+            },
+            {
+              "sector_code": "333511",
+              "sector_name": "Industrial mold manufacturing",
+              "commodity_name": "Industrial mold manufacturing"
+            },
+            {
+              "sector_code": "333514",
+              "sector_name": "Special tool, die, jig, and fixture manufacturing",
+              "commodity_name": "Special tool, die, jig, and fixture manufacturing"
+            },
+            {
+              "sector_code": "333517",
+              "sector_name": "Machine tool manufacturing",
+              "commodity_name": "Machine tool manufacturing"
+            },
+            {
+              "sector_code": "33351B",
+              "sector_name": "Cutting and machine tool accessory, rolling mill, and other metalworking machinery manufacturing",
+              "commodity_name": "Cutting and machine tool accessory, rolling mill, and other metalworking machinery manufacturing"
+            },
+            {
+              "sector_code": "333611",
+              "sector_name": "Turbine and turbine generator set units manufacturing",
+              "commodity_name": "Turbine and turbine generator set units manufacturing"
+            },
+            {
+              "sector_code": "333612",
+              "sector_name": "Speed changer, industrial high-speed drive, and gear manufacturing",
+              "commodity_name": "Speed changer, industrial high-speed drive, and gear manufacturing"
+            },
+            {
+              "sector_code": "333613",
+              "sector_name": "Mechanical power transmission equipment manufacturing",
+              "commodity_name": "Mechanical power transmission equipment manufacturing"
+            },
+            {
+              "sector_code": "333618",
+              "sector_name": "Other engine equipment manufacturing",
+              "commodity_name": "Other engine equipment manufacturing"
+            },
+            {
+              "sector_code": "333912",
+              "sector_name": "Air and gas compressor manufacturing",
+              "commodity_name": "Air and gas compressor manufacturing"
+            },
+            {
+              "sector_code": "333914",
+              "sector_name": "Measuring, dispensing, and other pumping equipment manufacturing",
+              "commodity_name": "Measuring, dispensing, and other pumping equipment manufacturing"
+            },
+            {
+              "sector_code": "333920",
+              "sector_name": "Material handling equipment manufacturing",
+              "commodity_name": "Material handling equipment manufacturing"
+            },
+            {
+              "sector_code": "333991",
+              "sector_name": "Power-driven handtool manufacturing",
+              "commodity_name": "Power-driven handtool manufacturing"
+            },
+            {
+              "sector_code": "333993",
+              "sector_name": "Packaging machinery manufacturing",
+              "commodity_name": "Packaging machinery manufacturing"
+            },
+            {
+              "sector_code": "333994",
+              "sector_name": "Industrial process furnace and oven manufacturing",
+              "commodity_name": "Industrial process furnace and oven manufacturing"
+            },
+            {
+              "sector_code": "33399A",
+              "sector_name": "Other general purpose machinery manufacturing",
+              "commodity_name": "Other general purpose machinery manufacturing"
+            },
+            {
+              "sector_code": "33399B",
+              "sector_name": "Fluid power process machinery",
+              "commodity_name": "Fluid power process machinery"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "334",
+          "subcategory_name": "Manufacturing - 334",
+          "sectors": [
+            {
+              "sector_code": "334112",
+              "sector_name": "Computer storage device manufacturing",
+              "commodity_name": "Computer storage device manufacturing"
+            },
+            {
+              "sector_code": "334118",
+              "sector_name": "Computer terminals and other computer peripheral equipment manufacturing",
+              "commodity_name": "Computer terminals and other computer peripheral equipment manufacturing"
+            },
+            {
+              "sector_code": "334210",
+              "sector_name": "Telephone apparatus manufacturing",
+              "commodity_name": "Telephone apparatus manufacturing"
+            },
+            {
+              "sector_code": "334220",
+              "sector_name": "Broadcast and wireless communications equipment",
+              "commodity_name": "Broadcast and wireless communications equipment"
+            },
+            {
+              "sector_code": "334300",
+              "sector_name": "Audio and video equipment manufacturing",
+              "commodity_name": "Audio and video equipment manufacturing"
+            },
+            {
+              "sector_code": "334413",
+              "sector_name": "Semiconductor and related device manufacturing",
+              "commodity_name": "Semiconductor and related device manufacturing"
+            },
+            {
+              "sector_code": "334418",
+              "sector_name": "Printed circuit assembly (electronic assembly) manufacturing",
+              "commodity_name": "Printed circuit assembly (electronic assembly) manufacturing"
+            },
+            {
+              "sector_code": "33441A",
+              "sector_name": "Other electronic component manufacturing",
+              "commodity_name": "Other electronic component manufacturing"
+            },
+            {
+              "sector_code": "334510",
+              "sector_name": "Electromedical and electrotherapeutic apparatus manufacturing",
+              "commodity_name": "Electromedical and electrotherapeutic apparatus manufacturing"
+            },
+            {
+              "sector_code": "334511",
+              "sector_name": "Search, detection, and navigation instruments manufacturing",
+              "commodity_name": "Search, detection, and navigation instruments manufacturing"
+            },
+            {
+              "sector_code": "334513",
+              "sector_name": "Industrial process variable instruments manufacturing",
+              "commodity_name": "Industrial process variable instruments manufacturing"
+            },
+            {
+              "sector_code": "334516",
+              "sector_name": "Analytical laboratory instrument manufacturing",
+              "commodity_name": "Analytical laboratory instrument manufacturing"
+            },
+            {
+              "sector_code": "33451A",
+              "sector_name": "Watch, clock, and other measuring and controlling device manufacturing",
+              "commodity_name": "Watch, clock, and other measuring and controlling device manufacturing"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "335",
+          "subcategory_name": "Manufacturing - 335",
+          "sectors": [
+            {
+              "sector_code": "335110",
+              "sector_name": "Electric lamp bulb and part manufacturing",
+              "commodity_name": "Electric lamp bulb and part manufacturing"
+            },
+            {
+              "sector_code": "335120",
+              "sector_name": "Lighting fixture manufacturing",
+              "commodity_name": "Lighting fixture manufacturing"
+            },
+            {
+              "sector_code": "335220",
+              "sector_name": "Major household appliance manufacturing",
+              "commodity_name": "Major household appliance manufacturing"
+            },
+            {
+              "sector_code": "335311",
+              "sector_name": "Power, distribution, and specialty transformer manufacturing",
+              "commodity_name": "Power, distribution, and specialty transformer manufacturing"
+            },
+            {
+              "sector_code": "335312",
+              "sector_name": "Motor and generator manufacturing",
+              "commodity_name": "Motor and generator manufacturing"
+            },
+            {
+              "sector_code": "335313",
+              "sector_name": "Switchgear and switchboard apparatus manufacturing",
+              "commodity_name": "Switchgear and switchboard apparatus manufacturing"
+            },
+            {
+              "sector_code": "335314",
+              "sector_name": "Relay and industrial control manufacturing",
+              "commodity_name": "Relay and industrial control manufacturing"
+            },
+            {
+              "sector_code": "335911",
+              "sector_name": "Storage battery manufacturing",
+              "commodity_name": "Storage battery manufacturing"
+            },
+            {
+              "sector_code": "335912",
+              "sector_name": "Primary battery manufacturing",
+              "commodity_name": "Primary battery manufacturing"
+            },
+            {
+              "sector_code": "335920",
+              "sector_name": "Communication and energy wire and cable manufacturing",
+              "commodity_name": "Communication and energy wire and cable manufacturing"
+            },
+            {
+              "sector_code": "335930",
+              "sector_name": "Wiring device manufacturing",
+              "commodity_name": "Wiring device manufacturing"
+            },
+            {
+              "sector_code": "335991",
+              "sector_name": "Carbon and graphite product manufacturing",
+              "commodity_name": "Carbon and graphite product manufacturing"
+            },
+            {
+              "sector_code": "335999",
+              "sector_name": "All other miscellaneous electrical equipment and component manufacturing",
+              "commodity_name": "All other miscellaneous electrical equipment and component manufacturing"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "336",
+          "subcategory_name": "Manufacturing - 336",
+          "sectors": [
+            {
+              "sector_code": "336111",
+              "sector_name": "Automobile manufacturing",
+              "commodity_name": "Automobile manufacturing"
+            },
+            {
+              "sector_code": "336112",
+              "sector_name": "Light truck and utility vehicle manufacturing",
+              "commodity_name": "Light truck and utility vehicle manufacturing"
+            },
+            {
+              "sector_code": "336120",
+              "sector_name": "Heavy duty truck manufacturing",
+              "commodity_name": "Heavy duty truck manufacturing"
+            },
+            {
+              "sector_code": "336211",
+              "sector_name": "Motor vehicle body manufacturing",
+              "commodity_name": "Motor vehicle body manufacturing"
+            },
+            {
+              "sector_code": "336212",
+              "sector_name": "Truck trailer manufacturing",
+              "commodity_name": "Truck trailer manufacturing"
+            },
+            {
+              "sector_code": "336214",
+              "sector_name": "Travel trailer and camper manufacturing",
+              "commodity_name": "Travel trailer and camper manufacturing"
+            },
+            {
+              "sector_code": "336310",
+              "sector_name": "Motor vehicle gasoline engine and engine parts manufacturing",
+              "commodity_name": "Motor vehicle gasoline engine and engine parts manufacturing"
+            },
+            {
+              "sector_code": "336320",
+              "sector_name": "Motor vehicle electrical and electronic equipment manufacturing",
+              "commodity_name": "Motor vehicle electrical and electronic equipment manufacturing"
+            },
+            {
+              "sector_code": "336350",
+              "sector_name": "Motor vehicle transmission and power train parts manufacturing",
+              "commodity_name": "Motor vehicle transmission and power train parts manufacturing"
+            },
+            {
+              "sector_code": "336360",
+              "sector_name": "Motor vehicle seating and interior trim manufacturing",
+              "commodity_name": "Motor vehicle seating and interior trim manufacturing"
+            },
+            {
+              "sector_code": "336370",
+              "sector_name": "Motor vehicle metal stamping",
+              "commodity_name": "Motor vehicle metal stamping"
+            },
+            {
+              "sector_code": "336390",
+              "sector_name": "Other motor vehicle parts manufacturing",
+              "commodity_name": "Other motor vehicle parts manufacturing"
+            },
+            {
+              "sector_code": "3363A0",
+              "sector_name": "Motor vehicle steering, suspension component (except spring), and brake systems manufacturing",
+              "commodity_name": "Motor vehicle steering, suspension component (except spring), and brake systems manufacturing"
+            },
+            {
+              "sector_code": "336411",
+              "sector_name": "Aircraft manufacturing",
+              "commodity_name": "Aircraft manufacturing"
+            },
+            {
+              "sector_code": "336412",
+              "sector_name": "Aircraft engine and engine parts manufacturing",
+              "commodity_name": "Aircraft engine and engine parts manufacturing"
+            },
+            {
+              "sector_code": "336413",
+              "sector_name": "Other aircraft parts and auxiliary equipment manufacturing",
+              "commodity_name": "Other aircraft parts and auxiliary equipment manufacturing"
+            },
+            {
+              "sector_code": "336414",
+              "sector_name": "Guided missile and space vehicle manufacturing",
+              "commodity_name": "Guided missile and space vehicle manufacturing"
+            },
+            {
+              "sector_code": "33641A",
+              "sector_name": "Propulsion units and parts for space vehicles and guided missiles",
+              "commodity_name": "Propulsion units and parts for space vehicles and guided missiles"
+            },
+            {
+              "sector_code": "336500",
+              "sector_name": "Railroad rolling stock manufacturing",
+              "commodity_name": "Railroad rolling stock manufacturing"
+            },
+            {
+              "sector_code": "336611",
+              "sector_name": "Ship building and repairing",
+              "commodity_name": "Ship building and repairing"
+            },
+            {
+              "sector_code": "336612",
+              "sector_name": "Boat building",
+              "commodity_name": "Boat building"
+            },
+            {
+              "sector_code": "336991",
+              "sector_name": "Motorcycle, bicycle, and parts manufacturing",
+              "commodity_name": "Motorcycle, bicycle, and parts manufacturing"
+            },
+            {
+              "sector_code": "336992",
+              "sector_name": "Military armored vehicle, tank, and tank component manufacturing",
+              "commodity_name": "Military armored vehicle, tank, and tank component manufacturing"
+            },
+            {
+              "sector_code": "336999",
+              "sector_name": "All other transportation equipment manufacturing",
+              "commodity_name": "All other transportation equipment manufacturing"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "337",
+          "subcategory_name": "Manufacturing - 337",
+          "sectors": [
+            {
+              "sector_code": "337110",
+              "sector_name": "Wood kitchen cabinet and countertop manufacturing",
+              "commodity_name": "Wood kitchen cabinet and countertop manufacturing"
+            },
+            {
+              "sector_code": "337121",
+              "sector_name": "Upholstered household furniture manufacturing",
+              "commodity_name": "Upholstered household furniture manufacturing"
+            },
+            {
+              "sector_code": "337122",
+              "sector_name": "Nonupholstered wood household furniture manufacturing",
+              "commodity_name": "Nonupholstered wood household furniture manufacturing"
+            },
+            {
+              "sector_code": "337127",
+              "sector_name": "Institutional furniture manufacturing",
+              "commodity_name": "Institutional furniture manufacturing"
+            },
+            {
+              "sector_code": "33712N",
+              "sector_name": "Other household nonupholstered furniture",
+              "commodity_name": "Other household nonupholstered furniture"
+            },
+            {
+              "sector_code": "337215",
+              "sector_name": "Showcase, partition, shelving, and locker manufacturing",
+              "commodity_name": "Showcase, partition, shelving, and locker manufacturing"
+            },
+            {
+              "sector_code": "33721A",
+              "sector_name": "Office furniture and custom architectural woodwork and millwork manufacturing",
+              "commodity_name": "Office furniture and custom architectural woodwork and millwork manufacturing"
+            },
+            {
+              "sector_code": "337900",
+              "sector_name": "Other furniture related product manufacturing",
+              "commodity_name": "Other furniture related product manufacturing"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "339",
+          "subcategory_name": "Manufacturing - 339",
+          "sectors": [
+            {
+              "sector_code": "339112",
+              "sector_name": "Surgical and medical instrument manufacturing",
+              "commodity_name": "Surgical and medical instrument manufacturing"
+            },
+            {
+              "sector_code": "339113",
+              "sector_name": "Surgical appliance and supplies manufacturing",
+              "commodity_name": "Surgical appliance and supplies manufacturing"
+            },
+            {
+              "sector_code": "339114",
+              "sector_name": "Dental equipment and supplies manufacturing",
+              "commodity_name": "Dental equipment and supplies manufacturing"
+            },
+            {
+              "sector_code": "339115",
+              "sector_name": "Ophthalmic goods manufacturing",
+              "commodity_name": "Ophthalmic goods manufacturing"
+            },
+            {
+              "sector_code": "339116",
+              "sector_name": "Dental laboratories",
+              "commodity_name": "Dental laboratories"
+            },
+            {
+              "sector_code": "339910",
+              "sector_name": "Jewelry and silverware manufacturing",
+              "commodity_name": "Jewelry and silverware manufacturing"
+            },
+            {
+              "sector_code": "339920",
+              "sector_name": "Sporting and athletic goods manufacturing",
+              "commodity_name": "Sporting and athletic goods manufacturing"
+            },
+            {
+              "sector_code": "339930",
+              "sector_name": "Doll, toy, and game manufacturing",
+              "commodity_name": "Doll, toy, and game manufacturing"
+            },
+            {
+              "sector_code": "339940",
+              "sector_name": "Office supplies (except paper) manufacturing",
+              "commodity_name": "Office supplies (except paper) manufacturing"
+            },
+            {
+              "sector_code": "339950",
+              "sector_name": "Sign manufacturing",
+              "commodity_name": "Sign manufacturing"
+            },
+            {
+              "sector_code": "339990",
+              "sector_name": "All other miscellaneous manufacturing",
+              "commodity_name": "All other miscellaneous manufacturing"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "category_code": "42",
+      "category_name": "Wholesale Trade",
+      "subcategories": [
+        {
+          "subcategory_code": "423",
+          "subcategory_name": "Wholesale Trade - 423",
+          "sectors": [
+            {
+              "sector_code": "423100",
+              "sector_name": "Motor vehicle and motor vehicle parts and supplies",
+              "commodity_name": "Motor vehicle and motor vehicle parts and supplies"
+            },
+            {
+              "sector_code": "423400",
+              "sector_name": "Professional and commercial equipment and supplies",
+              "commodity_name": "Professional and commercial equipment and supplies"
+            },
+            {
+              "sector_code": "423600",
+              "sector_name": "Household appliances and electrical and electronic goods",
+              "commodity_name": "Household appliances and electrical and electronic goods"
+            },
+            {
+              "sector_code": "423800",
+              "sector_name": "Machinery, equipment, and supplies",
+              "commodity_name": "Machinery, equipment, and supplies"
+            },
+            {
+              "sector_code": "423A00",
+              "sector_name": "Other durable goods merchant wholesalers",
+              "commodity_name": "Other durable goods merchant wholesalers"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "424",
+          "subcategory_name": "Wholesale Trade - 424",
+          "sectors": [
+            {
+              "sector_code": "424200",
+              "sector_name": "Drugs and druggists' sundries",
+              "commodity_name": "Drugs and druggists' sundries"
+            },
+            {
+              "sector_code": "424400",
+              "sector_name": "Grocery and related product wholesalers",
+              "commodity_name": "Grocery and related product wholesalers"
+            },
+            {
+              "sector_code": "424700",
+              "sector_name": "Petroleum and petroleum products",
+              "commodity_name": "Petroleum and petroleum products"
+            },
+            {
+              "sector_code": "424A00",
+              "sector_name": "Other nondurable goods merchant wholesalers",
+              "commodity_name": "Other nondurable goods merchant wholesalers"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "425",
+          "subcategory_name": "Wholesale Trade - 425",
+          "sectors": [
+            {
+              "sector_code": "425000",
+              "sector_name": "Wholesale electronic markets and agents and brokers",
+              "commodity_name": "Wholesale electronic markets and agents and brokers"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "category_code": "44",
+      "category_name": "Retail Trade",
+      "subcategories": [
+        {
+          "subcategory_code": "441",
+          "subcategory_name": "Retail Trade - 441",
+          "sectors": [
+            {
+              "sector_code": "441000",
+              "sector_name": "Motor vehicle and parts dealers",
+              "commodity_name": "Motor vehicle and parts dealers"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "444",
+          "subcategory_name": "Retail Trade - 444",
+          "sectors": [
+            {
+              "sector_code": "444000",
+              "sector_name": "Building material and garden equipment and supplies dealers",
+              "commodity_name": "Building material and garden equipment and supplies dealers"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "445",
+          "subcategory_name": "Retail Trade - 445",
+          "sectors": [
+            {
+              "sector_code": "445000",
+              "sector_name": "Food and beverage stores",
+              "commodity_name": "Food and beverage stores"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "446",
+          "subcategory_name": "Retail Trade - 446",
+          "sectors": [
+            {
+              "sector_code": "446000",
+              "sector_name": "Health and personal care stores",
+              "commodity_name": "Health and personal care stores"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "447",
+          "subcategory_name": "Retail Trade - 447",
+          "sectors": [
+            {
+              "sector_code": "447000",
+              "sector_name": "Gasoline stations",
+              "commodity_name": "Gasoline stations"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "448",
+          "subcategory_name": "Retail Trade - 448",
+          "sectors": [
+            {
+              "sector_code": "448000",
+              "sector_name": "Clothing and clothing accessories stores",
+              "commodity_name": "Clothing and clothing accessories stores"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "category_code": "45",
+      "category_name": "Retail Trade",
+      "subcategories": [
+        {
+          "subcategory_code": "452",
+          "subcategory_name": "Retail Trade - 452",
+          "sectors": [
+            {
+              "sector_code": "452000",
+              "sector_name": "General merchandise stores",
+              "commodity_name": "General merchandise stores"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "454",
+          "subcategory_name": "Retail Trade - 454",
+          "sectors": [
+            {
+              "sector_code": "454000",
+              "sector_name": "Nonstore retailers",
+              "commodity_name": "Nonstore retailers"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "category_code": "48",
+      "category_name": "Transportation and Warehousing",
+      "subcategories": [
+        {
+          "subcategory_code": "481",
+          "subcategory_name": "Transportation and Warehousing - 481",
+          "sectors": [
+            {
+              "sector_code": "481000",
+              "sector_name": "Air transportation",
+              "commodity_name": "Air transportation"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "482",
+          "subcategory_name": "Transportation and Warehousing - 482",
+          "sectors": [
+            {
+              "sector_code": "482000",
+              "sector_name": "Rail transportation",
+              "commodity_name": "Rail transportation"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "483",
+          "subcategory_name": "Transportation and Warehousing - 483",
+          "sectors": [
+            {
+              "sector_code": "483000",
+              "sector_name": "Water transportation",
+              "commodity_name": "Water transportation"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "484",
+          "subcategory_name": "Transportation and Warehousing - 484",
+          "sectors": [
+            {
+              "sector_code": "484000",
+              "sector_name": "Truck transportation",
+              "commodity_name": "Truck transportation"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "485",
+          "subcategory_name": "Transportation and Warehousing - 485",
+          "sectors": [
+            {
+              "sector_code": "485000",
+              "sector_name": "Transit and ground passenger transportation",
+              "commodity_name": "Transit and ground passenger transportation"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "486",
+          "subcategory_name": "Transportation and Warehousing - 486",
+          "sectors": [
+            {
+              "sector_code": "486000",
+              "sector_name": "Pipeline transportation",
+              "commodity_name": "Pipeline transportation"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "48A",
+          "subcategory_name": "Transportation and Warehousing - 48A",
+          "sectors": [
+            {
+              "sector_code": "48A000",
+              "sector_name": "Scenic and sightseeing transportation and support activities",
+              "commodity_name": "Scenic and sightseeing transportation and support activities"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "category_code": "49",
+      "category_name": "Transportation and Warehousing",
+      "subcategories": [
+        {
+          "subcategory_code": "491",
+          "subcategory_name": "Transportation and Warehousing - 491",
+          "sectors": [
+            {
+              "sector_code": "491000",
+              "sector_name": "Postal service",
+              "commodity_name": "Postal service"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "492",
+          "subcategory_name": "Transportation and Warehousing - 492",
+          "sectors": [
+            {
+              "sector_code": "492000",
+              "sector_name": "Couriers and messengers",
+              "commodity_name": "Couriers and messengers"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "493",
+          "subcategory_name": "Transportation and Warehousing - 493",
+          "sectors": [
+            {
+              "sector_code": "493000",
+              "sector_name": "Warehousing and storage",
+              "commodity_name": "Warehousing and storage"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "category_code": "4B",
+      "category_name": "Category 4B",
+      "subcategories": [
+        {
+          "subcategory_code": "4B0",
+          "subcategory_name": "Category 4B - 4B0",
+          "sectors": [
+            {
+              "sector_code": "4B0000",
+              "sector_name": "All other retail",
+              "commodity_name": "All other retail"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "category_code": "51",
+      "category_name": "Information",
+      "subcategories": [
+        {
+          "subcategory_code": "511",
+          "subcategory_name": "Information - 511",
+          "sectors": [
+            {
+              "sector_code": "511110",
+              "sector_name": "Newspaper publishers",
+              "commodity_name": "Newspaper publishers"
+            },
+            {
+              "sector_code": "511120",
+              "sector_name": "Periodical Publishers",
+              "commodity_name": "Periodical Publishers"
+            },
+            {
+              "sector_code": "511130",
+              "sector_name": "Book publishers",
+              "commodity_name": "Book publishers"
+            },
+            {
+              "sector_code": "5111A0",
+              "sector_name": "Directory, mailing list, and other publishers",
+              "commodity_name": "Directory, mailing list, and other publishers"
+            },
+            {
+              "sector_code": "511200",
+              "sector_name": "Software publishers",
+              "commodity_name": "Software publishers"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "512",
+          "subcategory_name": "Information - 512",
+          "sectors": [
+            {
+              "sector_code": "512100",
+              "sector_name": "Motion picture and video industries",
+              "commodity_name": "Motion picture and video industries"
+            },
+            {
+              "sector_code": "512200",
+              "sector_name": "Sound recording industries",
+              "commodity_name": "Sound recording industries"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "515",
+          "subcategory_name": "Information - 515",
+          "sectors": [
+            {
+              "sector_code": "515100",
+              "sector_name": "Radio and television broadcasting",
+              "commodity_name": "Radio and television broadcasting"
+            },
+            {
+              "sector_code": "515200",
+              "sector_name": "Cable and other subscription programming",
+              "commodity_name": "Cable and other subscription programming"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "517",
+          "subcategory_name": "Information - 517",
+          "sectors": [
+            {
+              "sector_code": "517110",
+              "sector_name": "Wired telecommunications carriers",
+              "commodity_name": "Wired telecommunications carriers"
+            },
+            {
+              "sector_code": "517210",
+              "sector_name": "Wireless telecommunications carriers (except satellite)",
+              "commodity_name": "Wireless telecommunications carriers (except satellite)"
+            },
+            {
+              "sector_code": "517A00",
+              "sector_name": "Satellite, telecommunications resellers, and all other telecommunications",
+              "commodity_name": "Satellite, telecommunications resellers, and all other telecommunications"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "518",
+          "subcategory_name": "Information - 518",
+          "sectors": [
+            {
+              "sector_code": "518200",
+              "sector_name": "Data processing, hosting, and related services",
+              "commodity_name": "Data processing, hosting, and related services"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "519",
+          "subcategory_name": "Information - 519",
+          "sectors": [
+            {
+              "sector_code": "519130",
+              "sector_name": "Internet publishing and broadcasting and Web search portals",
+              "commodity_name": "Internet publishing and broadcasting and Web search portals"
+            },
+            {
+              "sector_code": "5191A0",
+              "sector_name": "News syndicates, libraries, archives and all other information services",
+              "commodity_name": "News syndicates, libraries, archives and all other information services"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "category_code": "52",
+      "category_name": "Finance and Insurance",
+      "subcategories": [
+        {
+          "subcategory_code": "522",
+          "subcategory_name": "Finance and Insurance - 522",
+          "sectors": [
+            {
+              "sector_code": "522A00",
+              "sector_name": "Nondepository credit intermediation and related activities",
+              "commodity_name": "Nondepository credit intermediation and related activities"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "523",
+          "subcategory_name": "Finance and Insurance - 523",
+          "sectors": [
+            {
+              "sector_code": "523900",
+              "sector_name": "Other financial investment activities",
+              "commodity_name": "Other financial investment activities"
+            },
+            {
+              "sector_code": "523A00",
+              "sector_name": "Securities and commodity contracts intermediation and brokerage",
+              "commodity_name": "Securities and commodity contracts intermediation and brokerage"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "524",
+          "subcategory_name": "Finance and Insurance - 524",
+          "sectors": [
+            {
+              "sector_code": "524113",
+              "sector_name": "Direct life insurance carriers",
+              "commodity_name": "Direct life insurance carriers"
+            },
+            {
+              "sector_code": "5241XX",
+              "sector_name": "Insurance carriers, except direct life",
+              "commodity_name": "Insurance carriers, except direct life"
+            },
+            {
+              "sector_code": "524200",
+              "sector_name": "Insurance agencies, brokerages, and related activities",
+              "commodity_name": "Insurance agencies, brokerages, and related activities"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "525",
+          "subcategory_name": "Finance and Insurance - 525",
+          "sectors": [
+            {
+              "sector_code": "525000",
+              "sector_name": "Funds, trusts, and other financial vehicles",
+              "commodity_name": "Funds, trusts, and other financial vehicles"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "52A",
+          "subcategory_name": "Finance and Insurance - 52A",
+          "sectors": [
+            {
+              "sector_code": "52A000",
+              "sector_name": "Monetary authorities and depository credit intermediation",
+              "commodity_name": "Monetary authorities and depository credit intermediation"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "category_code": "53",
+      "category_name": "Real Estate",
+      "subcategories": [
+        {
+          "subcategory_code": "531",
+          "subcategory_name": "Real Estate - 531",
+          "sectors": [
+            {
+              "sector_code": "531ORE",
+              "sector_name": "Other real estate",
+              "commodity_name": "Other real estate"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "532",
+          "subcategory_name": "Real Estate - 532",
+          "sectors": [
+            {
+              "sector_code": "532100",
+              "sector_name": "Automotive equipment rental and leasing",
+              "commodity_name": "Automotive equipment rental and leasing"
+            },
+            {
+              "sector_code": "532400",
+              "sector_name": "Commercial and industrial machinery and equipment rental and leasing",
+              "commodity_name": "Commercial and industrial machinery and equipment rental and leasing"
+            },
+            {
+              "sector_code": "532A00",
+              "sector_name": "General and consumer goods rental",
+              "commodity_name": "General and consumer goods rental"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "533",
+          "subcategory_name": "Real Estate - 533",
+          "sectors": [
+            {
+              "sector_code": "533000",
+              "sector_name": "Lessors of nonfinancial intangible assets",
+              "commodity_name": "Lessors of nonfinancial intangible assets"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "category_code": "54",
+      "category_name": "Professional Services",
+      "subcategories": [
+        {
+          "subcategory_code": "541",
+          "subcategory_name": "Professional Services - 541",
+          "sectors": [
+            {
+              "sector_code": "541100",
+              "sector_name": "Legal services",
+              "commodity_name": "Legal services"
+            },
+            {
+              "sector_code": "541200",
+              "sector_name": "Accounting, tax preparation, bookkeeping, and payroll services",
+              "commodity_name": "Accounting, tax preparation, bookkeeping, and payroll services"
+            },
+            {
+              "sector_code": "541300",
+              "sector_name": "Architectural, engineering, and related services",
+              "commodity_name": "Architectural, engineering, and related services"
+            },
+            {
+              "sector_code": "541400",
+              "sector_name": "Specialized design services",
+              "commodity_name": "Specialized design services"
+            },
+            {
+              "sector_code": "541511",
+              "sector_name": "Custom computer programming services",
+              "commodity_name": "Custom computer programming services"
+            },
+            {
+              "sector_code": "541512",
+              "sector_name": "Computer systems design services",
+              "commodity_name": "Computer systems design services"
+            },
+            {
+              "sector_code": "54151A",
+              "sector_name": "Other computer related services, including facilities management",
+              "commodity_name": "Other computer related services, including facilities management"
+            },
+            {
+              "sector_code": "541610",
+              "sector_name": "Management consulting services",
+              "commodity_name": "Management consulting services"
+            },
+            {
+              "sector_code": "5416A0",
+              "sector_name": "Environmental and other technical consulting services",
+              "commodity_name": "Environmental and other technical consulting services"
+            },
+            {
+              "sector_code": "541700",
+              "sector_name": "Scientific research and development services",
+              "commodity_name": "Scientific research and development services"
+            },
+            {
+              "sector_code": "541800",
+              "sector_name": "Advertising, public relations, and related services",
+              "commodity_name": "Advertising, public relations, and related services"
+            },
+            {
+              "sector_code": "541920",
+              "sector_name": "Photographic services",
+              "commodity_name": "Photographic services"
+            },
+            {
+              "sector_code": "541940",
+              "sector_name": "Veterinary services",
+              "commodity_name": "Veterinary services"
+            },
+            {
+              "sector_code": "5419A0",
+              "sector_name": "All other miscellaneous professional, scientific, and technical services",
+              "commodity_name": "All other miscellaneous professional, scientific, and technical services"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "category_code": "55",
+      "category_name": "Management",
+      "subcategories": [
+        {
+          "subcategory_code": "550",
+          "subcategory_name": "Management - 550",
+          "sectors": [
+            {
+              "sector_code": "550000",
+              "sector_name": "Management of companies and enterprises",
+              "commodity_name": "Management of companies and enterprises"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "category_code": "56",
+      "category_name": "Administrative Services",
+      "subcategories": [
+        {
+          "subcategory_code": "561",
+          "subcategory_name": "Administrative Services - 561",
+          "sectors": [
+            {
+              "sector_code": "561100",
+              "sector_name": "Office administrative services",
+              "commodity_name": "Office administrative services"
+            },
+            {
+              "sector_code": "561200",
+              "sector_name": "Facilities support services",
+              "commodity_name": "Facilities support services"
+            },
+            {
+              "sector_code": "561300",
+              "sector_name": "Employment services",
+              "commodity_name": "Employment services"
+            },
+            {
+              "sector_code": "561400",
+              "sector_name": "Business support services",
+              "commodity_name": "Business support services"
+            },
+            {
+              "sector_code": "561500",
+              "sector_name": "Travel arrangement and reservation services",
+              "commodity_name": "Travel arrangement and reservation services"
+            },
+            {
+              "sector_code": "561600",
+              "sector_name": "Investigation and security services",
+              "commodity_name": "Investigation and security services"
+            },
+            {
+              "sector_code": "561700",
+              "sector_name": "Services to buildings and dwellings",
+              "commodity_name": "Services to buildings and dwellings"
+            },
+            {
+              "sector_code": "561900",
+              "sector_name": "Other support services",
+              "commodity_name": "Other support services"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "562",
+          "subcategory_name": "Administrative Services - 562",
+          "sectors": [
+            {
+              "sector_code": "562000",
+              "sector_name": "Waste management and remediation services",
+              "commodity_name": "Waste management and remediation services"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "category_code": "61",
+      "category_name": "Educational Services",
+      "subcategories": [
+        {
+          "subcategory_code": "611",
+          "subcategory_name": "Educational Services - 611",
+          "sectors": [
+            {
+              "sector_code": "611100",
+              "sector_name": "Elementary and secondary schools",
+              "commodity_name": "Elementary and secondary schools"
+            },
+            {
+              "sector_code": "611A00",
+              "sector_name": "Junior colleges, colleges, universities, and professional schools",
+              "commodity_name": "Junior colleges, colleges, universities, and professional schools"
+            },
+            {
+              "sector_code": "611B00",
+              "sector_name": "Other educational services",
+              "commodity_name": "Other educational services"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "category_code": "62",
+      "category_name": "Health Care",
+      "subcategories": [
+        {
+          "subcategory_code": "621",
+          "subcategory_name": "Health Care - 621",
+          "sectors": [
+            {
+              "sector_code": "621100",
+              "sector_name": "Offices of physicians",
+              "commodity_name": "Offices of physicians"
+            },
+            {
+              "sector_code": "621200",
+              "sector_name": "Offices of dentists",
+              "commodity_name": "Offices of dentists"
+            },
+            {
+              "sector_code": "621300",
+              "sector_name": "Offices of other health practitioners",
+              "commodity_name": "Offices of other health practitioners"
+            },
+            {
+              "sector_code": "621400",
+              "sector_name": "Outpatient care centers",
+              "commodity_name": "Outpatient care centers"
+            },
+            {
+              "sector_code": "621500",
+              "sector_name": "Medical and diagnostic laboratories",
+              "commodity_name": "Medical and diagnostic laboratories"
+            },
+            {
+              "sector_code": "621600",
+              "sector_name": "Home health care services",
+              "commodity_name": "Home health care services"
+            },
+            {
+              "sector_code": "621900",
+              "sector_name": "Other ambulatory health care services",
+              "commodity_name": "Other ambulatory health care services"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "622",
+          "subcategory_name": "Health Care - 622",
+          "sectors": [
+            {
+              "sector_code": "622000",
+              "sector_name": "Hospitals",
+              "commodity_name": "Hospitals"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "623",
+          "subcategory_name": "Health Care - 623",
+          "sectors": [
+            {
+              "sector_code": "623A00",
+              "sector_name": "Nursing and community care facilities",
+              "commodity_name": "Nursing and community care facilities"
+            },
+            {
+              "sector_code": "623B00",
+              "sector_name": "Residential mental health, substance abuse, and other residential care facilities",
+              "commodity_name": "Residential mental health, substance abuse, and other residential care facilities"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "624",
+          "subcategory_name": "Health Care - 624",
+          "sectors": [
+            {
+              "sector_code": "624100",
+              "sector_name": "Individual and family services",
+              "commodity_name": "Individual and family services"
+            },
+            {
+              "sector_code": "624400",
+              "sector_name": "Child day care services",
+              "commodity_name": "Child day care services"
+            },
+            {
+              "sector_code": "624A00",
+              "sector_name": "Community food, housing, and other relief services, including vocational rehabilitation services",
+              "commodity_name": "Community food, housing, and other relief services, including vocational rehabilitation services"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "category_code": "71",
+      "category_name": "Arts and Entertainment",
+      "subcategories": [
+        {
+          "subcategory_code": "711",
+          "subcategory_name": "Arts and Entertainment - 711",
+          "sectors": [
+            {
+              "sector_code": "711100",
+              "sector_name": "Performing arts companies",
+              "commodity_name": "Performing arts companies"
+            },
+            {
+              "sector_code": "711200",
+              "sector_name": "Spectator sports",
+              "commodity_name": "Spectator sports"
+            },
+            {
+              "sector_code": "711500",
+              "sector_name": "Independent artists, writers, and performers",
+              "commodity_name": "Independent artists, writers, and performers"
+            },
+            {
+              "sector_code": "711A00",
+              "sector_name": "Promoters of performing arts and sports and agents for public figures",
+              "commodity_name": "Promoters of performing arts and sports and agents for public figures"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "712",
+          "subcategory_name": "Arts and Entertainment - 712",
+          "sectors": [
+            {
+              "sector_code": "712000",
+              "sector_name": "Museums, historical sites, zoos, and parks",
+              "commodity_name": "Museums, historical sites, zoos, and parks"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "713",
+          "subcategory_name": "Arts and Entertainment - 713",
+          "sectors": [
+            {
+              "sector_code": "713100",
+              "sector_name": "Amusement parks and arcades",
+              "commodity_name": "Amusement parks and arcades"
+            },
+            {
+              "sector_code": "713200",
+              "sector_name": "Gambling industries (except casino hotels)",
+              "commodity_name": "Gambling industries (except casino hotels)"
+            },
+            {
+              "sector_code": "713900",
+              "sector_name": "Other amusement and recreation industries",
+              "commodity_name": "Other amusement and recreation industries"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "category_code": "72",
+      "category_name": "Accommodation and Food Services",
+      "subcategories": [
+        {
+          "subcategory_code": "721",
+          "subcategory_name": "Accommodation and Food Services - 721",
+          "sectors": [
+            {
+              "sector_code": "721000",
+              "sector_name": "Accommodation",
+              "commodity_name": "Accommodation"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "722",
+          "subcategory_name": "Accommodation and Food Services - 722",
+          "sectors": [
+            {
+              "sector_code": "722110",
+              "sector_name": "Full-service restaurants",
+              "commodity_name": "Full-service restaurants"
+            },
+            {
+              "sector_code": "722211",
+              "sector_name": "Limited-service restaurants",
+              "commodity_name": "Limited-service restaurants"
+            },
+            {
+              "sector_code": "722A00",
+              "sector_name": "All other food and drinking places",
+              "commodity_name": "All other food and drinking places"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "category_code": "81",
+      "category_name": "Other Services",
+      "subcategories": [
+        {
+          "subcategory_code": "811",
+          "subcategory_name": "Other Services - 811",
+          "sectors": [
+            {
+              "sector_code": "811100",
+              "sector_name": "Automotive repair and maintenance (including car washes)",
+              "commodity_name": "Automotive repair and maintenance (including car washes)"
+            },
+            {
+              "sector_code": "811200",
+              "sector_name": "Electronic and precision equipment repair and maintenance",
+              "commodity_name": "Electronic and precision equipment repair and maintenance"
+            },
+            {
+              "sector_code": "811300",
+              "sector_name": "Commercial and industrial machinery and equipment repair and maintenance",
+              "commodity_name": "Commercial and industrial machinery and equipment repair and maintenance"
+            },
+            {
+              "sector_code": "811400",
+              "sector_name": "Personal and household goods repair and maintenance",
+              "commodity_name": "Personal and household goods repair and maintenance"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "812",
+          "subcategory_name": "Other Services - 812",
+          "sectors": [
+            {
+              "sector_code": "812100",
+              "sector_name": "Personal care services",
+              "commodity_name": "Personal care services"
+            },
+            {
+              "sector_code": "812200",
+              "sector_name": "Death care services",
+              "commodity_name": "Death care services"
+            },
+            {
+              "sector_code": "812300",
+              "sector_name": "Dry-cleaning and laundry services",
+              "commodity_name": "Dry-cleaning and laundry services"
+            },
+            {
+              "sector_code": "812900",
+              "sector_name": "Other personal services",
+              "commodity_name": "Other personal services"
+            }
+          ]
+        },
+        {
+          "subcategory_code": "813",
+          "subcategory_name": "Other Services - 813",
+          "sectors": [
+            {
+              "sector_code": "813100",
+              "sector_name": "Religious organizations",
+              "commodity_name": "Religious organizations"
+            },
+            {
+              "sector_code": "813A00",
+              "sector_name": "Grantmaking, giving, and social advocacy organizations",
+              "commodity_name": "Grantmaking, giving, and social advocacy organizations"
+            },
+            {
+              "sector_code": "813B00",
+              "sector_name": "Civic, social, professional, and similar organizations",
+              "commodity_name": "Civic, social, professional, and similar organizations"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "category_code": "F0",
+      "category_name": "Household Final Consumption",
+      "subcategories": [
+        {
+          "subcategory_code": "F01",
+          "subcategory_name": "Household Final Consumption - F01",
+          "sectors": [
+            {
+              "sector_code": "F01000",
+              "sector_name": "F01000",
+              "commodity_name": "F01000"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "category_code": "GS",
+      "category_name": "Category GS",
+      "subcategories": [
+        {
+          "subcategory_code": "GSL",
+          "subcategory_name": "Category GS - GSL",
+          "sectors": [
+            {
+              "sector_code": "GSLGO",
+              "sector_name": "State and local government (other services)",
+              "commodity_name": "State and local government (other services)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "category_code": "S0",
+      "category_name": "Government and Services",
+      "subcategories": [
+        {
+          "subcategory_code": "S00",
+          "subcategory_name": "Government and Services - S00",
+          "sectors": [
+            {
+              "sector_code": "S00101",
+              "sector_name": "Federal electric utilities",
+              "commodity_name": "Federal electric utilities"
+            },
+            {
+              "sector_code": "S00102",
+              "sector_name": "Other federal government enterprises",
+              "commodity_name": "Other federal government enterprises"
+            },
+            {
+              "sector_code": "S00201",
+              "sector_name": "State and local government passenger transit",
+              "commodity_name": "State and local government passenger transit"
+            },
+            {
+              "sector_code": "S00202",
+              "sector_name": "State and local government electric utilities",
+              "commodity_name": "State and local government electric utilities"
+            },
+            {
+              "sector_code": "S00500",
+              "sector_name": "Federal general government (defense)",
+              "commodity_name": "Federal general government (defense)"
+            },
+            {
+              "sector_code": "S00600",
+              "sector_name": "Federal general government (nondefense)",
+              "commodity_name": "Federal general government (nondefense)"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

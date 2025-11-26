@@ -46,6 +46,7 @@ let persistentSelection = null;
 // Detect touch device
 const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
 let tooltipTimeout = null;
+let lastTappedNode = null;
 
 // Chart scale factor
 const CHART_SCALE = 0.75; // 75% of container width
@@ -258,11 +259,11 @@ function renderSunburst(rootData, centerLabel, minShare) {
         // Mobile: First tap shows tooltip, second tap selects
         if (tooltipTimeout) clearTimeout(tooltipTimeout);
         
-        // Check if this is a new node or the tooltip is hidden
-        const isNewNode = !persistentSelection || persistentSelection.node !== d;
-        const tooltipHidden = parseFloat(tooltip.style("opacity")) < 0.1;
+        // Check if this is the same node that was just tapped
+        const isSameNodeAsBefore = lastTappedNode === d;
+        const tooltipVisible = parseFloat(tooltip.style("opacity")) > 0.5;
         
-        if (isNewNode || tooltipHidden) {
+        if (!isSameNodeAsBefore || !tooltipVisible) {
           // First tap: show tooltip
           const seq = d.ancestors().map((n) => n.data.name).reverse().slice(1);
           tooltip
@@ -273,15 +274,19 @@ function renderSunburst(rootData, centerLabel, minShare) {
             .style("left", (event.pageX || event.touches?.[0]?.pageX || 0) + 10 + "px")
             .style("top", (event.pageY || event.touches?.[0]?.pageY || 0) + 10 + "px");
           
+          lastTappedNode = d;
+          
           // Auto-hide tooltip after 3 seconds
           tooltipTimeout = setTimeout(() => {
             tooltip.style("opacity", 0);
+            lastTappedNode = null;
           }, 3000);
           return; // Don't select yet
         }
         
         // Second tap: hide tooltip and proceed to selection
         tooltip.style("opacity", 0);
+        lastTappedNode = null;
       } else {
         // Desktop: hide tooltip on click
         tooltip.style("opacity", 0);

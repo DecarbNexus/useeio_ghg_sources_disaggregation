@@ -3582,7 +3582,7 @@ def save_outputs(fbs_parquet, fbs_calculated, enriched_data, config_dict, commod
             })
             
             # Determine perspective type
-            perspective = 'Industry' if suffix == '' else 'Commodity'
+            perspective = 'Industry' if suffix == '_industry' else 'Commodity'
             
             model_specs = pd.DataFrame({
                 'Field': [
@@ -4370,40 +4370,43 @@ def main(fbs_calculated=None):
     print("\nIndustry Form:")
     print("-" * 40)
     
+    # Filter out F01000 for consistency with exported data
+    enriched_data_filtered = enriched_data[enriched_data['USEEIO Sector Code'] != 'F01000'].copy()
+    
     # Sectors
-    useeio_count = count_unique_valid(enriched_data, 'USEEIO Sector Code')
-    naics_count = count_unique_valid(enriched_data, 'NAICS Sector Code')
+    useeio_count = count_unique_valid(enriched_data_filtered, 'USEEIO Sector Code')
+    naics_count = count_unique_valid(enriched_data_filtered, 'NAICS Sector Code')
     print(f"  USEEIO Sectors: {useeio_count:,}")
     print(f"  NAICS Sectors: {naics_count:,}")
     
     # Activities (4-level hierarchy)
-    activity_cat_count = count_unique_valid(enriched_data, 'Activity Category')
-    activity_subcat_count = count_unique_valid(enriched_data, 'Activity Subcategory')
-    activity_type_count = count_unique_valid(enriched_data, 'Activity Type')
-    activity_count = count_unique_valid(enriched_data, 'Activity')
+    activity_cat_count = count_unique_valid(enriched_data_filtered, 'Activity Category')
+    activity_subcat_count = count_unique_valid(enriched_data_filtered, 'Activity Subcategory')
+    activity_type_count = count_unique_valid(enriched_data_filtered, 'Activity Type')
+    activity_count = count_unique_valid(enriched_data_filtered, 'Activity')
     print(f"\n  Activity Categories: {activity_cat_count:,}")
     print(f"  Activity Subcategories: {activity_subcat_count:,}")
     print(f"  Activity Types: {activity_type_count:,}")
     print(f"  Activities: {activity_count:,}")
     
     # Gases (2-level hierarchy)
-    gas_cat_count = count_unique_valid(enriched_data, 'Gas Category')
-    gas_count = count_unique_valid(enriched_data, 'Gas')
+    gas_cat_count = count_unique_valid(enriched_data_filtered, 'Gas Category')
+    gas_count = count_unique_valid(enriched_data_filtered, 'Gas')
     print(f"\n  Gas Categories: {gas_cat_count:,}")
     print(f"  Gases: {gas_count:,}")
     
     # Fuels (independent dimension)
-    fuel_count = count_unique_valid(enriched_data, 'Fuel Consumed')
+    fuel_count = count_unique_valid(enriched_data_filtered, 'Fuel Consumed')
     if fuel_count > 0:
         print(f"\n  Fuel Types: {fuel_count:,}")
     
     # IPCC Categories
-    ipcc_count = count_unique_valid(enriched_data, 'IPCC/UNFCCC Category')
+    ipcc_count = count_unique_valid(enriched_data_filtered, 'IPCC/UNFCCC Category')
     if ipcc_count > 0:
         print(f"  IPCC Categories: {ipcc_count:,}")
     
     # EPA GHGI Tables
-    ghgi_table_count = count_unique_valid(enriched_data, 'US GHGI Table ID')
+    ghgi_table_count = count_unique_valid(enriched_data_filtered, 'US GHGI Table ID')
     if ghgi_table_count > 0:
         print(f"  EPA GHGI Tables: {ghgi_table_count:,}")
     
@@ -4413,7 +4416,7 @@ def main(fbs_calculated=None):
                        'Gas Category', 'Gas', 'Fuel Consumed']
     
     # Filter to rows with non-null/non-empty values and non-zero emissions
-    combo_df = enriched_data.copy()
+    combo_df = enriched_data_filtered.copy()  # Use filtered data (no F01000)
     has_emissions = (combo_df['Emissions (MTCO2e)'].notna()) & (combo_df['Emissions (MTCO2e)'] != 0)
     combo_df = combo_df[has_emissions]
     

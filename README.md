@@ -7,7 +7,7 @@ This repository provides a reproducible workflow to disaggregate USEEIO sector d
 - **Fuel Types**: Natural gas, coal, petroleum products, etc. (when applicable)
 - **IPCC Categories**: Energy, Industrial Processes, Agriculture, Waste, etc.
 
-The main outputs are Excel workbooks, CSVs, Parquet files, and JSON-LD with absolute emissions (kg, kgCO2e, MTCO2e) and relative contributions to sector totals.
+The main outputs are Excel workbooks and CSVs with absolute emissions (kg, kgCO2e, MTCO2e) and relative contributions to sector totals.
 
 ## Just here for the data? (no coding required)
 
@@ -18,9 +18,9 @@ The main outputs are Excel workbooks, CSVs, Parquet files, and JSON-LD with abso
 
 ### Data tables
 
-Download the latest files from the `outputs/` folder:
+Download the latest data files from the [**Releases**](https://github.com/DecarbNexus/useeio_ghg_sources_disaggregation/releases) section:
 
-- **Excel** (comprehensive workbook): `outputs/industry/GHG_national_2022_m2_DecarbNexus_industry.xlsx`
+- **Excel** (comprehensive workbook): `GHG_national_2022_m2_DecarbNexus_industry.xlsx`
   - 📋 **Author_Info** - Attribution, license, citations
   - 📋 **Model_Specs** - Configuration, EPA GHGI source links
   - 📋 **Enriched** - Main emission data with full metadata
@@ -31,21 +31,21 @@ Download the latest files from the `outputs/` folder:
   - 📋 **V_n_Matrix** - Market share matrix (403×403)
   - 📋 **x_Vector** - Industry output in USD
 
-- **CSV** (flat tables): `outputs/industry/`
+- **CSV** (flat tables):
   - Main emissions: `GHG_national_2022_m2_DecarbNexus_industry.csv`
   - Baseline FlowBySector: `GHG_national_2022_m2_DecarbNexus_industry_baseline.csv`
 
-- **Parquet** (columnar, data science): `outputs/industry/GHG_national_2022_m2_DecarbNexus_industry.parquet`
+- **Parquet** (columnar, data science): `GHG_national_2022_m2_DecarbNexus_industry.parquet`
 
-- **JSON** (hierarchical): `outputs/industry/GHG_national_2022_m2_DecarbNexus_industry_sunburst.json`
+- **JSON** (hierarchical): `GHG_national_2022_m2_DecarbNexus_industry_sunburst.json`
 
-- **JSON-LD** (RDF-ready): `outputs/industry/GHG_national_2022_m2_DecarbNexus_industry.jsonld`
+- **JSON-LD** (RDF-ready): `GHG_national_2022_m2_DecarbNexus_industry.jsonld`
 
-- **GHG Classification** (separate folder): `outputs/ghg_source_classification/`
+- **GHG Classification** (separate folder):
   - CSV format: `GHG_national_2022_m2_ghg_source_classification.csv`
   - JSON-LD format: `GHG_national_2022_m2_ghg_source_classification.jsonld`
 
-- **License & Attribution**: `outputs/`
+- **License & Attribution**:
   - `LICENSE.txt` - CC BY 4.0 license for data
   - `THIRD_PARTY_LICENSES.txt` - MIT licenses (FlowSA, USEEIOR)
   - `CITATION.md` - Complete citation guide with BibTeX
@@ -71,11 +71,9 @@ What's inside (high level):
 ### Use cases
 
 This dataset helps you:
-- Identify emission hotspots by GHG source within each economic sector
-- Separate combustion vs. process vs. fugitive emissions for better targeting
 - Connect sector-level emissions to specific activities (e.g., "Natural Gas Combustion" vs "Aluminum Production")
-- Map emissions to IPCC categories for international reporting
-- Calculate emissions intensities (kgCO2e per USD of economic output)
+- Identify emission hotspots by GHG source within each economic sector
+- Map emissions to IPCC categories
 - Conduct hybrid EEIO accounting under the GHG Protocol
 
 ## Quick start (to reproduce the data)
@@ -88,7 +86,7 @@ This dataset helps you:
      ```bash
      python scripts/run_extraction.py
      ```
-     This runs the full pipeline end-to-end, writing Excel/CSVs to `outputs/`
+     This runs the full pipeline end-to-end, writing Excel/CSVs to the local `outputs/` folder
    - Option B – interactive: run the main enrichment script directly:
      ```bash
      python scripts/enrich_fbs_with_meta.py
@@ -105,7 +103,7 @@ This dataset helps you:
    python scripts/extract_meta_from_EPA_GHGI.py --extract-categories
    ```
 
-Artifacts will be saved under `outputs/industry/` and can be committed to the repo so non-technical users can download them directly.
+Artifacts will be saved under the local `outputs/` folder. For distribution, data files are packaged and published as GitHub Releases rather than committed to the repository.
 
 **Note:** Sector F01000 (used goods) is automatically excluded from all outputs as it does not produce emissions.
 
@@ -133,7 +131,7 @@ FILE_NAME_PARQUET = "GHG_national_2022_m2_v2.0.3_1cb504c.parquet"
 EXPORT_INDUSTRY = True   # Export industry/sector-based outputs
 EXPORT_COMMODITY = True  # Export commodity-based outputs (requires additional data)
 INCLUDE_BASELINE_TAB = True  # Include original FlowBySector as "Baseline" tab in Excel
-EXPORT_BASELINE_CSV = True   # Export baseline as separate CSV
+EXPORT_BASELINE_CSV = False   # Export baseline as separate CSV
 
 # Quality control
 EXCLUDE_QC_COLUMNS = False  # Set to True to exclude QC columns from final output
@@ -156,13 +154,12 @@ EXCLUDE_QC_COLUMNS = False  # Set to True to exclude QC columns from final outpu
 - `config.py` – User configuration (model, year, export options). Edit this
 - `terminology.py` – Terminology and column mapping definitions
 - `data/` – Lookup tables for fuel types, sector classifications, GWP factors, etc.
-- `outputs/industry/` – Generated outputs (Excel/CSV/Parquet/JSON) ready for end users
-- `outputs/commodity/` – Commodity-form outputs (if enabled and data available)
+- `outputs/` – Local generation folder (not tracked in repository; data distributed via Releases)
 - `local/` – Your scratch area; ignored by Git
 
 ## How to use the outputs (practical guide)
 
-1) **Open the Excel file** in `outputs/industry/`
+1) **Download and open the Excel file** from the [Releases](https://github.com/DecarbNexus/useeio_ghg_sources_disaggregation/releases) section
    - Start with **Author_Info** tab for licensing and attribution requirements
    - Check **Model_Specs** tab for model configuration and EPA GHGI source links
    
@@ -204,9 +201,6 @@ Additional reading and context:
 
 ## Limitations & planned development
 
-**Data filtering:**
-- Sector F01000 (used goods/scrap) is automatically excluded from all outputs as it does not produce emissions directly
-
 **Known limitations:**
 
 1) **FlowSA version dependency**
@@ -214,20 +208,10 @@ Additional reading and context:
    - Using different FlowSA versions may produce different results (different row counts, missing sources)
    - Cached FlowByActivity files from other versions can cause data mismatches. Run `python scripts/clear_flowsa_cache.py --activity-only` to fix
 
-2) **Model scope and data availability**
-   - Coverage varies by enrichment layer (97.6% for EPA GHGI metadata, 84.4% for PrimaryActivity, 28.3% for fuel types)
-   - Some enrichment layers only apply to specific emission types (e.g., fuel extraction only for combustion sources)
-   - Commodity-form transformation requires additional input-output data (Use and Make tables)
-
-3) **Sector mapping differences**
-   - NAICS-to-USEEIO mapping uses the crosswalk from Supply Chain Emission Factors
-   - Some sectors may not have direct USEEIO equivalents
-   - Sector names come from USEEIO sector classification (99.4% coverage)
-
-4) **Planned features**
-   - Modular code structure for easier maintenance and testing (see `docs/REFACTORING_PLAN.md`)
-   - Additional visualization options
-   - Support for custom aggregation hierarchies
+2) **Planned features**
+   - **Disaggregate concatenated activities and fuels**: When multiple activities or fuels are present (separated by ` | `), disaggregate these by going back to the original tables in the US EPA GHGI to create separate emission records for each activity/fuel combination
+   - **Multi-country support**: Extend this workflow to process other countries' national GHG inventories submitted to the UNFCCC
+   - **Custom aggregation hierarchies**: Support for user-defined grouping and rollup structures
 
 Advanced users can extend the enrichment pipeline by modifying `scripts/enrich_fbs_with_meta.py` or adding new lookup tables in `data/`.
 
@@ -279,11 +263,10 @@ macOS/Linux:
    python scripts/run_extraction.py
    ```
 
-If you don't want to install anything, you can still download the pre-built files directly from the `outputs/` folder on GitHub.
+If you don't want to install anything, you can still download the pre-built files directly from the [Releases](https://github.com/DecarbNexus/useeio_ghg_sources_disaggregation/releases) section.
 
 ## Troubleshooting
 
-- **Data mismatch (wrong row counts)**: Clear cached FlowByActivity files: `python scripts/clear_flowsa_cache.py --activity-only` then re-run
 - **ModuleNotFoundError: No module named 'flowsa'**: Install FlowSA: `python scripts/install_flowsa_2.0.3.py`
 - **Permission error saving Excel**: Close the Excel file and run again
 - **Wrong Python version**: See `docs/PYTHON_VERSION_FIX.md` for how to install Python 3.11
@@ -358,7 +341,7 @@ Project by Damien Lieber @ [DecarbNexus LLC](https://decarbnexus.com)
 This project focuses on disaggregating sector emissions into GHG sources. You can combine it with a companion workflow that disaggregates Scope 3 emissions by USEEIO sectors and tiers:
 
 - Companion repository: https://github.com/DecarbNexus/useeio_sectors_disaggregation
-- Data foundation: Both workflows leverage USEPA's data ecosystem (FlowSA, USEEIO, Supply Chain Emission Factors)
+- Data foundation: Both workflows leverage the US EPA's data ecosystem (FlowSA, USEEIO, Supply Chain Emission Factors)
 - Pairing the two lets you go from "which sectors contribute to my Scope 3?" to "which GHG sources within those sectors?"
 
 When used together, you can organize Scope 3 in the intuitive language of Scope 1 & 2 - by sector, tier, and source.

@@ -422,8 +422,15 @@ async function init() {
   select.addEventListener("change", redraw);
   document.getElementById("minPct").addEventListener("change", redraw);
 
-  // Initial render with first sector
-  select.selectedIndex = 0;
+  // Initial render with default sector: Iron and steel mills and ferroalloy manufacturing
+  const defaultSector = allSectors.find(s => 
+    s.name.toLowerCase().includes("iron and steel") || s.code === "331110"
+  );
+  if (defaultSector) {
+    select.value = defaultSector.code;
+  } else {
+    select.selectedIndex = 0;
+  }
   redraw();
 
   // Redraw on resize

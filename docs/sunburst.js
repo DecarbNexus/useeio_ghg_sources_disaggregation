@@ -269,7 +269,7 @@ function renderSunburst(rootData, centerLabel, minShare) {
           tooltip
             .style("opacity", 1)
             .html(
-              `<strong>${seq.join(" ▸ ")}</strong><br/>Contribution: ${formatPct(d.value || 0)}<br/><em style="font-size: 0.85em; color: #94a3b8;">Tap again to select</em>`
+              `<strong>${seq.join(" ▸ ")}</strong><br/>Contribution: ${formatPct(d.value || 0)}`
             )
             .style("left", (event.pageX || event.touches?.[0]?.pageX || 0) + 10 + "px")
             .style("top", (event.pageY || event.touches?.[0]?.pageY || 0) + 10 + "px");

@@ -43,8 +43,8 @@ const tooltip = d3.select("#tooltip");
 // Track persistent selection (click to lock)
 let persistentSelection = null;
 
-// Detect touch device
-const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+// Detect touch device - use matchMedia for more accurate detection
+const isTouchDevice = window.matchMedia("(pointer: coarse)").matches;
 let tooltipTimeout = null;
 let lastTappedNode = null;
 

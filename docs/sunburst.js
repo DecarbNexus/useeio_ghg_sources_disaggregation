@@ -43,6 +43,10 @@ const tooltip = d3.select("#tooltip");
 // Track persistent selection (click to lock)
 let persistentSelection = null;
 
+// Detect touch device
+const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+let tooltipTimeout = null;
+
 // Chart scale factor
 const CHART_SCALE = 0.75; // 75% of container width
 
@@ -224,28 +228,65 @@ function renderSunburst(rootData, centerLabel, minShare) {
     .style("cursor", "pointer");
 
   // Add event handlers separately to ensure they work
-  path.on("mouseover", (event, d) => {
-      // Show tooltip on arc hover (don't affect table highlights or persistent selection)
-      const seq = d.ancestors().map((n) => n.data.name).reverse().slice(1);
-      tooltip
-        .style("opacity", 1)
-        .html(
-          `<strong>${seq.join(" ▸ ")}</strong><br/>Contribution: ${formatPct(d.value || 0)}`
-        )
-        .style("left", event.pageX + 10 + "px")
-        .style("top", event.pageY + 10 + "px");
-    })
-    .on("mousemove", (event, d) => {
-      tooltip
-        .style("left", event.pageX + 10 + "px")
-        .style("top", event.pageY + 10 + "px");
-    })
-    .on("mouseout", () => {
-      tooltip.style("opacity", 0);
-    })
-    .on("click", (event, d) => {
+  if (!isTouchDevice) {
+    // Desktop: use hover for tooltips
+    path.on("mouseover", (event, d) => {
+        // Show tooltip on arc hover (don't affect table highlights or persistent selection)
+        const seq = d.ancestors().map((n) => n.data.name).reverse().slice(1);
+        tooltip
+          .style("opacity", 1)
+          .html(
+            `<strong>${seq.join(" ▸ ")}</strong><br/>Contribution: ${formatPct(d.value || 0)}`
+          )
+          .style("left", event.pageX + 10 + "px")
+          .style("top", event.pageY + 10 + "px");
+      })
+      .on("mousemove", (event, d) => {
+        tooltip
+          .style("left", event.pageX + 10 + "px")
+          .style("top", event.pageY + 10 + "px");
+      })
+      .on("mouseout", () => {
+        tooltip.style("opacity", 0);
+      });
+  }
+  
+  path.on("click", (event, d) => {
       event.stopPropagation();
-      tooltip.style("opacity", 0);
+      
+      if (isTouchDevice) {
+        // Mobile: First tap shows tooltip, second tap selects
+        if (tooltipTimeout) clearTimeout(tooltipTimeout);
+        
+        // Check if this is a new node or the tooltip is hidden
+        const isNewNode = !persistentSelection || persistentSelection.node !== d;
+        const tooltipHidden = parseFloat(tooltip.style("opacity")) < 0.1;
+        
+        if (isNewNode || tooltipHidden) {
+          // First tap: show tooltip
+          const seq = d.ancestors().map((n) => n.data.name).reverse().slice(1);
+          tooltip
+            .style("opacity", 1)
+            .html(
+              `<strong>${seq.join(" ▸ ")}</strong><br/>Contribution: ${formatPct(d.value || 0)}<br/><em style="font-size: 0.85em; color: #94a3b8;">Tap again to select</em>`
+            )
+            .style("left", (event.pageX || event.touches?.[0]?.pageX || 0) + 10 + "px")
+            .style("top", (event.pageY || event.touches?.[0]?.pageY || 0) + 10 + "px");
+          
+          // Auto-hide tooltip after 3 seconds
+          tooltipTimeout = setTimeout(() => {
+            tooltip.style("opacity", 0);
+          }, 3000);
+          return; // Don't select yet
+        }
+        
+        // Second tap: hide tooltip and proceed to selection
+        tooltip.style("opacity", 0);
+      } else {
+        // Desktop: hide tooltip on click
+        tooltip.style("opacity", 0);
+      }
+      
       // Toggle persistent selection
       if (persistentSelection && persistentSelection.node === d) {
         // Clicking the same arc - deselect

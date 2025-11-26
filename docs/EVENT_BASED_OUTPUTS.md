@@ -142,7 +142,7 @@ The enrichment pipeline now generates **event-based emission data** in addition 
 **Hierarchy:**
 ```
 USEEIO Sector
-  └─ GHG Source Category
+  └─ Activity Category
       └─ Subcategory
           └─ Sub-subcategory
               └─ Activity

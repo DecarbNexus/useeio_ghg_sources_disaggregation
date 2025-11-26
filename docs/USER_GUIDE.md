@@ -438,7 +438,7 @@ KEEP_COLUMNS = [
     "Activity Set",       # Enriched activity category
     "Fossil Fuel",        # Enriched fuel type
     "IPCC/UNFCCC Category",  # Enriched IPCC category
-    "GHG Source Category",   # Enriched source category
+    "Activity Category",   # Enriched source category
     "chapter",            # EPA metadata
     "table_id",           # EPA metadata
     "desc",               # EPA metadata
@@ -825,7 +825,7 @@ d3.json('outputs/GHG_national_2022_m2_DecarbNexus_sunburst.json')
     const hierarchy = {
       name: sectorCode,
       children: d3.groups(sectorData, 
-        d => d['GHG Source Category'])
+        d => d['Activity Category'])
         .map(([category, items]) => ({
           name: category,
           children: d3.groups(items, d => d['Activity Set'])
@@ -877,7 +877,7 @@ select.on('change', function() {
 
 **Hierarchical levels:**
 1. **USEEIO Sector Code** (outer ring) - 384 unique sectors
-2. **GHG Source Category** (second ring) - Energy, Industrial Processes, etc.
+2. **Activity Category** (second ring) - Energy, Industrial Processes, etc.
 3. **Activity Set** (third ring) - Specific activities within category
 4. **Gas category** (inner ring) - CO2, Methane, etc.
 5. **Contribution** (size) - Fraction of sector's total (0-1 scale)

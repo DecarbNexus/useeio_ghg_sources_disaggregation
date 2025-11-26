@@ -1,3 +1,27 @@
+"""
+Extract EPA GHGI metadata from FlowSA YAML configuration.
+
+This script parses the EPA_GHGI.yaml file from the FlowSA package and extracts
+table metadata including meta_id, chapter, table_id, and description fields.
+
+By default, only basic metadata is extracted (meta_id, chapter, table_id, desc).
+Legacy IPCC_Category and Subcategory fields are disabled by default but can be
+enabled with the --extract-categories flag.
+
+Usage:
+    # Basic metadata extraction (default)
+    python extract_meta_from_EPA_GHGI.py
+    
+    # Include legacy IPCC_Category and Subcategory fields
+    python extract_meta_from_EPA_GHGI.py --extract-categories
+    
+    # Custom input/output paths
+    python extract_meta_from_EPA_GHGI.py --input path/to/EPA_GHGI.yaml --csv-out outputs/meta.csv
+
+Output:
+    - CSV: Flattened table with one row per EPA GHGI table
+    - YAML: Keyed map with meta_id as keys for easy lookup
+"""
 from __future__ import annotations
 import os
 import re
@@ -10,8 +34,8 @@ from ruamel.yaml.comments import CommentedMap
 DEFAULT_INPUT = r".\\.venv\\Lib\\site-packages\\flowsa\\methods\\flowbyactivitymethods\\EPA_GHGI.yaml"
 
 # Outputs
-CSV_OUT = os.path.join("outputs", "EPA_GHGI_meta_sources.csv")
-YAML_OUT = os.path.join("outputs", "EPA_GHGI_meta_sources.yaml")
+CSV_OUT = os.path.join("outputs", "metadata", "EPA_GHGI_meta_sources.csv")
+YAML_OUT = os.path.join("outputs", "metadata", "EPA_GHGI_meta_sources.yaml")
 
 # Optional custom replacements to tweak resulting category labels. Each entry is
 # a (compiled_regex, replacement) pair applied in order. Users can extend this list
@@ -182,7 +206,7 @@ def _to_meta_id(table_id: str) -> str:
     return f"EPA_GHGI_T_{table_id.replace('-', '_')}"
 
 
-def build_meta_rows(input_yaml: str) -> List[Dict[str, Any]]:
+def build_meta_rows(input_yaml: str, extract_categories: bool = False) -> List[Dict[str, Any]]:
     yaml = YAML()
     with open(input_yaml, "r", encoding="utf-8") as f:
         data = yaml.load(f)
@@ -193,20 +217,23 @@ def build_meta_rows(input_yaml: str) -> List[Dict[str, Any]]:
         meta_id = _to_meta_id(table_id)
         raw_desc = spec.get("desc")
         original_desc = _normalize_raw_desc(raw_desc)
-        table_ref, description, _desc_unit = _parse_desc(raw_desc)
-        ghg_category = _clean_category(description)
-        # Derive IPCC category from chapter string
-        ipcc_category = _compute_ipcc_category(chapter, original_desc)
 
         row = {
             "meta_id": meta_id,
             "chapter": chapter,
             "table_id": table_id,
             "desc": original_desc,
-            # CSV will use a human-friendly header for this field
-            "IPCC_Category": ipcc_category,
-            "Subcategory": ghg_category,
         }
+
+        # Only extract categories if explicitly requested
+        if extract_categories:
+            table_ref, description, _desc_unit = _parse_desc(raw_desc)
+            ghg_category = _clean_category(description)
+            # Derive IPCC category from chapter string
+            ipcc_category = _compute_ipcc_category(chapter, original_desc)
+            row["IPCC_Category"] = ipcc_category
+            row["Subcategory"] = ghg_category
+
         rows.append(row)
 
     return rows
@@ -217,15 +244,18 @@ def write_csv(rows: List[Dict[str, Any]], out_path: str) -> None:
 
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
 
-    # Determine columns (stable order)
+    # Determine columns dynamically based on what's in the rows
     fieldnames = [
         "meta_id",
         "chapter",
         "table_id",
         "desc",
-        "IPCC_Category",
-        "Subcategory",
     ]
+    # Add category columns if present
+    if rows and "IPCC_Category" in rows[0]:
+        fieldnames.append("IPCC_Category")
+    if rows and "Subcategory" in rows[0]:
+        fieldnames.append("Subcategory")
 
     with open(out_path, "w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=fieldnames)
@@ -247,10 +277,13 @@ def write_yaml(rows: List[Dict[str, Any]], out_path: str) -> None:
         entry: CommentedMap = CommentedMap()
         entry["table_id"] = r["table_id"]
         entry["chapter"] = r["chapter"]
-        entry["subcategory"] = r.get("Subcategory", "")
-        entry["ipcc_category"] = r.get("IPCC_Category", "")
         if r.get("desc"):
             entry["desc"] = r["desc"]
+        # Only include categories if they exist in the data
+        if "Subcategory" in r:
+            entry["subcategory"] = r.get("Subcategory", "")
+        if "IPCC_Category" in r:
+            entry["ipcc_category"] = r.get("IPCC_Category", "")
         meta_map[r["meta_id"]] = entry
     with open(out_path, "w", encoding="utf-8") as f:
         yaml.dump(meta_map, f)
@@ -294,7 +327,8 @@ def _apply_label_map(rows: List[Dict[str, Any]], label_map_path: str) -> None:
 def main(input_path: str = DEFAULT_INPUT,
          csv_out: str = CSV_OUT,
          yaml_out: str = YAML_OUT,
-         label_map: str = "") -> Dict[str, Any]:
+         label_map: str = "",
+         extract_categories: bool = False) -> Dict[str, Any]:
     """
     Programmatic entry point for extracting EPA GHGI metadata.
 
@@ -308,14 +342,17 @@ def main(input_path: str = DEFAULT_INPUT,
         Output YAML file path for the keyed metadata map
     label_map: str
         Optional CSV with custom label overrides (columns: table_id,label or meta_id,label)
+    extract_categories: bool
+        Whether to extract IPCC_Category and Subcategory fields (default: False)
 
     Returns
     -------
     dict
         Summary of the extraction including counts and output paths
     """
-    rows = build_meta_rows(input_path)
-    _apply_label_map(rows, label_map)
+    rows = build_meta_rows(input_path, extract_categories=extract_categories)
+    if extract_categories:
+        _apply_label_map(rows, label_map)
     write_csv(rows, csv_out)
     write_yaml(rows, yaml_out)
     summary = {
@@ -323,10 +360,13 @@ def main(input_path: str = DEFAULT_INPUT,
         "csv": csv_out,
         "yaml": yaml_out,
         "label_map_used": bool(label_map),
+        "categories_extracted": extract_categories,
     }
     print(f"Wrote {summary['records']} meta rows")
     print(f"CSV: {summary['csv']}")
     print(f"YAML: {summary['yaml']}")
+    if extract_categories:
+        print("  (with IPCC_Category and Subcategory)")
     return summary
 
 
@@ -338,6 +378,11 @@ if __name__ == "__main__":
     parser.add_argument("--csv-out", default=CSV_OUT, help="CSV output path")
     parser.add_argument("--yaml-out", default=YAML_OUT, help="YAML output path")
     parser.add_argument("--label-map", default="", help="Optional CSV with per-table or per-meta custom labels")
+    parser.add_argument(
+        "--extract-categories",
+        action="store_true",
+        help="Extract IPCC_Category and Subcategory fields (legacy feature, disabled by default)"
+    )
     args = parser.parse_args()
 
     # Delegate to the programmatic entry point
@@ -346,4 +391,5 @@ if __name__ == "__main__":
         csv_out=args.csv_out,
         yaml_out=args.yaml_out,
         label_map=args.label_map,
+        extract_categories=args.extract_categories,
     )

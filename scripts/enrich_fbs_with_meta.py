@@ -30,10 +30,43 @@ sys.path.append(str(parent_dir))
 
 # Import configuration settings and terminology
 import config
-from terminology import TERMINOLOGY, COLUMN_MAPPING, get_display_name, get_jsonld_property
+from terminology import TERMINOLOGY, get_jsonld_property
+
+# Import modularized enrichment functions
+from enrichment.utils import (
+    get_emissions_intensity_col,
+    check_flowsa_version,
+    validate_flowsa_version,
+    filter_columns
+)
+from enrichment.validators import (
+    aggregate_to_reference_format,
+    compare_with_reference,
+    validate_data
+)
+from enrichment.loaders import (
+    load_parquet_data,
+    load_metadata_mapping,
+    load_fuel_lookup
+)
+from enrichment.enrichers import (
+    enrich_with_fuel,
+    enrich_with_useeio,
+    enrich_with_primary_activities,
+    enrich_with_metadata
+)
+from enrichment.exporters import (
+    build_emission_events_jsonld,
+    build_d3_sunburst_hierarchy,
+    save_outputs
+)
 
 
-# Helper function for dynamic column names based on model year
+# TODO: The functions below are now imported from enrichment modules
+# They can be gradually removed as the migration continues
+# For now, keeping them here to ensure backward compatibility
+
+# DEPRECATED: Moved to enrichment.utils
 def get_emissions_intensity_col():
     """Get the emissions intensity column name with the model year."""
     return f"Emissions Intensity (kg/USD_{config.MODEL_YEAR})"
@@ -491,7 +524,7 @@ def enrich_with_fuel(fbs_data, fuel_by_table, fuel_by_term):
     enriched_data = fbs_data.copy()
     
     # Initialize the new column
-    enriched_data[COLUMN_MAPPING['Fuel']] = None
+    enriched_data['Fuel Consumed'] = None
     
     table_match_count = 0
     term_match_count = 0
@@ -517,7 +550,7 @@ def enrich_with_fuel(fbs_data, fuel_by_table, fuel_by_term):
             table_ref = str(meta_sources).split('.')[0].strip()
             
             if table_ref in fuel_by_table:
-                enriched_data.at[idx, COLUMN_MAPPING['Fuel']] = fuel_by_table[table_ref]
+                enriched_data.at[idx, 'Fuel Consumed'] = fuel_by_table[table_ref]
                 table_match_count += 1
     
     # Step 2: Match by term in PrimaryActivity (overrides table matches if found - more precise)
@@ -581,8 +614,8 @@ def enrich_with_fuel(fbs_data, fuel_by_table, fuel_by_term):
             
             # If we found matches, join them with " | " and store (overrides table lookup)
             if matched_fuels:
-                had_table_match = pd.notna(enriched_data.at[idx, COLUMN_MAPPING['Fuel']]) and enriched_data.at[idx, COLUMN_MAPPING['Fuel']] != ''
-                enriched_data.at[idx, COLUMN_MAPPING['Fuel']] = ' | '.join(sorted(matched_fuels.keys()))
+                had_table_match = pd.notna(enriched_data.at[idx, 'Fuel Consumed']) and enriched_data.at[idx, 'Fuel Consumed'] != ''
+                enriched_data.at[idx, 'Fuel Consumed'] = ' | '.join(sorted(matched_fuels.keys()))
                 if had_table_match:
                     term_override_count += 1
                 else:
@@ -855,9 +888,9 @@ def enrich_with_ghg_source_categories(fbs_data, mapping_df):
     
     # Initialize the new columns
     enriched_data['IPCC/UNFCCC Category'] = None
-    enriched_data[COLUMN_MAPPING['GHG Source Category']] = None
-    enriched_data[COLUMN_MAPPING['GHG Source Subcategory']] = None
-    enriched_data[COLUMN_MAPPING['GHG Source SubSubcategory']] = None
+    enriched_data['Activity Category'] = None
+    enriched_data['Activity Subcategory'] = None
+    enriched_data['Activity Type'] = None
     
     matched_count = 0
     
@@ -906,21 +939,21 @@ def enrich_with_ghg_source_categories(fbs_data, mapping_df):
         if not match.empty:
             # Take the first match if there are multiple
             enriched_data.at[idx, 'IPCC/UNFCCC Category'] = match.iloc[0]['IPCC/UNFCCC Category']
-            enriched_data.at[idx, COLUMN_MAPPING['GHG Source Category']] = match.iloc[0][COLUMN_MAPPING['GHG Source Category']]
-            enriched_data.at[idx, COLUMN_MAPPING['GHG Source Subcategory']] = match.iloc[0][COLUMN_MAPPING['GHG Source Subcategory']]
+            enriched_data.at[idx, 'Activity Category'] = match.iloc[0]['Activity Category']
+            enriched_data.at[idx, 'Activity Subcategory'] = match.iloc[0]['Activity Subcategory']
             
-            # SubSubcategory might be empty in the CSV
-            sub_subcategory = match.iloc[0].get(COLUMN_MAPPING['GHG Source SubSubcategory'], '')
-            if pd.notna(sub_subcategory) and sub_subcategory:
-                enriched_data.at[idx, COLUMN_MAPPING['GHG Source SubSubcategory']] = sub_subcategory
+            # Activity Type might be empty in the CSV
+            activity_type = match.iloc[0].get('Activity Type', '')
+            if pd.notna(activity_type) and activity_type:
+                enriched_data.at[idx, 'Activity Type'] = activity_type
             
             matched_count += 1
     
     print(f"✓ Added comprehensive GHG categorization to {matched_count:,} records")
     print(f"  - IPCC/UNFCCC Category")
-    print(f"  - {COLUMN_MAPPING['GHG Source Category']}")
-    print(f"  - {COLUMN_MAPPING['GHG Source Subcategory']}")
-    print(f"  - {COLUMN_MAPPING['GHG Source SubSubcategory']} (where applicable)")
+    print(f"  - Activity Category")
+    print(f"  - Activity Subcategory")
+    print(f"  - Activity Type (where applicable)")
     
     return enriched_data
 
@@ -947,7 +980,7 @@ def load_flowable_categorization(csv_path):
         df = pd.read_csv(csv_path)
         
         # Create dictionary: Flowable -> Gas category
-        flowable_to_gas = dict(zip(df['Flowable'], df[COLUMN_MAPPING['Gas category']]))
+        flowable_to_gas = dict(zip(df['Flowable'], df['Gas Category']))
         
         print(f"✓ Loaded {len(flowable_to_gas)} flowable categorizations")
         return flowable_to_gas
@@ -984,7 +1017,7 @@ def enrich_with_gas_category(fbs_data, flowable_to_gas_dict):
     enriched_data = fbs_data.copy()
     
     # Initialize the new column
-    enriched_data[COLUMN_MAPPING['Gas category']] = None
+    enriched_data['Gas Category'] = None
     
     matched_count = 0
     
@@ -998,7 +1031,7 @@ def enrich_with_gas_category(fbs_data, flowable_to_gas_dict):
         
         # Look up in the categorization
         if flowable_str in flowable_to_gas_dict:
-            enriched_data.at[idx, COLUMN_MAPPING['Gas category']] = flowable_to_gas_dict[flowable_str]
+            enriched_data.at[idx, 'Gas Category'] = flowable_to_gas_dict[flowable_str]
             matched_count += 1
     
     print(f"✓ Added Gas category to {matched_count:,} records")
@@ -2147,7 +2180,7 @@ def validate_data(df, model_name):
     issues_found = False
     
     # Check for missing values in key columns
-    key_columns = ['USEEIO Sector Code', COLUMN_MAPPING['GHG Source Category'], COLUMN_MAPPING['Gas category'], 
+    key_columns = ['USEEIO Sector Code', 'Activity Category', 'Gas Category', 
                    'Emissions (MTCO2e)', "Contribution to USEEIO Sector's Scope 1 (%)"]
     
     for col in key_columns:
@@ -2409,13 +2442,13 @@ def transform_to_commodity_form(df_normalized, market_share_matrix, sector_code_
     # The NAICS code represents the producing industry, which is no longer relevant for commodities
     agg_columns = [
         'USEEIO Sector Code',  # Now represents commodity, not industry
-        COLUMN_MAPPING['GHG Source Category'],
+        'Activity Category',
         'IPCC/UNFCCC Category',
-        COLUMN_MAPPING['GHG Source Subcategory'],
-        COLUMN_MAPPING['GHG Source SubSubcategory'],
-        'GHG Source',
-        COLUMN_MAPPING['Fuel'],
-        COLUMN_MAPPING['Gas category'],
+        'Activity Subcategory',
+        'Activity Type',
+        'Activity',  # Granular activity level - describes the emission source, not the industry
+        'Fuel Consumed',
+        'Gas Category',
         'Gas',
         'US GHGI Table ID',
         'US GHGI Chapter',
@@ -2462,13 +2495,13 @@ def transform_to_commodity_form(df_normalized, market_share_matrix, sector_code_
         'USEEIO Sector Name',
         'USEEIO Sector Code',
         'NAICS Sector Code',  # Will be None for commodity form
-        COLUMN_MAPPING['GHG Source Category'],
+        'Activity Category',
         'IPCC/UNFCCC Category',
-        COLUMN_MAPPING['GHG Source Subcategory'],
-        COLUMN_MAPPING['GHG Source SubSubcategory'],
-        'GHG Source',
-        COLUMN_MAPPING['Fuel'],
-        COLUMN_MAPPING['Gas category'],
+        'Activity Subcategory',
+        'Activity Type',
+        'Activity',
+        'Fuel Consumed',
+        'Gas Category',
         'Gas',
         'Emissions (kg)',
         get_emissions_intensity_col(),
@@ -2512,19 +2545,19 @@ def build_hierarchical_jsonld(df, include_all_fields=True):
     - USEEIO Sector Code (top level)
       - USEEIO Sector Name (attribute)
       - NAICS Sector Code (child)
-        - GHG Source Category (child)
+        - Activity Category (child)
           - IPCC/UNFCCC Category (child)
-            - GHG Source Subcategory (child)
-              - GHG Source SubSubcategory (child)
+            - Activity Subcategory (child)
+              - Activity Type (child)
                 - GHG Source (child)
-                  - Fuel (child)
-                    - Gas category (child)
+                  - Fuel Consumed (child)
+                    - Gas Category (child)
                       - Gas (leaf with emission values)
     
     Light/Sunburst Hierarchy (aggregated):
     - USEEIO Sector Code (top level)
-      - GHG Source Category (child)
-        - GHG Source SubSubcategory (child)
+      - Activity Category (child)
+        - Activity Type (child)
           - Gas category (child with summed contributions)
     
     Parameters:
@@ -2575,8 +2608,8 @@ def build_hierarchical_jsonld(df, include_all_fields=True):
         hierarchy_fields = {
             'Row ID',  # Exclude Row ID from hierarchy (only for tabular exports)
             'USEEIO Sector Name', 'USEEIO Sector Code', 'NAICS Sector Code',
-            COLUMN_MAPPING['GHG Source Category'], 'IPCC/UNFCCC Category', COLUMN_MAPPING['GHG Source Subcategory'],
-            COLUMN_MAPPING['GHG Source SubSubcategory'], 'GHG Source', COLUMN_MAPPING['Fuel'], COLUMN_MAPPING['Gas category'], 'Gas',
+            'Activity Category', 'IPCC/UNFCCC Category', 'Activity Subcategory',
+            'Activity Type', 'GHG Source', 'Fuel Consumed', 'Gas Category', 'Gas',
             'US GHGI Chapter', 'US GHGI Table ID', 'US GHGI Table Name', 'Attribution Sources'
         }
         
@@ -2588,13 +2621,13 @@ def build_hierarchical_jsonld(df, include_all_fields=True):
                 
             useeio_name = row.get('USEEIO Sector Name')
             naics_code = row.get('NAICS Sector Code')
-            ghg_category = row.get(COLUMN_MAPPING['GHG Source Category'])
+            ghg_category = row.get('Activity Category')
             ipcc_category = row.get('IPCC/UNFCCC Category')
-            ghg_subcategory = row.get(COLUMN_MAPPING['GHG Source Subcategory'])
-            ghg_sub_subcategory = row.get(COLUMN_MAPPING['GHG Source SubSubcategory'])
+            ghg_subcategory = row.get('Activity Subcategory')
+            ghg_sub_subcategory = row.get('Activity Type')
             ghg_source = row.get('GHG Source')
-            fuel = row.get(COLUMN_MAPPING['Fuel'])
-            gas_category = row.get(COLUMN_MAPPING['Gas category'])
+            fuel = row.get('Fuel Consumed')
+            gas_category = row.get('Gas Category')
             gas = row.get('Gas')
             ghgi_table_id = row.get('US GHGI Table ID')
             ghgi_chapter = row.get('US GHGI Chapter')
@@ -2667,9 +2700,9 @@ def build_hierarchical_jsonld(df, include_all_fields=True):
             if pd.isna(useeio_code):
                 continue
                 
-            ghg_category = row.get(COLUMN_MAPPING['GHG Source Category'])
-            ghg_sub_subcategory = row.get(COLUMN_MAPPING['GHG Source SubSubcategory'])
-            gas_category = row.get(COLUMN_MAPPING['Gas category'])
+            ghg_category = row.get('Activity Category')
+            ghg_sub_subcategory = row.get('Activity Type')
+            gas_category = row.get('Gas Category')
             contribution = row.get("Contribution to USEEIO Sector's Scope 1 (%)", 0)
             
             if pd.isna(contribution):
@@ -2885,12 +2918,12 @@ def build_ghg_source_classification_jsonld(df):
     gas_hierarchy = defaultdict(set)
     
     for _, row in df.iterrows():
-        ghg_cat = row.get(COLUMN_MAPPING['GHG Source Category'], 'Unknown')
-        ghg_subcat = row.get(COLUMN_MAPPING['GHG Source Subcategory'], 'Unknown')
-        ghg_subsubcat = row.get(COLUMN_MAPPING['GHG Source SubSubcategory'], 'Unknown')
+        ghg_cat = row.get('Activity Category', 'Unknown')
+        ghg_subcat = row.get('Activity Subcategory', 'Unknown')
+        ghg_subsubcat = row.get('Activity Type', 'Unknown')
         activity = row.get('Activity', 'Unknown')
-        fuel = row.get(COLUMN_MAPPING['Fuel'])
-        gas_cat = row.get(COLUMN_MAPPING['Gas category'], 'Unknown')
+        fuel = row.get('Fuel Consumed')
+        gas_cat = row.get('Gas Category', 'Unknown')
         gas = row.get('Gas', 'Unknown')
         
         # Handle None values
@@ -3024,7 +3057,7 @@ def generate_event_id(row):
         sanitize(row.get('USEEIO Sector Code')),
         sanitize(row.get('Activity')),  # This is ActivityProducedBy after renaming
         sanitize(row.get('Gas')),  # This is Flowable after renaming
-        sanitize(row.get(COLUMN_MAPPING['Fuel']))
+        sanitize(row.get('Fuel Consumed'))
     ]
     
     return '_'.join(parts)
@@ -3060,10 +3093,10 @@ def build_emission_event_full(row):
         "eventId": event_id,
         
         "hasCategory": {
-            "@type": "GHGSourceCategory",
-            "name": get_value(COLUMN_MAPPING['GHG Source Category']),
-            "subcategory": get_value(COLUMN_MAPPING['GHG Source Subcategory']),
-            "subSubcategory": get_value(COLUMN_MAPPING['GHG Source SubSubcategory'])
+            "@type": "ActivityCategory",
+            "name": get_value('Activity Category'),
+            "subcategory": get_value('Activity Subcategory'),
+            "subSubcategory": get_value('Activity Type')
         },
         
         "fromActivity": {
@@ -3076,13 +3109,13 @@ def build_emission_event_full(row):
         
         "consumesFuel": {
             "@type": "Fuel",
-            "name": get_value(COLUMN_MAPPING['Fuel']),
+            "name": get_value('Fuel Consumed'),
             "category": get_value('Fuel Category')
         },
         
         "emitsGas": {
             "@type": "GreenhouseGas",
-            "gasCategory": get_value(COLUMN_MAPPING['Gas category']),
+            "gasCategory": get_value('Gas Category'),
             "gas": get_value('Gas'),
             "chemicalFormula": get_value('Chemical Formula'),
             "co2eGWP": "AR5-100yr",
@@ -3201,6 +3234,9 @@ def build_d3_sunburst_hierarchy(df):
     
     print("Building D3.js sunburst hierarchy...")
     
+    # Filter out F01000 sector (used goods, non-emission producing)
+    df = df[df['USEEIO Sector Code'] != 'F01000'].copy()
+    
     # Build 3-level nested hierarchy: USEEIO → GHG Category → SubSubcategory → Gas Category
     hierarchy = defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(float))))
     
@@ -3209,9 +3245,9 @@ def build_d3_sunburst_hierarchy(df):
         if pd.isna(useeio):
             continue
             
-        ghg_cat = row.get(COLUMN_MAPPING['GHG Source Category'], 'Unknown')
-        subsubcat = row.get(COLUMN_MAPPING['GHG Source SubSubcategory'], 'Unknown')
-        gas_cat = row.get(COLUMN_MAPPING['Gas category'], 'Unknown')
+        ghg_cat = row.get('Activity Category', 'Unknown')
+        subsubcat = row.get('Activity Type', 'Unknown')
+        gas_cat = row.get('Gas Category', 'Unknown')
         contribution = row.get("Contribution to USEEIO Sector's Scope 1 (%)", 0)
         
         if pd.isna(contribution):
@@ -3306,6 +3342,9 @@ def export_event_based_outputs(enriched_data, output_dir, model_name):
     print("\n" + "="*80)
     print("EXPORTING EVENT-BASED OUTPUTS")
     print("="*80)
+    
+    # Filter out F01000 sector (used goods, non-emission producing)
+    enriched_data = enriched_data[enriched_data['USEEIO Sector Code'] != 'F01000'].copy()
     
     # Full RDF format
     print("\n1. Full Emission Events (RDF/Knowledge Graph)")
@@ -3416,6 +3455,9 @@ def save_outputs(fbs_parquet, fbs_calculated, enriched_data, config_dict, commod
         
         print(f"\n{label}:")
         print("-" * 40)
+        
+        # Filter out F01000 sector (used goods, non-emission producing)
+        data = data[data['USEEIO Sector Code'] != 'F01000'].copy()
         
         # Remove QC columns if configured (for Excel, CSV, Parquet)
         export_data = data.copy()
@@ -3547,6 +3589,24 @@ def save_outputs(fbs_parquet, fbs_calculated, enriched_data, config_dict, commod
             
             total_nodes = count_nodes(sunburst_hierarchy)
             print(f"  ✓ JSON (sunburst): {base_filename}_sunburst.json ({total_nodes:,} nodes)")
+            
+            # Copy industry sunburst to docs/visualization/data for web visualization
+            if suffix == '_industry':
+                import shutil
+                viz_data_dir = os.path.join(os.path.dirname(config_dict["output_dir"]), "docs", "visualization", "data")
+                if os.path.exists(viz_data_dir):
+                    viz_sunburst_path = os.path.join(viz_data_dir, "industry_sunburst.json")
+                    try:
+                        shutil.copy2(sunburst_path, viz_sunburst_path)
+                        print(f"  ✓ Copied to visualization: docs/visualization/data/industry_sunburst.json")
+                    except Exception as e:
+                        print(f"  ⚠ Could not copy to visualization folder: {e}")
+                        print(f"  → Manual step: Copy {base_filename}_sunburst.json to docs/visualization/data/industry_sunburst.json")
+                else:
+                    print(f"  ℹ Visualization folder not found: {viz_data_dir}")
+                    print(f"  → To enable web visualization, manually copy:")
+                    print(f"      {sunburst_path}")
+                    print(f"      to docs/visualization/data/industry_sunburst.json")
         except PermissionError:
             print(f"  ⚠ Sunburst JSON export skipped - file is open")
         except Exception as e:
@@ -3557,8 +3617,11 @@ def save_outputs(fbs_parquet, fbs_calculated, enriched_data, config_dict, commod
     print("Exporting GHG Source Classification...")
     print("-"*80)
     
+    ghg_classification_dir = os.path.join(config_dict["output_dir"], "ghg_source_classification")
+    os.makedirs(ghg_classification_dir, exist_ok=True)
+    
     ghg_classification_path = os.path.join(
-        config_dict["output_dir"],
+        ghg_classification_dir,
         f"{config.MODELNAME}_ghg_source_classification.jsonld"
     )
     
@@ -3583,14 +3646,14 @@ def save_outputs(fbs_parquet, fbs_calculated, enriched_data, config_dict, commod
     print(f"  - industry/: Emissions by producing industry")
     if commodity_data is not None:
         print(f"  - commodity/: Emissions by product/commodity (supply chain analysis)")
-    print(f"  - (root): GHG classification JSON-LD")
+    print(f"  - ghg_source_classification/: GHG classification JSON-LD")
     print(f"\nFormat recommendations:")
     print(f"  - Excel: Manual analysis, visualization in Excel")
     print(f"  - CSV: Import into any tool, simple text format")
     print(f"  - Parquet: Python/R data science (pandas, polars, DuckDB)")
     print(f"  - JSON-LD: Event-based emission events for RDF/knowledge graphs")
     print(f"  - JSON (sunburst): D3.js-optimized hierarchy for visualization")
-    print(f"  - JSON-LD (classification): GHG source taxonomy (root directory)")
+    print(f"  - JSON-LD (classification): GHG source taxonomy (ghg_source_classification/ folder)")
 
 
 
@@ -3667,7 +3730,9 @@ def main(fbs_calculated=None):
         print(f"    - Sanity check (Step 2.5)")
         print(f"    - Baseline export (Excel tab and CSV)")
         
-        user_input = input("\nDownload baseline from FlowSA? (yes/no): ").strip().lower()
+        user_input = input("\nDownload baseline from FlowSA? (yes/no) [default: no]: ").strip().lower()
+        if not user_input:  # Empty input = use default
+            user_input = 'no'
         
         if user_input in ['yes', 'y']:
             try:
@@ -3729,7 +3794,9 @@ def main(fbs_calculated=None):
             
             if config.STRICT_VERSION_CHECK:
                 print("\nReview the differences above before proceeding.")
-                user_input = input("\nContinue anyway? (yes/no): ").strip().lower()
+                user_input = input("\nContinue anyway? (yes/no) [default: yes]: ").strip().lower()
+                if not user_input:  # Empty input = use default
+                    user_input = 'yes'
                 if user_input not in ['yes', 'y']:
                     print("Aborted by user.")
                     return
@@ -4082,17 +4149,125 @@ def main(fbs_calculated=None):
         print(f"  Records: {len(commodity_data):,}")
         print(f"  Columns: {len(commodity_data.columns)}")
     
-    if 'Gas' in enriched_data.columns:
-        print(f"\n✓ Unique gases: {enriched_data['Gas'].nunique():,}")
+    # -------------------------------------------------------------------------
+    # DATA ENRICHMENT SUMMARY - Count unique non-null/non-zero categories
+    # -------------------------------------------------------------------------
+    print(f"\n" + "="*80)
+    print("ENRICHMENT SUMMARY - Unique Categories")
+    print("="*80)
     
-    if 'NAICS Sector Code' in enriched_data.columns:
-        print(f"✓ Unique NAICS sectors: {enriched_data['NAICS Sector Code'].nunique():,}")
+    # Helper function to count non-null, non-zero, non-empty values
+    def count_unique_valid(df, col_name):
+        if col_name not in df.columns:
+            return 0
+        # Filter out null, empty strings, and zeros
+        valid_mask = df[col_name].notna() & (df[col_name] != '') & (df[col_name] != 0)
+        return df.loc[valid_mask, col_name].nunique()
     
-    if 'USEEIO Sector Code' in enriched_data.columns:
-        print(f"✓ Unique USEEIO sectors:")
-        print(f"  Industry form: {enriched_data['USEEIO Sector Code'].nunique():,}")
-        if commodity_data is not None:
-            print(f"  Commodity form: {commodity_data['USEEIO Sector Code'].nunique():,}")
+    # Count categories in industry form
+    print("\nIndustry Form:")
+    print("-" * 40)
+    
+    # Sectors
+    useeio_count = count_unique_valid(enriched_data, 'USEEIO Sector Code')
+    naics_count = count_unique_valid(enriched_data, 'NAICS Sector Code')
+    print(f"  USEEIO Sectors: {useeio_count:,}")
+    print(f"  NAICS Sectors: {naics_count:,}")
+    
+    # Activities (4-level hierarchy)
+    activity_cat_count = count_unique_valid(enriched_data, 'Activity Category')
+    activity_subcat_count = count_unique_valid(enriched_data, 'Activity Subcategory')
+    activity_type_count = count_unique_valid(enriched_data, 'Activity Type')
+    activity_count = count_unique_valid(enriched_data, 'Activity')
+    print(f"\n  Activity Categories: {activity_cat_count:,}")
+    print(f"  Activity Subcategories: {activity_subcat_count:,}")
+    print(f"  Activity Types: {activity_type_count:,}")
+    print(f"  Activities: {activity_count:,}")
+    
+    # Gases (2-level hierarchy)
+    gas_cat_count = count_unique_valid(enriched_data, 'Gas Category')
+    gas_count = count_unique_valid(enriched_data, 'Gas')
+    print(f"\n  Gas Categories: {gas_cat_count:,}")
+    print(f"  Gases: {gas_count:,}")
+    
+    # Fuels (independent dimension)
+    fuel_count = count_unique_valid(enriched_data, 'Fuel Consumed')
+    if fuel_count > 0:
+        print(f"\n  Fuel Types: {fuel_count:,}")
+    
+    # IPCC Categories
+    ipcc_count = count_unique_valid(enriched_data, 'IPCC/UNFCCC Category')
+    if ipcc_count > 0:
+        print(f"  IPCC Categories: {ipcc_count:,}")
+    
+    # EPA GHGI Tables
+    ghgi_table_count = count_unique_valid(enriched_data, 'US GHGI Table ID')
+    if ghgi_table_count > 0:
+        print(f"  EPA GHGI Tables: {ghgi_table_count:,}")
+    
+    # Unique combinations (Activity hierarchy + Gas + Fuel)
+    # Only count rows with valid emissions data
+    combination_cols = ['Activity Category', 'Activity Subcategory', 'Activity Type', 'Activity', 
+                       'Gas Category', 'Gas', 'Fuel Consumed']
+    
+    # Filter to rows with non-null/non-empty values and non-zero emissions
+    combo_df = enriched_data.copy()
+    has_emissions = (combo_df['Emissions (MTCO2e)'].notna()) & (combo_df['Emissions (MTCO2e)'] != 0)
+    combo_df = combo_df[has_emissions]
+    
+    # Count unique combinations
+    unique_combos = combo_df[combination_cols].drop_duplicates()
+    print(f"\n  Unique Combinations (Activity + Gas + Fuel): {len(unique_combos):,}")
+    
+    # Commodity form statistics
+    if commodity_data is not None:
+        print("\n" + "-" * 40)
+        print("Commodity Form:")
+        print("-" * 40)
+        comm_useeio_count = count_unique_valid(commodity_data, 'USEEIO Sector Code')
+        print(f"  USEEIO Sectors: {comm_useeio_count:,}")
+        
+        # Activity hierarchy
+        comm_activity_cat_count = count_unique_valid(commodity_data, 'Activity Category')
+        comm_activity_subcat_count = count_unique_valid(commodity_data, 'Activity Subcategory')
+        comm_activity_type_count = count_unique_valid(commodity_data, 'Activity Type')
+        comm_activity_count = count_unique_valid(commodity_data, 'Activity')
+        if comm_activity_cat_count > 0:
+            print(f"\n  Activity Categories: {comm_activity_cat_count:,}")
+        if comm_activity_subcat_count > 0:
+            print(f"  Activity Subcategories: {comm_activity_subcat_count:,}")
+        if comm_activity_type_count > 0:
+            print(f"  Activity Types: {comm_activity_type_count:,}")
+        if comm_activity_count > 0:
+            print(f"  Activities: {comm_activity_count:,}")
+        
+        # Gas hierarchy
+        comm_gas_cat_count = count_unique_valid(commodity_data, 'Gas Category')
+        comm_gas_count = count_unique_valid(commodity_data, 'Gas')
+        if comm_gas_cat_count > 0:
+            print(f"\n  Gas Categories: {comm_gas_cat_count:,}")
+        if comm_gas_count > 0:
+            print(f"  Gases: {comm_gas_count:,}")
+        
+        # Fuel types
+        comm_fuel_count = count_unique_valid(commodity_data, 'Fuel Consumed')
+        if comm_fuel_count > 0:
+            print(f"\n  Fuel Types: {comm_fuel_count:,}")
+        
+        # Unique combinations for commodity form
+        comm_combination_cols = ['Activity Category', 'Activity Subcategory', 'Activity Type', 'Activity', 
+                                'Gas Category', 'Gas', 'Fuel Consumed']
+        
+        # Filter to rows with non-null/non-empty values and non-zero emissions
+        comm_combo_df = commodity_data.copy()
+        comm_has_emissions = (comm_combo_df['Emissions (MTCO2e)'].notna()) & (comm_combo_df['Emissions (MTCO2e)'] != 0)
+        comm_combo_df = comm_combo_df[comm_has_emissions]
+        
+        # Count unique combinations
+        comm_unique_combos = comm_combo_df[comm_combination_cols].drop_duplicates()
+        print(f"\n  Unique Combinations (Activity + Gas + Fuel): {len(comm_unique_combos):,}")
+    
+    print("="*80)
     
     print(f"\nNext steps:")
     print("1. Review the output files in the '{config_dict['output_dir']}/' directory")

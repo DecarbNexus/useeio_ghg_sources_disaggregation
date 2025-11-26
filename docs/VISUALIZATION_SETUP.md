@@ -20,7 +20,7 @@ docs/
 ```
 
 ### Visual Hierarchy (Fixed, 3 Rings)
-1. **Inner Ring: GHG Source Category** (3 categories, fixed order)
+1. **Inner Ring: Activity Category** (3 categories, fixed order)
    - Electric Power Generation (#0099CC blue)
    - Fossil Fuels Combustion (#FF6B6B red)
    - Process & Fugitive Gases (#9C27B0 purple)

@@ -32,30 +32,6 @@ TERMINOLOGY = {
     'us_ghgi_table_name': 'US GHGI Table Name',
 }
 
-# Column name mappings (old → new)
-# These map internal/legacy column names to user-facing names
-COLUMN_MAPPING = {
-    # Activity hierarchy
-    'GHG Source Category': TERMINOLOGY['activity_level_1'],
-    'GHG Source Subcategory': TERMINOLOGY['activity_level_2'],
-    'GHG Source SubSubcategory': TERMINOLOGY['activity_level_3'],
-    'Activity': TERMINOLOGY['activity_level_4'],
-    
-    # Fuel dimension
-    'Fuel': TERMINOLOGY['fuel'],
-    
-    # Gas hierarchy
-    'Gas category': TERMINOLOGY['gas_level_1'],
-    'Gas': TERMINOLOGY['gas_level_2'],
-    
-    # Other fields (kept for completeness)
-    'IPCC/UNFCCC Category': TERMINOLOGY['ipcc_category'],
-    "Contribution to USEEIO Sector's Scope 1 (%)": TERMINOLOGY['contribution'],
-}
-
-# Reverse mapping (new → old) for internal processing
-REVERSE_COLUMN_MAPPING = {v: k for k, v in COLUMN_MAPPING.items()}
-
 # JSON-LD property names (snake_case for RDF/semantic web)
 JSONLD_PROPERTIES = {
     'activity_level_1': 'activity_category',
@@ -80,13 +56,7 @@ DISPLAY_NAMES = {
     'gas_level_2': TERMINOLOGY['gas_level_2'],
 }
 
-def get_display_name(internal_name):
-    """Get user-facing display name for an internal column name."""
-    return COLUMN_MAPPING.get(internal_name, internal_name)
-
-def get_internal_name(display_name):
-    """Get internal column name from user-facing display name."""
-    return REVERSE_COLUMN_MAPPING.get(display_name, display_name)
+# Column name mappings removed - all code now uses direct column names from TERMINOLOGY
 
 def get_jsonld_property(terminology_key):
     """Get JSON-LD property name for a terminology key."""

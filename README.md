@@ -1,20 +1,20 @@
 # USEEIO GHG Sources Disaggregation
 
-This repository provides a reproducible workflow to disaggregate USEEIO sector emissions into their underlying greenhouse gas (GHG) sources. It enriches EPA's greenhouse gas inventory (GHGI) data with detailed metadata, breaking down each sector's emissions by:
+This repository provides a reproducible workflow to disaggregate USEEIO sector direct emissions into their underlying greenhouse gas (GHG) sources. It enriches the greenhouse gas data output of flowsa, which allocates the US EPA's national greenhouse gas inventory (GHGI) data to NAICS sectors, with detailed metadata. This allows users to break down each sector's emissions by:
 
-- **GHG Sources**: Activity categories (combustion, processes, fugitives), subcategories, and specific activities
+- **Activities**: Activity categories (combustion, processes, fugitives), subcategories, and specific activities
 - **Greenhouse Gases**: CO2, CH4, N2O, HFCs, PFCs, SF6, NF3, and other fluorinated gases
 - **Fuel Types**: Natural gas, coal, petroleum products, etc. (when applicable)
 - **IPCC Categories**: Energy, Industrial Processes, Agriculture, Waste, etc.
 
-The main outputs are Excel workbooks, CSVs, Parquet files, and JSON-LD with absolute emissions (kg, kgCO2e, MTCO2e) and relative contributions by source.
+The main outputs are Excel workbooks, CSVs, Parquet files, and JSON-LD with absolute emissions (kg, kgCO2e, MTCO2e) and relative contributions to sector totals.
 
 ## Just here for the data? (no coding required)
 
 ### Interactive visual
 
-- Try the interactive sunburst visualization: https://decarbnexus.github.io/Flowsa_extract_GHG_sources/
-- Pick a sector and explore Activity Categories → Subcategories → GHG Sources → Gases using Relative Contribution values
+- Try the interactive sunburst visualization: https://open.decarbnexus.com/useeio_ghg_sources_disaggregation/
+- Pick a sector and explore the composition of its scope 1 emissions
 
 ### Data tables
 
@@ -75,8 +75,15 @@ This dataset helps you:
    python scripts/extract_meta_from_EPA_GHGI.py
    ```
    (The `run_extraction.py` script handles this automatically)
+   
+   To extract legacy IPCC_Category and Subcategory fields (disabled by default):
+   ```bash
+   python scripts/extract_meta_from_EPA_GHGI.py --extract-categories
+   ```
 
 Artifacts will be saved under `outputs/industry/` and can be committed to the repo so non-technical users can download them directly.
+
+**Note:** Sector F01000 (used goods) is automatically excluded from all outputs as it does not produce emissions.
 
 ## Requirements
 
@@ -156,6 +163,11 @@ Additional reading and context:
 - EPA GHGI: https://www.epa.gov/ghgemissions/inventory-us-greenhouse-gas-emissions-and-sinks
 
 ## Limitations & planned development
+
+**Data filtering:**
+- Sector F01000 (used goods/scrap) is automatically excluded from all outputs as it does not produce emissions directly
+
+**Known limitations:**
 
 1) **FlowSA version dependency**
    - This workflow requires FlowSA v2.0.3 for reproducibility (matches Supply Chain Emission Factors v1.3.0)

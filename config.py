@@ -62,7 +62,7 @@ ACTIVITY_SETS_CSV = "data/ListOfActivitySets.csv"
 # NAICS to USEEIO Crosswalk file
 NAICS_TO_USEEIO_CSV = "data/NAICS_to_USEEIO_crosswalk.csv"
 
-# Comprehensive GHG Source categorization file (includes IPCC category, GHG Source Category, Subcategory, SubSubcategory)
+# Comprehensive activity categorization file (includes IPCC category, Activity Category, Subcategory, Type)
 METASOURCE_TO_GHGSOURCE_CSV = "data/activity_categorization.csv"
 
 # Flowable categorization file

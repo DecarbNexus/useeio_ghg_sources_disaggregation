@@ -1,7 +1,7 @@
 // USEEIO GHG Sources Disaggregation – Interactive Sunburst
 // - Loads event-based sunburst JSON from GitHub
 // - Lets user select a USEEIO Sector
-// - 3-level hierarchy: GHG Source Category -> GHG Source SubSubcategory -> Gas Category
+// - 3-level hierarchy: Activity Category -> Activity Type -> Gas Category
 // - Uses optimized D3.js format (no JSON-LD transformation needed)
 
 // Repo configuration
@@ -135,7 +135,7 @@ function buildHierarchy(hierarchyData, sectorCode) {
 function renderSunburst(rootData, centerLabel, minShare) {
   // NEW: Color by category type (more levels now)
   const colorByCategory = d3.scaleOrdinal()
-    .domain(['ghg_source', 'subsubcategory', 'gas_category'])
+    .domain(['activity_category', 'activity_type', 'gas_category'])
     .range(['#0099CC', '#FF6B6B', '#9C27B0', '#4CAF50', '#FF9800', '#00BCD4', '#E91E63']);
   
   // Color by specific GHG Source Categories
@@ -159,7 +159,7 @@ function renderSunburst(rootData, centerLabel, minShare) {
   const partition = d3.partition().size([2 * Math.PI, RADIUS]);
 
   const root = d3.hierarchy(rootData)
-    .sum((d) => d.value || 0)
+    .sum((d) => d.contributionToUSEEIOSectorScope1Percent || d.value || 0)
     .sort((a, b) => {
       // Sort siblings
       if (a.parent && b.parent && a.parent === b.parent) {
@@ -214,7 +214,7 @@ function renderSunburst(rootData, centerLabel, minShare) {
     .attr("display", (d) => (d.depth && isVisible(d) ? null : "none"))
     .attr("d", arc)
     .attr("fill", (d) => {
-      // All rings inherit color from their depth-1 parent (GHG Source Category)
+      // All rings inherit color from their depth-1 parent (Activity Category)
       let cur = d;
       while (cur.depth > 1) cur = cur.parent;
       return colorByName(cur.data.name) || "#93c5fd";
@@ -405,7 +405,7 @@ async function init() {
     const sectorName = toName(chosen);
     
     // Update figure title
-    const title = `${sectorName} Scope 1 emissions disaggregated by GHG Source Category, GHG Source SubSubcategory, and Gas Category (% of total Scope 1 MTCO2e emissions)`;
+    const title = `${sectorName} Scope 1 emissions disaggregated by Activity Category, Activity Type, and Gas Category (% of total Scope 1 MTCO2e emissions)`;
     const titleEl = document.getElementById("figureTitle");
     if (titleEl) titleEl.textContent = title;
 
@@ -461,14 +461,15 @@ function renderRingBreakdown(data, sectorCode) {
 
   // Helper function to sum values in a tree
   const sumTree = (node) => {
-    if (node.value) return node.value;
+    const nodeValue = node.contributionToUSEEIOSectorScope1Percent || node.value;
+    if (nodeValue) return nodeValue;
     if (!node.children || node.children.length === 0) return 0;
     return d3.sum(node.children, sumTree);
   };
 
-  // Ring 1: GHG Source Category (immediate children of sector)
+  // Ring 1: Activity Category (immediate children of sector)
   const ring1Array = sectorNode.children
-    .filter(d => d.category === 'ghg_source')
+    .filter(d => d.category === 'activity_category')
     .map(d => ({
       name: d.name,
       value: sumTree(d),
@@ -482,7 +483,7 @@ function renderRingBreakdown(data, sectorCode) {
       return b.value - a.value;
     });
 
-  // Ring 2: GHG Source SubSubcategory (collect all unique subsubcategories across GHG categories)
+  // Ring 2: Activity Type (collect all unique activity types across activity categories)
   const subsubcatMap = new Map();
   sectorNode.children.forEach(ghgCat => {
     if (ghgCat.children) {
@@ -500,7 +501,7 @@ function renderRingBreakdown(data, sectorCode) {
   const gasCategoryMap = new Map();
   const traverseForGasCategories = (node) => {
     if (node.category === 'gas_category') {
-      const val = node.value || 0;
+      const val = node.contributionToUSEEIOSectorScope1Percent || node.value || 0;
       gasCategoryMap.set(node.name, (gasCategoryMap.get(node.name) || 0) + val);
     }
     if (node.children) {
@@ -514,8 +515,8 @@ function renderRingBreakdown(data, sectorCode) {
 
   // Create table for each ring
   const rings = [
-    {title: "Inner Ring: GHG Source Category", data: ring1Array, showColor: true, depth: 1},
-    {title: "Middle Ring: GHG Source SubSubcategory", data: ring2Array, showColor: false, depth: 2},
+    {title: "Inner Ring: Activity Category", data: ring1Array, showColor: true, depth: 1},
+    {title: "Middle Ring: Activity Type", data: ring2Array, showColor: false, depth: 2},
     {title: "Outer Ring: Gas Category", data: ring3Array, showColor: false, depth: 3}
   ];
 
@@ -597,7 +598,7 @@ function updateBreadcrumb(pathArray) {
   if (Array.isArray(pathArray[0])) {
     const paths = pathArray;
     
-    // Group paths by their first element (GHG Source Category)
+    // Group paths by their first element (Activity Category)
     const groupedByCategory = new Map();
     paths.forEach(path => {
       if (path.length > 0) {

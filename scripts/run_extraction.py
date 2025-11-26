@@ -2,13 +2,21 @@
 """
 FlowSA GHG Sources Extraction - Simple Runner
 
-This script provides an easy way to run the complete workflow with minimal setup.
-Perfect for beginners who want to get started quickly.
+This script provides an easy way to run the complete GHG sources extraction workflow.
+It handles the full pipeline:
+1. Extract EPA GHGI metadata from FlowSA YAML
+2. Generate FlowBySector data using FlowSA (with interactive prompt to use cached data)
+3. Enrich data with metadata (fuel types, activities, sectors, etc.)
+4. Export enriched data in multiple formats
+
+The script automatically filters out sector F01000 (used goods) from all outputs
+as it does not produce emissions.
 
 Usage:
-    python run_extraction.py              # Use default config  
+    python run_extraction.py              # Run with prompts (recommended)
     python run_extraction.py --help       # Show all options
-    python run_extraction.py --model GHG_national_2023_m2  # Use different model
+    python run_extraction.py --skip-fbs-generation  # Use cached FlowBySector data
+    python run_extraction.py --force-fbs-generation # Generate new without prompt
 """
 
 import sys
@@ -137,21 +145,97 @@ def generate_flowbysector_data(modelname):
     return fbs_data
 
 
-def run_fbs_generation():
-    """Generate FlowBySector data with activity details retained."""
+def run_fbs_generation(skip_generation=False, force_generation=False):
+    """Generate FlowBySector data with activity details retained.
+    
+    Parameters:
+    -----------
+    skip_generation : bool
+        If True, skip generation and use cached data
+    force_generation : bool
+        If True, force new generation without prompting
+    """
     import config
+    import pandas as pd
     
-    print("\nStep 2: Generating FlowBySector data...")
-    print("This will download FlowByActivity source data and generate FBS...")
-    print("This may take several minutes...")
+    print("\nStep 2: FlowBySector Data Generation")
+    print("="*60)
     
-    try:
-        fbs_data = generate_flowbysector_data(config.MODELNAME)
-        print(f"SUCCESS: Generated {len(fbs_data):,} FBS records!")
-        return fbs_data
-    except Exception as e:
-        print(f"ERROR: FBS generation failed: {e}")
-        return None
+    # Check if cached FBS data exists
+    cache_dir = Path.home() / "AppData" / "Local" / "flowsa" / "FlowBySector"
+    cached_files = list(cache_dir.glob(f"{config.MODELNAME}*.parquet")) if cache_dir.exists() else []
+    
+    if cached_files:
+        print(f"Found {len(cached_files)} cached FBS file(s) for {config.MODELNAME}")
+        for file in cached_files[:3]:  # Show first 3
+            file_size = file.stat().st_size / (1024*1024)  # MB
+            print(f"  - {file.name} ({file_size:.1f} MB)")
+        if len(cached_files) > 3:
+            print(f"  ... and {len(cached_files) - 3} more")
+    else:
+        print(f"No cached FBS data found for {config.MODELNAME}")
+    
+    # Handle command-line flags
+    if force_generation:
+        print("\n--force-fbs-generation flag set, generating new data...")
+        should_generate = True
+    elif skip_generation:
+        print("\n--skip-fbs-generation flag set, using cached data...")
+        should_generate = False
+    else:
+        # Interactive prompt
+        print("\nGenerate new FlowBySector data?")
+        print("  YES: Download fresh data and generate new FBS (may take several minutes)")
+        print("  NO:  Use existing cached FBS data (if available)")
+        
+        while True:
+            response = input("\nGenerate new FBS? [y/N]: ").strip().lower()
+            
+            if response in ['y', 'yes']:
+                should_generate = True
+                break
+            elif response in ['n', 'no', '']:
+                should_generate = False
+                break
+            else:
+                print("Please answer 'y' (yes) or 'n' (no)")
+                continue
+    
+    # Generate or load based on decision
+    if should_generate:
+        print("\nGenerating new FlowBySector data...")
+        print("This will download FlowByActivity source data and generate FBS...")
+        print("This may take several minutes...")
+        
+        try:
+            fbs_data = generate_flowbysector_data(config.MODELNAME)
+            print(f"✓ Generated {len(fbs_data):,} FBS records!")
+            return fbs_data
+        except Exception as e:
+            print(f"ERROR: FBS generation failed: {e}")
+            return None
+    else:
+        # Try to load cached data
+        print("\nUsing cached FBS data...")
+        
+        if not cached_files:
+            print("ERROR: No cached FBS data found!")
+            print("Please run again with --force-fbs-generation or answer 'yes' to the prompt")
+            return None
+        
+        # Use the most recent cached file
+        latest_file = max(cached_files, key=lambda f: f.stat().st_mtime)
+        print(f"Loading cached file: {latest_file.name}")
+        
+        try:
+            fbs_data = pd.read_parquet(latest_file)
+            # Format Location column to match generated format
+            fbs_data.Location = fbs_data.Location.apply('="{}"'.format)
+            print(f"✓ Loaded {len(fbs_data):,} FBS records from cache")
+            return fbs_data
+        except Exception as e:
+            print(f"ERROR: Failed to load cached data: {e}")
+            return None
 
 
 def run_data_enrichment(fbs_data):
@@ -215,9 +299,11 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  python run_extraction.py                # Run with default settings
-  python run_extraction.py --skip-metadata  # Skip metadata extraction
-  python run_extraction.py --check-only   # Just check requirements
+  python run_extraction.py                     # Run with prompts (recommended)
+  python run_extraction.py --skip-metadata     # Skip metadata extraction
+  python run_extraction.py --skip-fbs-generation    # Use cached FBS data
+  python run_extraction.py --force-fbs-generation   # Generate new FBS without prompt
+  python run_extraction.py --check-only        # Just check requirements
 
 To switch models/years, edit MODELNAME in config.py
         """
@@ -227,6 +313,16 @@ To switch models/years, edit MODELNAME in config.py
         "--skip-metadata", 
         action="store_true",
         help="Skip EPA GHGI metadata extraction (if already done)"
+    )
+    parser.add_argument(
+        "--skip-fbs-generation",
+        action="store_true",
+        help="Skip FBS generation, use cached data (if available)"
+    )
+    parser.add_argument(
+        "--force-fbs-generation",
+        action="store_true",
+        help="Force new FBS generation without prompting"
     )
     parser.add_argument(
         "--check-only", 
@@ -275,7 +371,10 @@ To switch models/years, edit MODELNAME in config.py
     # Step 2: Generate FlowBySector data
     fbs_data = None
     if success:
-        fbs_data = run_fbs_generation()
+        fbs_data = run_fbs_generation(
+            skip_generation=args.skip_fbs_generation,
+            force_generation=args.force_fbs_generation
+        )
         success = fbs_data is not None
     
     # Step 3: Enrich data with metadata

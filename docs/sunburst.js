@@ -147,7 +147,7 @@ function renderSunburst(rootData, centerLabel, minShare) {
   const colorByName = d3.scaleOrdinal()
     .domain([
       "Electric Power Generation",
-      "Fuels Combustion",
+      "Fuel Combustion",
       "Process & Fugitive Gases"
     ])
     .range(["#0099CC", "#FF6B6B", "#9C27B0"]);
@@ -168,9 +168,9 @@ function renderSunburst(rootData, centerLabel, minShare) {
     .sort((a, b) => {
       // Sort siblings
       if (a.parent && b.parent && a.parent === b.parent) {
-        // First ring: fixed order Electric Power, Fuels, Process & Fugitive
+        // First ring: fixed order Electric Power, Fuel, Process & Fugitive
         if (a.depth === 1) {
-          const order = ["Electric Power Generation", "Fuels Combustion", "Process & Fugitive Gases"];
+          const order = ["Electric Power Generation", "Fuel Combustion", "Process & Fugitive Gases"];
           const aIdx = order.indexOf(a.data.name);
           const bIdx = order.indexOf(b.data.name);
           if (aIdx !== -1 && bIdx !== -1) return aIdx - bIdx;

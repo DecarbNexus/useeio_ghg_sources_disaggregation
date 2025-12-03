@@ -318,11 +318,11 @@ function renderSunburst(rootData, centerLabel, minShare) {
           
           lastTappedNode = d;
           
-          // Auto-hide tooltip after 3 seconds
+          // Auto-hide tooltip after 4.5 seconds
           tooltipTimeout = setTimeout(() => {
             tooltip.style("opacity", 0);
             lastTappedNode = null;
-          }, 3000);
+          }, 4500);
           return; // Don't select yet
         }
         
@@ -374,6 +374,21 @@ function renderSunburst(rootData, centerLabel, minShare) {
       centerLabel.text("");
       clearHighlight();
       clearTableHighlights();
+    }
+  });
+  
+  // Add click handler to document to clear table selection when clicking outside
+  document.addEventListener('click', (event) => {
+    if (persistentSelection && persistentSelection.type === 'table') {
+      const clickedInChart = event.target.closest('#chart-container');
+      const clickedInControls = event.target.closest('.controls');
+      if (!clickedInChart && !clickedInControls) {
+        persistentSelection = null;
+        breadcrumb.html("");
+        centerLabel.text("");
+        clearHighlight();
+        clearTableHighlights();
+      }
     }
   });
 }
@@ -550,7 +565,7 @@ function renderRingBreakdown(data, sectorCode) {
   // Color mapping
   const categoryColors = {
     "Electric Power Generation": "#0099CC",
-    "Fuels Combustion": "#FF6B6B",
+    "Fuel Combustion": "#FF6B6B",
     "Process & Fugitive Gases": "#9C27B0"
   };
 

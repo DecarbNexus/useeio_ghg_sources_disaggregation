@@ -266,13 +266,55 @@ function renderSunburst(rootData, centerLabel, minShare) {
         if (!isSameNodeAsBefore || !tooltipVisible) {
           // First tap: show tooltip
           const seq = d.ancestors().map((n) => n.data.name).reverse().slice(1);
+          
+          // Get touch/click coordinates
+          let x, y;
+          if (event.touches && event.touches.length > 0) {
+            x = event.touches[0].clientX;
+            y = event.touches[0].clientY;
+          } else if (event.changedTouches && event.changedTouches.length > 0) {
+            x = event.changedTouches[0].clientX;
+            y = event.changedTouches[0].clientY;
+          } else {
+            x = event.clientX;
+            y = event.clientY;
+          }
+          
+          // Position tooltip with smart placement to avoid going off-screen
+          const tooltipNode = tooltip.node();
           tooltip
             .style("opacity", 1)
             .html(
               `<strong>${seq.join(" ▸ ")}</strong><br/>Contribution: ${formatPct(d.value || 0)}`
-            )
-            .style("left", (event.pageX || event.touches?.[0]?.pageX || 0) + 10 + "px")
-            .style("top", (event.pageY || event.touches?.[0]?.pageY || 0) + 10 + "px");
+            );
+          
+          // Calculate position after setting content (so we know dimensions)
+          const tooltipWidth = tooltipNode.offsetWidth;
+          const tooltipHeight = tooltipNode.offsetHeight;
+          const viewportWidth = window.innerWidth;
+          const viewportHeight = window.innerHeight;
+          
+          // Default: 10px offset from tap
+          let left = x + 10;
+          let top = y + 10;
+          
+          // If tooltip would go off right edge, position to the left of tap
+          if (left + tooltipWidth > viewportWidth - 10) {
+            left = x - tooltipWidth - 10;
+          }
+          
+          // If tooltip would go off bottom edge, position above tap
+          if (top + tooltipHeight > viewportHeight - 10) {
+            top = y - tooltipHeight - 10;
+          }
+          
+          // Ensure tooltip stays on screen
+          left = Math.max(10, Math.min(left, viewportWidth - tooltipWidth - 10));
+          top = Math.max(10, Math.min(top, viewportHeight - tooltipHeight - 10));
+          
+          tooltip
+            .style("left", left + "px")
+            .style("top", top + "px");
           
           lastTappedNode = d;
           

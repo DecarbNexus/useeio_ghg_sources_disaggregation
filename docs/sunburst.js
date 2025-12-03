@@ -586,7 +586,7 @@ function renderRingBreakdown(data, sectorCode) {
       depth: 1
     }))
     .sort((a, b) => {
-      const order = ["Electric Power Generation", "Fossil Fuels Combustion", "Process & Fugitive Gases"];
+      const order = ["Electric Power Generation", "Fuel Combustion", "Process & Fugitive Gases"];
       const aIdx = order.indexOf(a.name);
       const bIdx = order.indexOf(b.name);
       if (aIdx !== -1 && bIdx !== -1) return aIdx - bIdx;

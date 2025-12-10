@@ -13,7 +13,7 @@ The main outputs are Excel workbooks and CSVs with absolute emissions (kg, kgCO2
 
 ### Interactive visual
 
-- Try the interactive sunburst visualization: https://decarbnexus.github.io/useeio_ghg_sources_disaggregation/
+- Try the [interactive sunburst visualization](https://decarbnexus.github.io/useeio_ghg_sources_disaggregation/)
 - Pick a sector and explore the composition of its scope 1 emissions
 
 ### Data tables

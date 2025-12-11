@@ -346,5 +346,5 @@ This project focuses on disaggregating sector emissions into GHG sources. You ca
 
 When used together, you can organize Scope 3 in the intuitive language of Scope 1 & 2 - by sector, tier, and source.
 
-**Last Updated:** November 26, 2025  
+**Last Updated:** December 11, 2025  
 **Repository:** https://github.com/DecarbNexus/useeio_ghg_sources_disaggregation

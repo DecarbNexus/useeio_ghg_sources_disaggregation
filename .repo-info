@@ -1,0 +1,12 @@
+REPOSITORY IDENTIFICATION
+========================
+
+Repository: DecarbNexus/useeio_ghg_sources_disaggregation
+Purpose: PUBLIC DATA RELEASE - GHG Sources Disaggregation Factors
+Type: Public
+Contents: CSV/XLSX output files only
+
+DO NOT COMMIT CODE TO THIS REPO
+Code belongs in: damienlieber-dnexus/flowsa-ghg-extraction (private)
+
+This repo is for DATA DISTRIBUTION ONLY.

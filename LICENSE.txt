@@ -1,0 +1,63 @@
+ENRICHED GHG EMISSIONS DATA LICENSE
+=====================================
+
+This dataset is licensed under Creative Commons Attribution 4.0 International (CC BY 4.0)
+https://creativecommons.org/licenses/by/4.0/
+
+You are free to:
+- Share — copy and redistribute the material in any medium or format
+- Adapt — remix, transform, and build upon the material for any purpose, even commercially
+
+Under the following terms:
+- Attribution — You must give appropriate credit, provide a link to the license, 
+  and indicate if changes were made. You may do so in any reasonable manner, 
+  but not in any way that suggests the licensor endorses you or your use.
+
+ATTRIBUTION
+-----------
+When using this dataset, please cite:
+
+DecarbNexus (2025). Greenhouse Gas Emissions by USEEIO Sector - Enriched US EPA GHG Inventory Data. https://github.com/damienlieber-dnexus/flowsa-ghg-extraction
+
+This dataset is derived from the following sources:
+
+1. EPA Greenhouse Gas Inventory (EPA GHGI)
+   - 2022 U.S. Greenhouse Gas Inventory Report
+   - Data tables and annexes
+   - Public domain: U.S. federal government work
+   - https://www.epa.gov/ghgemissions/inventory-us-greenhouse-gas-emissions-and-sinks
+
+2. FlowSA (Flow-By-Sector Approach) v2.0.3
+   - Copyright (c) 2022 U.S. Environmental Protection Agency
+   - Licensed under MIT License (see THIRD_PARTY_LICENSES.txt)
+   - https://github.com/USEPA/flowsa
+
+3. USEEIOR (U.S. Environmentally-Extended Input-Output) Models
+   - Copyright (c) 2021 U.S. EPA
+   - Licensed under MIT License (see THIRD_PARTY_LICENSES.txt)
+   - https://github.com/USEPA/useeior
+   - Sector classifications and economic data
+
+DATA CONTENTS
+-------------
+This dataset includes:
+- EPA GHGI greenhouse gas emission data (2022)
+- USEEIO sector mappings and classifications
+- Activity categorizations and fuel classifications
+- Economic intensity calculations using USEEIO industry output data
+- Enrichment metadata from EPA GHGI source tables
+
+DISCLAIMER
+----------
+This dataset is provided "as is" without warranty of any kind, express or implied.
+The authors assume no responsibility for errors or omissions in this dataset.
+
+Users should verify critical information with original EPA sources:
+- EPA GHGI: https://www.epa.gov/ghgemissions/inventory-us-greenhouse-gas-emissions-and-sinks
+- FlowSA: https://github.com/USEPA/flowsa
+- USEEIOR: https://github.com/USEPA/useeior
+
+For questions or issues with this enriched dataset, please use the discussion section of Github:
+https://github.com/DecarbNexus/useeio_ghg_sources_disaggregation/discussions
+or contact:
+contact@decarbonizationnexus.com

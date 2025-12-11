@@ -1,0 +1,95 @@
+THIRD-PARTY SOFTWARE LICENSES
+==============================
+
+This project uses the following open-source software:
+
+================================================================================
+1. FlowSA (Flow-By-Sector Approach)
+================================================================================
+
+MIT License
+
+Copyright (c) 2022 U.S. Environmental Protection Agency
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+Source: https://github.com/USEPA/flowsa
+Version used: 2.0.3
+
+================================================================================
+2. USEEIOR (U.S. Environmentally-Extended Input-Output)
+================================================================================
+
+MIT License
+
+Copyright (c) 2021 U.S. EPA
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+Source: https://github.com/USEPA/useeior
+
+================================================================================
+DATA SOURCES (Public Domain)
+================================================================================
+
+EPA Greenhouse Gas Inventory (EPA GHGI)
+- U.S. federal government work (public domain)
+- 2022 U.S. Greenhouse Gas Inventory Report
+- https://www.epa.gov/ghgemissions/inventory-us-greenhouse-gas-emissions-and-sinks
+
+BEA Input-Output Data
+- U.S. federal government work (public domain)
+- Bureau of Economic Analysis
+- https://www.bea.gov/industry/input-output-accounts-data
+
+================================================================================
+COMPLIANCE NOTES
+================================================================================
+
+MIT License Compliance:
+- The MIT license text is preserved above for both FlowSA and USEEIOR
+- Copyright notices are maintained
+- This project is a derivative work that uses these libraries
+- Attribution is provided in all output files and documentation
+
+Data Attribution:
+- All EPA GHGI data is properly attributed to U.S. EPA
+- USEEIO sector classifications are attributed to USEEIOR project
+- BEA economic data is attributed to U.S. Bureau of Economic Analysis
+
+This Project's License:
+- The extraction/enrichment code and derived datasets are licensed under CC BY 4.0
+- See LICENSE.txt in outputs/ folder for data license
+- See root LICENSE file for code license

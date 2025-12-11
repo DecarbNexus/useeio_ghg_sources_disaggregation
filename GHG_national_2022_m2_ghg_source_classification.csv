@@ -1,0 +1,257 @@
+Activity Category,IPCC/UNFCCC Category,Activity Subcategory,Activity Type,Activity,Fuel Consumed,Gas Category,Gas
+Electric Power Generation,Energy,Electric Power Generation,Electric Power Generation,Coal Electric Power | Natural Gas Electric Power | Fuel Oil Electric Power | Wood Electric Power,Coal | Fuel Oil | Natural Gas | Wood,Nitrous oxide,Nitrous oxide
+Electric Power Generation,Energy,Electric Power Generation,Electric Power Generation,Electric Power Sector,,Carbon dioxide,Carbon dioxide
+Electric Power Generation,Energy,Stationary Combustion,Electric Power Generation,Coal Electric Power | Natural Gas Electric Power | Fuel Oil Electric Power | Wood Electric Power,Coal | Fuel Oil | Natural Gas | Wood,Methane,Methane
+Electric Power Generation,Energy,Waste,Incineration of Waste,Incineration of Waste,,Carbon dioxide,Carbon dioxide
+Electric Power Generation,Energy,Waste,Incineration of Waste,Incineration of Waste,,Nitrous oxide,Nitrous oxide
+Fuel Combustion,Energy,Mobile Combustion,Aircraft,Aircraft Non-Road,Aggregated Fossil Fuels,Nitrous oxide,Nitrous oxide
+Fuel Combustion,Energy,Mobile Combustion,Alternative Fuel On Road,All activities Alternative Fuel On-Road,Aggregated Fossil Fuels,Nitrous oxide,Nitrous oxide
+Fuel Combustion,Energy,Mobile Combustion,Buses,Buses Gasoline | Buses LPG,Gasoline | Liquefied Petroleum Gas,Carbon dioxide,Carbon dioxide
+Fuel Combustion,Energy,Mobile Combustion,Buses,Buses Natural Gas,Natural Gas,Carbon dioxide,Carbon dioxide
+Fuel Combustion,Energy,Mobile Combustion,Commercial Aircraft,Commercial Aircraft Jet Fuel,Jet Fuel,Carbon dioxide,Carbon dioxide
+Fuel Combustion,Energy,Mobile Combustion,Construction And Mining,Construction/Mining Equipment Non-Road,Aggregated Fossil Fuels,Methane,Methane
+Fuel Combustion,Energy,Mobile Combustion,Construction And Mining,Construction/Mining Equipment Non-Road,Aggregated Fossil Fuels,Nitrous oxide,Nitrous oxide
+Fuel Combustion,Energy,Mobile Combustion,General Aviation Aircraft,General Aviation Aircraft Aviation Gasoline | General Aviation Aircraft Jet Fuel,Gasoline | Jet Fuel,Carbon dioxide,Carbon dioxide
+Fuel Combustion,Energy,Mobile Combustion,Medium- and Heavy-Duty Trucks,Medium- and Heavy-Duty Trucks Gasoline | Medium- and Heavy-Duty Trucks LPG | Medium- and Heavy-Duty Trucks Natural Gas,Gasoline | Liquefied Petroleum Gas | Natural Gas,Carbon dioxide,Carbon dioxide
+Fuel Combustion,Energy,Mobile Combustion,Military Aircraft,Military Aircraft Jet Fuel,Jet Fuel,Carbon dioxide,Carbon dioxide
+Fuel Combustion,Energy,Mobile Combustion,Motorcycles,Motorcycles Gasoline,Gasoline,Carbon dioxide,Carbon dioxide
+Fuel Combustion,Energy,Mobile Combustion,Motorcycles,Motorcycles Gasoline On-Road,Gasoline,Nitrous oxide,Nitrous oxide
+Fuel Combustion,Energy,Mobile Combustion,Other Non-Road Vehicles,Agricultural Equipment Non-Road,Aggregated Fossil Fuels,Methane,Methane
+Fuel Combustion,Energy,Mobile Combustion,Other Non-Road Vehicles,Agricultural Equipment Non-Road,Aggregated Fossil Fuels,Nitrous oxide,Nitrous oxide
+Fuel Combustion,Energy,Mobile Combustion,Other Non-Road Vehicles,Other Non-Road,Aggregated Fossil Fuels,Methane,Methane
+Fuel Combustion,Energy,Mobile Combustion,Other Non-Road Vehicles,Other Non-Road,Aggregated Fossil Fuels,Nitrous oxide,Nitrous oxide
+Fuel Combustion,Energy,Mobile Combustion,Petroleum Fuels,Medium- and Heavy-Duty Trucks Distillate Fuel Oil | Buses Distillate Fuel Oil | Passenger Cars Distillate Fuel Oil | Passenger Cars Gasoline | Light-Duty Trucks Distillate Fuel Oil | Light-Duty Trucks Gasoline,Distillate Fuel Oil | Gasoline,Carbon dioxide,Carbon dioxide
+Fuel Combustion,Energy,Mobile Combustion,Petroleum Fuels,Passenger Cars Diesel On-Road | Light-Duty Trucks Diesel On-Road | Medium- and Heavy-Duty Buses Diesel On-Road | Medium- and Heavy-Duty Trucks Diesel On-Road,Diesel,Methane,Methane
+Fuel Combustion,Energy,Mobile Combustion,Petroleum Fuels,Passenger Cars Diesel On-Road | Light-Duty Trucks Diesel On-Road | Medium- and Heavy-Duty Buses Diesel On-Road | Medium- and Heavy-Duty Trucks Diesel On-Road,Diesel,Nitrous oxide,Nitrous oxide
+Fuel Combustion,Energy,Mobile Combustion,Petroleum Fuels,Passenger Cars Gasoline On-Road | Light-Duty Trucks Gasoline On-Road,Gasoline,Methane,Methane
+Fuel Combustion,Energy,Mobile Combustion,Petroleum Fuels,Passenger Cars Gasoline On-Road | Light-Duty Trucks Gasoline On-Road,Gasoline,Nitrous oxide,Nitrous oxide
+Fuel Combustion,Energy,Mobile Combustion,Pipelines,Pipeline Natural Gas,Natural Gas,Carbon dioxide,Carbon dioxide
+Fuel Combustion,Energy,Mobile Combustion,Rail,Rail Distillate Fuel Oil,Distillate Fuel Oil,Carbon dioxide,Carbon dioxide
+Fuel Combustion,Energy,Mobile Combustion,Rail,Rail Non-Road,Aggregated Fossil Fuels,Methane,Methane
+Fuel Combustion,Energy,Mobile Combustion,Recreational Boats,Recreational Boats Distillate Fuel Oil | Recreational Boats Gasoline,Distillate Fuel Oil | Gasoline,Carbon dioxide,Carbon dioxide
+Fuel Combustion,Energy,Mobile Combustion,Ships and Boats,Ships and Boats Non-Road,Aggregated Fossil Fuels,Methane,Methane
+Fuel Combustion,Energy,Mobile Combustion,Ships and Boats,Ships and Boats Non-Road,Aggregated Fossil Fuels,Nitrous oxide,Nitrous oxide
+Fuel Combustion,Energy,Mobile Combustion,Ships and Non-Recreational Boats,Ships and Non-Recreational Boats Distillate Fuel Oil | Ships and Non-Recreational Boats Residual Fuel Oil,Distillate Fuel Oil | Fuel Oil,Carbon dioxide,Carbon dioxide
+Fuel Combustion,Energy,Stationary Combustion,Coal Combustion for Manufacturing Purposes,Coal Industrial - Manufacturing,Coal,Methane,Methane
+Fuel Combustion,Energy,Stationary Combustion,Coal Combustion for Manufacturing Purposes,Coal Industrial - Manufacturing,Coal,Nitrous oxide,Nitrous oxide
+Fuel Combustion,Energy,Stationary Combustion,Coal Combustion for Manufacturing Purposes,,,Carbon dioxide,Carbon dioxide
+Fuel Combustion,Energy,Stationary Combustion,Coal Combustion for Non-Manufacturing Purposes,,,Carbon dioxide,Carbon dioxide
+Fuel Combustion,Energy,Stationary Combustion,Fuel Oil,Fuel Oil,Fuel Oil,Nitrous oxide,Nitrous oxide
+Fuel Combustion,Energy,Stationary Combustion,Fuel Oil Combustion,Fuel Oil,Fuel Oil,Methane,Methane
+Fuel Combustion,Energy,Stationary Combustion,Natural Gas Combustion for Manufacturing Purposes,Natural gas,Natural Gas,Methane,Methane
+Fuel Combustion,Energy,Stationary Combustion,Natural Gas Combustion for Manufacturing Purposes,,,Carbon dioxide,Carbon dioxide
+Fuel Combustion,Energy,Stationary Combustion,Natural Gas Combustion for Non-Manufacturing Purposes,Natural gas Industrial - Manufacturing,Natural Gas,Methane,Methane
+Fuel Combustion,Energy,Stationary Combustion,Natural Gas Combustion for Non-Manufacturing Purposes,,,Carbon dioxide,Carbon dioxide
+Fuel Combustion,Energy,Stationary Combustion,Natural Gas Manufacturing,Natural gas Industrial - Manufacturing,Natural Gas,Nitrous oxide,Nitrous oxide
+Fuel Combustion,Energy,Stationary Combustion,Natural Gas Non-Manufacturing,Natural gas,Natural Gas,Nitrous oxide,Nitrous oxide
+Fuel Combustion,Energy,Stationary Combustion,Petroleum Combustion,,,Carbon dioxide,Carbon dioxide
+Fuel Combustion,Energy,Stationary Combustion,Residential,Fuel Oil Residential,Fuel Oil,Methane,Methane
+Fuel Combustion,Energy,Stationary Combustion,Residential,Fuel Oil Residential,Fuel Oil,Nitrous oxide,Nitrous oxide
+Fuel Combustion,Energy,Stationary Combustion,Residential,Natural Gas Residential,Natural Gas,Methane,Methane
+Fuel Combustion,Energy,Stationary Combustion,Residential,Natural Gas Residential,Natural Gas,Nitrous oxide,Nitrous oxide
+Fuel Combustion,Energy,Stationary Combustion,Residential,Total (All Fuels) Residential,,Carbon dioxide,Carbon dioxide
+Fuel Combustion,Energy,Stationary Combustion,Residential,Wood Residential,Wood,Methane,Methane
+Fuel Combustion,Energy,Stationary Combustion,Residential,Wood Residential,Wood,Nitrous oxide,Nitrous oxide
+Process & Fugitive Gases,Agriculture,Agricultural Processes,Agricultural Soils - Cropland,Mineralization and Asymbiotic Fixation Cropland | Drained Organic Soils Cropland,,Nitrous oxide,Nitrous oxide
+Process & Fugitive Gases,Agriculture,Agricultural Processes,Agricultural Soils - Fertilizer Use,Organic Amendment Cropland | Residue N Cropland | Synthetic Fertilizer Cropland,,Nitrous oxide,Nitrous oxide
+Process & Fugitive Gases,Agriculture,Agricultural Processes,Agricultural Soils - Fertilizer Use,Volatilization & Atm. Deposition Cropland | Surface Leaching & Run-Off Cropland,,Nitrous oxide,Nitrous oxide
+Process & Fugitive Gases,Agriculture,Agricultural Processes,Agricultural Soils - Pasture,All activities Grassland,,Nitrous oxide,Nitrous oxide
+Process & Fugitive Gases,Agriculture,Agricultural Processes,Enteric Fermentation,American Bison,,Methane,Methane
+Process & Fugitive Gases,Agriculture,Agricultural Processes,Enteric Fermentation,Beef Cattle,,Methane,Methane
+Process & Fugitive Gases,Agriculture,Agricultural Processes,Enteric Fermentation,Dairy Cattle,,Methane,Methane
+Process & Fugitive Gases,Agriculture,Agricultural Processes,Enteric Fermentation,Goats,,Methane,Methane
+Process & Fugitive Gases,Agriculture,Agricultural Processes,Enteric Fermentation,Horses,,Methane,Methane
+Process & Fugitive Gases,Agriculture,Agricultural Processes,Enteric Fermentation,Mules and Asses,,Methane,Methane
+Process & Fugitive Gases,Agriculture,Agricultural Processes,Enteric Fermentation,Sheep,,Methane,Methane
+Process & Fugitive Gases,Agriculture,Agricultural Processes,Enteric Fermentation,Swine,,Methane,Methane
+Process & Fugitive Gases,Agriculture,Agricultural Processes,Field Burning Of Residues,Maize,,Methane,Methane
+Process & Fugitive Gases,Agriculture,Agricultural Processes,Field Burning Of Residues,Rice,,Methane,Methane
+Process & Fugitive Gases,Agriculture,Agricultural Processes,Field Burning Of Residues,Wheat,,Methane,Methane
+Process & Fugitive Gases,Agriculture,Agricultural Processes,Liming,Liming,,Carbon dioxide,Carbon dioxide
+Process & Fugitive Gases,Agriculture,Agricultural Processes,Manure,Beef Cattle,,Methane,Methane
+Process & Fugitive Gases,Agriculture,Agricultural Processes,Manure,Beef Cattle,,Nitrous oxide,Nitrous oxide
+Process & Fugitive Gases,Agriculture,Agricultural Processes,Manure,Dairy Cattle,,Methane,Methane
+Process & Fugitive Gases,Agriculture,Agricultural Processes,Manure,Dairy Cattle,,Nitrous oxide,Nitrous oxide
+Process & Fugitive Gases,Agriculture,Agricultural Processes,Manure,Horses,,Methane,Methane
+Process & Fugitive Gases,Agriculture,Agricultural Processes,Manure,Horses,,Nitrous oxide,Nitrous oxide
+Process & Fugitive Gases,Agriculture,Agricultural Processes,Manure,Poultry,,Methane,Methane
+Process & Fugitive Gases,Agriculture,Agricultural Processes,Manure,Poultry,,Nitrous oxide,Nitrous oxide
+Process & Fugitive Gases,Agriculture,Agricultural Processes,Manure,Sheep,,Methane,Methane
+Process & Fugitive Gases,Agriculture,Agricultural Processes,Manure,Sheep,,Nitrous oxide,Nitrous oxide
+Process & Fugitive Gases,Agriculture,Agricultural Processes,Manure,Swine,,Methane,Methane
+Process & Fugitive Gases,Agriculture,Agricultural Processes,Manure,Swine,,Nitrous oxide,Nitrous oxide
+Process & Fugitive Gases,Agriculture,Agricultural Processes,Rice Cultivation,Rice Cultivation,,Methane,Methane
+Process & Fugitive Gases,Agriculture,Agricultural Processes,Urea Consumption,Urea Fertilization,,Carbon dioxide,Carbon dioxide
+Process & Fugitive Gases,Energy,Fossil Fuels Production & Distribution,Natural Gas Systems,Distribution,Natural Gas,Methane,Methane
+Process & Fugitive Gases,Energy,Fossil Fuels Production & Distribution,Natural Gas Systems,Exploration,Natural Gas,Methane,Methane
+Process & Fugitive Gases,Energy,Fossil Fuels Production & Distribution,Natural Gas Systems,Exploration,Natural Gas,Nitrous oxide,Nitrous oxide
+Process & Fugitive Gases,Energy,Fossil Fuels Production & Distribution,Natural Gas Systems,Post-Meter,Natural Gas,Methane,Methane
+Process & Fugitive Gases,Energy,Fossil Fuels Production & Distribution,Natural Gas Systems,Processing,Natural Gas,Carbon dioxide,Carbon dioxide
+Process & Fugitive Gases,Energy,Fossil Fuels Production & Distribution,Natural Gas Systems,Processing,Natural Gas,Methane,Methane
+Process & Fugitive Gases,Energy,Fossil Fuels Production & Distribution,Natural Gas Systems,Processing,Natural Gas,Nitrous oxide,Nitrous oxide
+Process & Fugitive Gases,Energy,Fossil Fuels Production & Distribution,Natural Gas Systems,Production,Natural Gas,Carbon dioxide,Carbon dioxide
+Process & Fugitive Gases,Energy,Fossil Fuels Production & Distribution,Natural Gas Systems,Production,Natural Gas,Methane,Methane
+Process & Fugitive Gases,Energy,Fossil Fuels Production & Distribution,Natural Gas Systems,Production,Natural Gas,Nitrous oxide,Nitrous oxide
+Process & Fugitive Gases,Energy,Fossil Fuels Production & Distribution,Natural Gas Systems,Transmission and Storage,Natural Gas,Carbon dioxide,Carbon dioxide
+Process & Fugitive Gases,Energy,Fossil Fuels Production & Distribution,Natural Gas Systems,Transmission and Storage,Natural Gas,Methane,Methane
+Process & Fugitive Gases,Energy,Fossil Fuels Production & Distribution,Natural Gas Systems,Transmission and Storage,Natural Gas,Nitrous oxide,Nitrous oxide
+Process & Fugitive Gases,Energy,Fossil Fuels Production & Distribution,Petroleum Systems,Crude Oil Transportation,Crude Oil,Methane,Methane
+Process & Fugitive Gases,Energy,Fossil Fuels Production & Distribution,Petroleum Systems,Crude Refining,Crude Oil,Carbon dioxide,Carbon dioxide
+Process & Fugitive Gases,Energy,Fossil Fuels Production & Distribution,Petroleum Systems,Crude Refining,Crude Oil,Nitrous oxide,Nitrous oxide
+Process & Fugitive Gases,Energy,Fossil Fuels Production & Distribution,Petroleum Systems,Exploration,Oil,Carbon dioxide,Carbon dioxide
+Process & Fugitive Gases,Energy,Fossil Fuels Production & Distribution,Petroleum Systems,Exploration,Oil,Methane,Methane
+Process & Fugitive Gases,Energy,Fossil Fuels Production & Distribution,Petroleum Systems,Exploration,Oil,Nitrous oxide,Nitrous oxide
+Process & Fugitive Gases,Energy,Fossil Fuels Production & Distribution,Petroleum Systems,Production,Oil,Carbon dioxide,Carbon dioxide
+Process & Fugitive Gases,Energy,Fossil Fuels Production & Distribution,Petroleum Systems,Production,Oil,Methane,Methane
+Process & Fugitive Gases,Energy,Fossil Fuels Production & Distribution,Petroleum Systems,Production,Oil,Nitrous oxide,Nitrous oxide
+Process & Fugitive Gases,Energy,Fossil Fuels Production & Distribution,Petroleum Systems,Refining,Oil,Methane,Methane
+Process & Fugitive Gases,Energy,Non-Energy Uses of Fossil Fuels,Coal,Industry Industrial Coking Coal,Coal,Carbon dioxide,Carbon dioxide
+Process & Fugitive Gases,Energy,Non-Energy Uses of Fossil Fuels,Coal,Industry Industrial Other Coal,Coal,Carbon dioxide,Carbon dioxide
+Process & Fugitive Gases,Energy,Non-Energy Uses of Fossil Fuels,Consumed Natural Gas,,Aggregated Fossil Fuels,Carbon dioxide,Carbon dioxide
+Process & Fugitive Gases,Energy,Non-Energy Uses of Fossil Fuels,Consumed Petroleum Products,,Aggregated Fossil Fuels,Carbon dioxide,Carbon dioxide
+Process & Fugitive Gases,Energy,Non-Energy Uses of Fossil Fuels,Transportation Lubricants,,Aggregated Fossil Fuels,Carbon dioxide,Carbon dioxide
+Process & Fugitive Gases,Industrial Processes and Product Use,Electric Power,Electricity Transmission,Electrical Equipment,,Fluorinated gases (F-Gases),Sulfur hexafluoride
+Process & Fugitive Gases,Industrial Processes and Product Use,Fossil Fuel Production & Distribution,Coal Production & Distribution,Abandoned Underground Coal Mines,Coal,Methane,Methane
+Process & Fugitive Gases,Industrial Processes and Product Use,Fossil Fuel Production & Distribution,Coal Production & Distribution,Coal Mining,Coal,Carbon dioxide,Carbon dioxide
+Process & Fugitive Gases,Industrial Processes and Product Use,Fossil Fuel Production & Distribution,Coal Production & Distribution,Coal Mining,Coal,Methane,Methane
+Process & Fugitive Gases,Industrial Processes and Product Use,Fossil Fuel Production & Distribution,Oil and Gas,Abandoned Oil and Gas Wells,Oil and Gas,Methane,Methane
+Process & Fugitive Gases,Industrial Processes and Product Use,Industrial Production Processes,Carbonate Use,Other Process Uses of Carbonates,,Carbon dioxide,Carbon dioxide
+Process & Fugitive Gases,Industrial Processes and Product Use,Industrial Production Processes,Cement Production,Cement Production,,Carbon dioxide,Carbon dioxide
+Process & Fugitive Gases,Industrial Processes and Product Use,Industrial Production Processes,Ceramics Production and Consumption,Carbide Production and Consumption,,Carbon dioxide,Carbon dioxide
+Process & Fugitive Gases,Industrial Processes and Product Use,Industrial Production Processes,Chemicals Production,Adipic Acid Production,,Nitrous oxide,Nitrous oxide
+Process & Fugitive Gases,Industrial Processes and Product Use,Industrial Production Processes,Chemicals Production,Ammonia Production,,Carbon dioxide,Carbon dioxide
+Process & Fugitive Gases,Industrial Processes and Product Use,Industrial Production Processes,Chemicals Production,"Caprolactam, Glyoxal, and Glyoxylic Acid Production",,Nitrous oxide,Nitrous oxide
+Process & Fugitive Gases,Industrial Processes and Product Use,Industrial Production Processes,Chemicals Production,Lime Production,,Carbon dioxide,Carbon dioxide
+Process & Fugitive Gases,Industrial Processes and Product Use,Industrial Production Processes,Chemicals Production,Nitric Acid Production,,Nitrous oxide,Nitrous oxide
+Process & Fugitive Gases,Industrial Processes and Product Use,Industrial Production Processes,Chemicals Production,Phosphoric Acid Production,,Carbon dioxide,Carbon dioxide
+Process & Fugitive Gases,Industrial Processes and Product Use,Industrial Production Processes,Chemicals Production,Soda Ash Production,,Carbon dioxide,Carbon dioxide
+Process & Fugitive Gases,Industrial Processes and Product Use,Industrial Production Processes,Electronics Manufacturing,Electronics Industry | Semiconductors | PV | MEMS,,Fluorinated gases (F-Gases),Carbon tetrafluoride
+Process & Fugitive Gases,Industrial Processes and Product Use,Industrial Production Processes,Electronics Manufacturing,Electronics Industry | Semiconductors | PV | MEMS,,Fluorinated gases (F-Gases),HFC-23
+Process & Fugitive Gases,Industrial Processes and Product Use,Industrial Production Processes,Electronics Manufacturing,Electronics Industry | Semiconductors | PV | MEMS,,Fluorinated gases (F-Gases),Hexafluoroethane
+Process & Fugitive Gases,Industrial Processes and Product Use,Industrial Production Processes,Electronics Manufacturing,Electronics Industry | Semiconductors | PV | MEMS,,Fluorinated gases (F-Gases),Nitrogen trifluoride
+Process & Fugitive Gases,Industrial Processes and Product Use,Industrial Production Processes,Electronics Manufacturing,Electronics Industry | Semiconductors | PV | MEMS,,Fluorinated gases (F-Gases),Perfluorocyclobutane
+Process & Fugitive Gases,Industrial Processes and Product Use,Industrial Production Processes,Electronics Manufacturing,Electronics Industry | Semiconductors | PV | MEMS,,Fluorinated gases (F-Gases),Perfluoropropane
+Process & Fugitive Gases,Industrial Processes and Product Use,Industrial Production Processes,Electronics Manufacturing,Electronics Industry | Semiconductors | PV | MEMS,,Fluorinated gases (F-Gases),Sulfur hexafluoride
+Process & Fugitive Gases,Industrial Processes and Product Use,Industrial Production Processes,Electronics Manufacturing,Electronics Industry | Semiconductors | PV | MEMS,,Nitrous oxide,Nitrous oxide
+Process & Fugitive Gases,Industrial Processes and Product Use,Industrial Production Processes,Glass Production,Glass Production,,Carbon dioxide,Carbon dioxide
+Process & Fugitive Gases,Industrial Processes and Product Use,Industrial Production Processes,HCFC-22 Production,HCFC-22 Production,,Fluorinated gases (F-Gases),HFC-23
+Process & Fugitive Gases,Industrial Processes and Product Use,Industrial Production Processes,Magnesium production,Magnesium Production and Processing,,Fluorinated gases (F-Gases),Sulfur hexafluoride
+Process & Fugitive Gases,Industrial Processes and Product Use,Industrial Production Processes,Metals Production Processes,Aluminum Production,,Carbon dioxide,Carbon dioxide
+Process & Fugitive Gases,Industrial Processes and Product Use,Industrial Production Processes,Metals Production Processes,Ferroalloy Production,,Carbon dioxide,Carbon dioxide
+Process & Fugitive Gases,Industrial Processes and Product Use,Industrial Production Processes,Metals Production Processes,Iron and Steel Production & Metallurgical Coke Production,Coal,Carbon dioxide,Carbon dioxide
+Process & Fugitive Gases,Industrial Processes and Product Use,Industrial Production Processes,Metals Production Processes,Lead Production,,Carbon dioxide,Carbon dioxide
+Process & Fugitive Gases,Industrial Processes and Product Use,Industrial Production Processes,Metals Production Processes,Titanium Dioxide Production,,Carbon dioxide,Carbon dioxide
+Process & Fugitive Gases,Industrial Processes and Product Use,Industrial Production Processes,Metals Production Processes,Zinc Production,,Carbon dioxide,Carbon dioxide
+Process & Fugitive Gases,Industrial Processes and Product Use,Industrial Production Processes,Nitrous Oxide Use,N2O from Product Uses,,Nitrous oxide,Nitrous oxide
+Process & Fugitive Gases,Industrial Processes and Product Use,Industrial Production Processes,PFCs from aluminum production,Aluminum Production,,Fluorinated gases (F-Gases),Carbon tetrafluoride
+Process & Fugitive Gases,Industrial Processes and Product Use,Industrial Production Processes,PFCs from aluminum production,Aluminum Production,,Fluorinated gases (F-Gases),Hexafluoroethane
+Process & Fugitive Gases,Industrial Processes and Product Use,Industrial Production Processes,Petrochemicals Production,Acrylonitrile,,Carbon dioxide,Carbon dioxide
+Process & Fugitive Gases,Industrial Processes and Product Use,Industrial Production Processes,Petrochemicals Production,Carbon Black,,Carbon dioxide,Carbon dioxide
+Process & Fugitive Gases,Industrial Processes and Product Use,Industrial Production Processes,Petrochemicals Production,Ethylene,,Carbon dioxide,Carbon dioxide
+Process & Fugitive Gases,Industrial Processes and Product Use,Industrial Production Processes,Petrochemicals Production,Ethylene Dichloride,,Carbon dioxide,Carbon dioxide
+Process & Fugitive Gases,Industrial Processes and Product Use,Industrial Production Processes,Petrochemicals Production,Ethylene Oxide,,Carbon dioxide,Carbon dioxide
+Process & Fugitive Gases,Industrial Processes and Product Use,Industrial Production Processes,Petrochemicals Production,Methanol,,Carbon dioxide,Carbon dioxide
+Process & Fugitive Gases,Industrial Processes and Product Use,Industrial Production Processes,Production Of Fluorochemicals Other Than HCFC-22,Fluorochemical Production,,Fluorinated gases (F-Gases),Carbon tetrafluoride
+Process & Fugitive Gases,Industrial Processes and Product Use,Industrial Production Processes,Production Of Fluorochemicals Other Than HCFC-22,Fluorochemical Production,,Fluorinated gases (F-Gases),HFC-125
+Process & Fugitive Gases,Industrial Processes and Product Use,Industrial Production Processes,Production Of Fluorochemicals Other Than HCFC-22,Fluorochemical Production,,Fluorinated gases (F-Gases),HFC-134a
+Process & Fugitive Gases,Industrial Processes and Product Use,Industrial Production Processes,Production Of Fluorochemicals Other Than HCFC-22,Fluorochemical Production,,Fluorinated gases (F-Gases),HFC-143a
+Process & Fugitive Gases,Industrial Processes and Product Use,Industrial Production Processes,Production Of Fluorochemicals Other Than HCFC-22,Fluorochemical Production,,Fluorinated gases (F-Gases),HFC-23
+Process & Fugitive Gases,Industrial Processes and Product Use,Industrial Production Processes,Production Of Fluorochemicals Other Than HCFC-22,Fluorochemical Production,,Fluorinated gases (F-Gases),"HFCs and PFCs, unspecified"
+Process & Fugitive Gases,Industrial Processes and Product Use,Industrial Production Processes,Production Of Fluorochemicals Other Than HCFC-22,Fluorochemical Production,,Fluorinated gases (F-Gases),Nitrogen trifluoride
+Process & Fugitive Gases,Industrial Processes and Product Use,Industrial Production Processes,Production Of Fluorochemicals Other Than HCFC-22,Fluorochemical Production,,Fluorinated gases (F-Gases),Perfluorobutane
+Process & Fugitive Gases,Industrial Processes and Product Use,Industrial Production Processes,Production Of Fluorochemicals Other Than HCFC-22,Fluorochemical Production,,Fluorinated gases (F-Gases),Perfluorocyclobutane
+Process & Fugitive Gases,Industrial Processes and Product Use,Industrial Production Processes,Production Of Fluorochemicals Other Than HCFC-22,Fluorochemical Production,,Fluorinated gases (F-Gases),Perfluorohexane
+Process & Fugitive Gases,Industrial Processes and Product Use,Industrial Production Processes,Urea Consumption,Urea Consumption for Non-Agricultural Purposes,,Carbon dioxide,Carbon dioxide
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Foams,Foams,,Carbon dioxide,Carbon dioxide
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Foams,Foams,,Fluorinated gases (F-Gases),HFC-125
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Foams,Foams,,Fluorinated gases (F-Gases),HFC-134a
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Foams,Foams,,Fluorinated gases (F-Gases),HFC-143a
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Foams,Foams,,Fluorinated gases (F-Gases),HFC-236fa
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Foams,Foams,,Fluorinated gases (F-Gases),HFC-32
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Foams,Foams,,Fluorinated gases (F-Gases),"HFCs and PFCs, unspecified"
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Commercial Stationary Air Conditioning,,Carbon dioxide,Carbon dioxide
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Commercial Stationary Air Conditioning,,Fluorinated gases (F-Gases),HFC-125
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Commercial Stationary Air Conditioning,,Fluorinated gases (F-Gases),HFC-134a
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Commercial Stationary Air Conditioning,,Fluorinated gases (F-Gases),HFC-143a
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Commercial Stationary Air Conditioning,,Fluorinated gases (F-Gases),HFC-236fa
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Commercial Stationary Air Conditioning,,Fluorinated gases (F-Gases),HFC-32
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Commercial Stationary Air Conditioning,,Fluorinated gases (F-Gases),"HFCs and PFCs, unspecified"
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Heavy-Duty Vehicles,,Carbon dioxide,Carbon dioxide
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Heavy-Duty Vehicles,,Fluorinated gases (F-Gases),HFC-125
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Heavy-Duty Vehicles,,Fluorinated gases (F-Gases),HFC-134a
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Heavy-Duty Vehicles,,Fluorinated gases (F-Gases),HFC-143a
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Heavy-Duty Vehicles,,Fluorinated gases (F-Gases),HFC-236fa
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Heavy-Duty Vehicles,,Fluorinated gases (F-Gases),HFC-32
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Heavy-Duty Vehicles,,Fluorinated gases (F-Gases),"HFCs and PFCs, unspecified"
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Light-Duty Trucks - Households,,Carbon dioxide,Carbon dioxide
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Light-Duty Trucks - Households,,Fluorinated gases (F-Gases),HFC-125
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Light-Duty Trucks - Households,,Fluorinated gases (F-Gases),HFC-134a
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Light-Duty Trucks - Households,,Fluorinated gases (F-Gases),HFC-143a
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Light-Duty Trucks - Households,,Fluorinated gases (F-Gases),HFC-236fa
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Light-Duty Trucks - Households,,Fluorinated gases (F-Gases),HFC-32
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Light-Duty Trucks - Households,,Fluorinated gases (F-Gases),"HFCs and PFCs, unspecified"
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Medium- and Heavy-Duty Trucks,,Carbon dioxide,Carbon dioxide
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Medium- and Heavy-Duty Trucks,,Fluorinated gases (F-Gases),HFC-125
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Medium- and Heavy-Duty Trucks,,Fluorinated gases (F-Gases),HFC-134a
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Medium- and Heavy-Duty Trucks,,Fluorinated gases (F-Gases),HFC-143a
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Medium- and Heavy-Duty Trucks,,Fluorinated gases (F-Gases),HFC-236fa
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Medium- and Heavy-Duty Trucks,,Fluorinated gases (F-Gases),HFC-32
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Medium- and Heavy-Duty Trucks,,Fluorinated gases (F-Gases),"HFCs and PFCs, unspecified"
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Passenger Cars - Households,,Carbon dioxide,Carbon dioxide
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Passenger Cars - Households,,Fluorinated gases (F-Gases),HFC-125
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Passenger Cars - Households,,Fluorinated gases (F-Gases),HFC-134a
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Passenger Cars - Households,,Fluorinated gases (F-Gases),HFC-143a
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Passenger Cars - Households,,Fluorinated gases (F-Gases),HFC-236fa
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Passenger Cars - Households,,Fluorinated gases (F-Gases),HFC-32
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Passenger Cars - Households,,Fluorinated gases (F-Gases),"HFCs and PFCs, unspecified"
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Rail,,Carbon dioxide,Carbon dioxide
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Rail,,Fluorinated gases (F-Gases),HFC-125
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Rail,,Fluorinated gases (F-Gases),HFC-134a
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Rail,,Fluorinated gases (F-Gases),HFC-143a
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Rail,,Fluorinated gases (F-Gases),HFC-236fa
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Rail,,Fluorinated gases (F-Gases),HFC-32
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Rail,,Fluorinated gases (F-Gases),"HFCs and PFCs, unspecified"
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Refrigeration,,Carbon dioxide,Carbon dioxide
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Refrigeration,,Fluorinated gases (F-Gases),HFC-125
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Refrigeration,,Fluorinated gases (F-Gases),HFC-134a
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Refrigeration,,Fluorinated gases (F-Gases),HFC-143a
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Refrigeration,,Fluorinated gases (F-Gases),HFC-236fa
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Refrigeration,,Fluorinated gases (F-Gases),HFC-32
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Refrigeration,,Fluorinated gases (F-Gases),"HFCs and PFCs, unspecified"
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,School and Tour Buses,,Carbon dioxide,Carbon dioxide
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,School and Tour Buses,,Fluorinated gases (F-Gases),HFC-125
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,School and Tour Buses,,Fluorinated gases (F-Gases),HFC-134a
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,School and Tour Buses,,Fluorinated gases (F-Gases),HFC-143a
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,School and Tour Buses,,Fluorinated gases (F-Gases),HFC-236fa
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,School and Tour Buses,,Fluorinated gases (F-Gases),HFC-32
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,School and Tour Buses,,Fluorinated gases (F-Gases),"HFCs and PFCs, unspecified"
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Ships and Boats,,Carbon dioxide,Carbon dioxide
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Ships and Boats,,Fluorinated gases (F-Gases),HFC-125
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Ships and Boats,,Fluorinated gases (F-Gases),HFC-134a
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Ships and Boats,,Fluorinated gases (F-Gases),HFC-143a
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Ships and Boats,,Fluorinated gases (F-Gases),HFC-236fa
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Ships and Boats,,Fluorinated gases (F-Gases),HFC-32
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Refrigerant Use,Ships and Boats,,Fluorinated gases (F-Gases),"HFCs and PFCs, unspecified"
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Residential,Domestic Refrigeration,,Carbon dioxide,Carbon dioxide
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Residential,Domestic Refrigeration,,Fluorinated gases (F-Gases),HFC-125
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Residential,Domestic Refrigeration,,Fluorinated gases (F-Gases),HFC-134a
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Residential,Domestic Refrigeration,,Fluorinated gases (F-Gases),HFC-143a
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Residential,Domestic Refrigeration,,Fluorinated gases (F-Gases),HFC-236fa
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Residential,Domestic Refrigeration,,Fluorinated gases (F-Gases),HFC-32
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Residential,Domestic Refrigeration,,Fluorinated gases (F-Gases),"HFCs and PFCs, unspecified"
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Residential,Residential Stationary Air Conditioning,,Carbon dioxide,Carbon dioxide
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Residential,Residential Stationary Air Conditioning,,Fluorinated gases (F-Gases),HFC-125
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Residential,Residential Stationary Air Conditioning,,Fluorinated gases (F-Gases),HFC-134a
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Residential,Residential Stationary Air Conditioning,,Fluorinated gases (F-Gases),HFC-143a
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Residential,Residential Stationary Air Conditioning,,Fluorinated gases (F-Gases),HFC-236fa
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Residential,Residential Stationary Air Conditioning,,Fluorinated gases (F-Gases),HFC-32
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,Residential,Residential Stationary Air Conditioning,,Fluorinated gases (F-Gases),"HFCs and PFCs, unspecified"
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,SF6 and PFCs from Other Product Use,AWACs,,Fluorinated gases (F-Gases),Sulfur hexafluoride
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,SF6 and PFCs from Other Product Use,Other Military Applications,,Fluorinated gases (F-Gases),"HFCs and PFCs, unspecified"
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,SF6 and PFCs from Other Product Use,Other Scientific Applications,,Fluorinated gases (F-Gases),Sulfur hexafluoride
+Process & Fugitive Gases,Industrial Processes and Product Use,Product Use,SF6 and PFCs from Other Product Use,Particle Accelerators,,Fluorinated gases (F-Gases),Sulfur hexafluoride
+Process & Fugitive Gases,Waste,Waste,Composting,Composting,,Methane,Methane
+Process & Fugitive Gases,Waste,Waste,Composting,Composting,,Nitrous oxide,Nitrous oxide
+Process & Fugitive Gases,Waste,Waste,Landfills,Landfills,,Methane,Methane
+Process & Fugitive Gases,Waste,Waste,Wastewater Treatment,Wastewater Treatment,,Methane,Methane
+Process & Fugitive Gases,Waste,Waste,Wastewater Treatment,Wastewater Treatment,,Nitrous oxide,Nitrous oxide

@@ -13,7 +13,7 @@ from pathlib import Path
 from collections import defaultdict
 
 # Add parent directory to path to import config
-parent_dir = Path(__file__).parent.parent.parent
+parent_dir = Path(__file__).parent.parent.parent.parent
 sys.path.append(str(parent_dir))
 import config
 # COLUMN_MAPPING removed - using direct column names

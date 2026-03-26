@@ -2,8 +2,8 @@
 
 This repository provides a reproducible workflow to disaggregate USEEIO sector direct emissions into their underlying greenhouse gas (GHG) sources. It enriches the greenhouse gas data output of flowsa, which allocates the US EPA's national greenhouse gas inventory (GHGI) data to NAICS sectors, with detailed metadata. This allows users to break down each sector's emissions by:
 
-- **Activities**: Activity categories (combustion, processes, fugitives), subcategories, and specific activities
-- **Greenhouse Gases**: CO2, CH4, N2O, HFCs, PFCs, SF6, NF3, and other fluorinated gases
+- **Activities**: Activity categories (Electric Power Generation, Fuel Combustion, Process & Fugitive Gases), subcategories, and specific activities
+- **Greenhouse Gases**: CO2, CH4, N2O, and fluorinated gases
 - **Fuel Types**: Natural gas, coal, petroleum products, etc. (when applicable)
 - **IPCC Categories**: Energy, Industrial Processes, Agriculture, Waste, etc.
 
@@ -24,7 +24,7 @@ Download the latest data files from the [**Releases**](https://github.com/Decarb
   - 📋 **Author_Info** - Attribution, license, citations
   - 📋 **Model_Specs** - Configuration, EPA GHGI source links
   - 📋 **Enriched** - Main emission data with full metadata
-  - 📋 **Baseline** - Original FlowBySector for QC (optional)
+  - 📋 **Baseline** - Original FlowBySector for QC, F01000 excluded (optional)
   - 📋 **GHG_Classification** - Activity hierarchy (unique combinations)
   - 📋 **Sector_Classification** - USEEIO sector definitions
   - 📋 **NAICS_to_USEEIO** - Sector crosswalk mapping
@@ -64,14 +64,14 @@ What's inside (high level):
 - **"Absolute" columns** are emissions in kg, kgCO2e, or MTCO2e for the specified model year (typically 2022)
 - **"Relative contribution"** shows the percentage split across all GHG sources for a given sector (sums to 100%)
 - **"Emissions Intensity"** shows kgCO2e per USD of sector output for the specified IO year
-- **Baseline CSV** provides the original FlowBySector data for quality checks
+- **Baseline CSV** provides the original FlowBySector data for quality checks (F01000 excluded)
 - **Excel tabs** include complete documentation: author info, model specs, reference data (classifications, crosswalks, matrices)
 - **GHG Classification** files provide the unique activity/gas combinations as standalone datasets
 
 ### Use cases
 
 This dataset helps you:
-- Connect sector-level emissions to specific activities (e.g., "Natural Gas Combustion" vs "Aluminum Production")
+- Connect sector-level emissions to specific activities (e.g., natural gas combustion)
 - Identify emission hotspots by GHG source within each economic sector
 - Map emissions to IPCC categories
 - Conduct hybrid EEIO accounting under the GHG Protocol
@@ -105,7 +105,7 @@ This dataset helps you:
 
 Artifacts will be saved under the local `outputs/` folder. For distribution, data files are packaged and published as GitHub Releases rather than committed to the repository.
 
-**Note:** Sector F01000 (used goods) is automatically excluded from all outputs as it does not produce emissions.
+**Note:** Sector F01000 (Used/Secondhand Goods) is excluded from all outputs — including the enriched data and the baseline FlowBySector — because it is a final demand sector that does not produce emissions and is not used in USEEIO input-output modeling or Scope 3 emission factor (SEF) calculations.
 
 ## Requirements
 

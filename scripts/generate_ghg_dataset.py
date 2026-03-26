@@ -13,10 +13,10 @@ The script automatically filters out sector F01000 (used goods) from all outputs
 as it does not produce emissions.
 
 Usage:
-    python run_extraction.py              # Run with prompts (recommended)
-    python run_extraction.py --help       # Show all options
-    python run_extraction.py --skip-fbs-generation  # Use cached FlowBySector data
-    python run_extraction.py --force-fbs-generation # Generate new without prompt
+    python generate_ghg_dataset.py              # Run with prompts (recommended)
+    python generate_ghg_dataset.py --help       # Show all options
+    python generate_ghg_dataset.py --skip-fbs-generation  # Use cached FlowBySector data
+    python generate_ghg_dataset.py --force-fbs-generation # Generate new without prompt
 """
 
 import sys
@@ -27,8 +27,8 @@ from pathlib import Path
 # Add parent directory to path for imports (config.py is at root)
 current_dir = Path(__file__).parent
 parent_dir = current_dir.parent
-sys.path.insert(0, str(parent_dir))  # Add parent dir first for config.py
-sys.path.append(str(current_dir))  # Add scripts dir for script imports
+sys.path.insert(0, str(parent_dir))  # Add project root for config.py and terminology.py
+sys.path.append(str(current_dir))  # Add scripts/ so 'pipeline' package is importable
 
 
 def print_banner():
@@ -95,7 +95,7 @@ def run_metadata_extraction():
     print("\nStep 1: Extracting EPA GHGI metadata...")
     
     try:
-        from extract_meta_from_EPA_GHGI import main as extract_main
+        from pipeline.extract_metadata import main as extract_main
         extract_main()
         print("SUCCESS: Metadata extraction completed!")
         return True
@@ -140,7 +140,7 @@ def generate_flowbysector_data(modelname):
         append_sector_names=False
     ))
     
-    print(f"✓ Generated {len(fbs_data):,} records using FlowSA")
+    print(f"[OK] Generated {len(fbs_data):,} records using FlowSA")
     
     return fbs_data
 
@@ -209,7 +209,7 @@ def run_fbs_generation(skip_generation=False, force_generation=False):
         
         try:
             fbs_data = generate_flowbysector_data(config.MODELNAME)
-            print(f"✓ Generated {len(fbs_data):,} FBS records!")
+            print(f"[OK] Generated {len(fbs_data):,} FBS records!")
             return fbs_data
         except Exception as e:
             print(f"ERROR: FBS generation failed: {e}")
@@ -231,7 +231,7 @@ def run_fbs_generation(skip_generation=False, force_generation=False):
             fbs_data = pd.read_parquet(latest_file)
             # Format Location column to match generated format
             fbs_data.Location = fbs_data.Location.apply('="{}"'.format)
-            print(f"✓ Loaded {len(fbs_data):,} FBS records from cache")
+            print(f"[OK] Loaded {len(fbs_data):,} FBS records from cache")
             return fbs_data
         except Exception as e:
             print(f"ERROR: Failed to load cached data: {e}")
@@ -250,7 +250,7 @@ def run_data_enrichment(fbs_data):
     print("This may take a few minutes...")
     
     try:
-        from enrich_fbs_with_meta import main as enrich_main
+        from pipeline.enrich_and_export import main as enrich_main
         enrich_main(fbs_calculated=fbs_data)
         print("SUCCESS: Data enrichment completed!")
         return True
@@ -272,7 +272,7 @@ def show_results():
     industry_basename = config.MODELNAME + "_industry"
     
     output_files = [
-        (f"{config.OUTPUT_DIR}/EPA_GHGI_meta_sources.csv", "EPA GHGI metadata"),
+        (f"{config.OUTPUT_DIR}/metadata/EPA_GHGI_meta_sources.csv", "EPA GHGI metadata"),
         (f"{industry_dir}/{industry_basename}.xlsx", "*** FINAL ENRICHED DATA (Excel) ***"),
         (f"{industry_dir}/{industry_basename}.parquet", "Final data (Parquet)"),
         (f"{industry_dir}/{industry_basename}.jsonld", "Emission events (JSON-LD)"),
@@ -299,11 +299,11 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  python run_extraction.py                     # Run with prompts (recommended)
-  python run_extraction.py --skip-metadata     # Skip metadata extraction
-  python run_extraction.py --skip-fbs-generation    # Use cached FBS data
-  python run_extraction.py --force-fbs-generation   # Generate new FBS without prompt
-  python run_extraction.py --check-only        # Just check requirements
+  python generate_ghg_dataset.py                     # Run with prompts (recommended)
+  python generate_ghg_dataset.py --skip-metadata     # Skip metadata extraction
+  python generate_ghg_dataset.py --skip-fbs-generation    # Use cached FBS data
+  python generate_ghg_dataset.py --force-fbs-generation   # Generate new FBS without prompt
+  python generate_ghg_dataset.py --check-only        # Just check requirements
 
 To switch models/years, edit MODELNAME in config.py
         """
@@ -363,7 +363,7 @@ To switch models/years, edit MODELNAME in config.py
         print("\nStep 1: Skipping metadata extraction (--skip-metadata)")
         
         # Check if metadata file exists
-        metadata_path = os.path.join(config.OUTPUT_DIR, config.EPA_GHGI_META_CSV)
+        metadata_path = os.path.join(config.OUTPUT_DIR, "metadata", config.EPA_GHGI_META_CSV)
         if not os.path.exists(metadata_path):
             print(f"WARNING: Metadata file not found at {metadata_path}")
             print("   Consider running without --skip-metadata flag")

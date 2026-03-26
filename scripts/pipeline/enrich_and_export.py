@@ -24,8 +24,13 @@ import flowsa
 from pathlib import Path
 from ruamel.yaml import YAML
 
-# Add parent directory to path to import config and terminology
-parent_dir = Path(__file__).parent.parent
+# Force UTF-8 output on Windows so Unicode characters in print() don't crash
+if hasattr(sys.stdout, 'reconfigure'):
+    sys.stdout.reconfigure(encoding='utf-8')
+    sys.stderr.reconfigure(encoding='utf-8')
+
+# Add project root to path to import config and terminology
+parent_dir = Path(__file__).parent.parent.parent
 sys.path.append(str(parent_dir))
 
 # Import configuration settings and terminology
@@ -33,29 +38,29 @@ import config
 from terminology import TERMINOLOGY, get_jsonld_property
 
 # Import modularized enrichment functions
-from enrichment.utils import (
+from .enrichment.utils import (
     get_emissions_intensity_col,
     check_flowsa_version,
     validate_flowsa_version,
     filter_columns
 )
-from enrichment.validators import (
+from .enrichment.validators import (
     aggregate_to_reference_format,
     compare_with_reference,
     validate_data
 )
-from enrichment.loaders import (
+from .enrichment.loaders import (
     load_parquet_data,
     load_metadata_mapping,
     load_fuel_lookup
 )
-from enrichment.enrichers import (
+from .enrichment.enrichers import (
     enrich_with_fuel,
     enrich_with_useeio,
     enrich_with_primary_activities,
     enrich_with_metadata
 )
-from enrichment.exporters import (
+from .enrichment.exporters import (
     build_emission_events_jsonld,
     build_d3_sunburst_hierarchy,
     save_outputs
@@ -226,7 +231,7 @@ def load_parquet_data(input_path, subfolder, file_name):
     # This prevents Excel from treating location codes like "01000" as numbers
     fbs_parquet.Location = fbs_parquet.Location.apply('="{}"'.format)
     
-    print(f"✓ Loaded {len(fbs_parquet):,} records from parquet file")
+    print(f"[SUCCESS] Loaded {len(fbs_parquet):,} records from parquet file")
     
     return fbs_parquet
 
@@ -280,10 +285,10 @@ def load_generated_fbs_data(modelname, output_dir):
             # Use the first matching file (or most recent if multiple versions exist)
             cache_file = sorted(cache_files)[-1]  # Get latest by filename
             cache_path = os.path.join(flowsa_cache, cache_file)
-            print(f"✓ Found cached FBS data: {cache_file}")
+            print(f"[SUCCESS] Found cached FBS data: {cache_file}")
             print(f"  Loading from: {cache_path}")
             fbs_data = pd.read_parquet(cache_path)
-            print(f"✓ Loaded {len(fbs_data):,} records from FlowSA cache")
+            print(f"[SUCCESS] Loaded {len(fbs_data):,} records from FlowSA cache")
             return fbs_data
         else:
             print(f"  No exact match found for model: {modelname}")
@@ -301,12 +306,12 @@ def load_generated_fbs_data(modelname, output_dir):
     if os.path.exists(parquet_path):
         print(f"Loading from local file: {parquet_path}")
         fbs_data = pd.read_parquet(parquet_path)
-        print(f"✓ Loaded {len(fbs_data):,} records")
+        print(f"[SUCCESS] Loaded {len(fbs_data):,} records")
         return fbs_data
     elif os.path.exists(csv_path):
         print(f"Loading from local file: {csv_path}")
         fbs_data = pd.read_csv(csv_path)
-        print(f"✓ Loaded {len(fbs_data):,} records")
+        print(f"[SUCCESS] Loaded {len(fbs_data):,} records")
         return fbs_data
     else:
         error_msg = [
@@ -370,7 +375,7 @@ def aggregate_to_reference_format(fbs_with_activities):
         'FlowAmount': 'sum'
     }).reset_index()
     
-    print(f"✓ Aggregated from {len(fbs_with_activities):,} to {len(aggregated):,} records")
+    print(f"[SUCCESS] Aggregated from {len(fbs_with_activities):,} to {len(aggregated):,} records")
     
     return aggregated
 
@@ -434,7 +439,7 @@ def load_metadata_mapping(mapping_csv_path):
     if os.path.exists(mapping_csv_path):
         print(f"Loading EPA GHGI metadata from: {mapping_csv_path}")
         meta_map = pd.read_csv(mapping_csv_path)
-        print(f"✓ Loaded {len(meta_map):,} metadata records")
+        print(f"[SUCCESS] Loaded {len(meta_map):,} metadata records")
         return meta_map
     else:
         print(f"Warning: Metadata file not found at {mapping_csv_path}")
@@ -485,7 +490,7 @@ def load_fuel_lookup(lookup_csv_path):
             print(f"  Found columns: {lookup_df.columns.tolist()}")
             return None
         
-        print(f"✓ Loaded {len(lookup_dict):,} fuel lookup entries")
+        print(f"[SUCCESS] Loaded {len(lookup_dict):,} fuel lookup entries")
         return lookup_dict
     else:
         print(f"Warning: fuel lookup file not found at {lookup_csv_path}")
@@ -631,7 +636,7 @@ def enrich_with_fuel(fbs_data, fuel_by_table, fuel_by_term):
     # Final count: table matches that weren't overridden + new term matches + term overrides
     final_table_only = table_match_count - term_override_count
     total_matched = final_table_only + term_match_count + term_override_count
-    print(f"✓ Added fuel type to {total_matched:,} records")
+    print(f"[SUCCESS] Added fuel type to {total_matched:,} records")
     print(f"  - By table reference only: {final_table_only:,}")
     print(f"  - By term matching (new): {term_match_count:,}")
     print(f"  - By term matching (override): {term_override_count:,}")
@@ -663,7 +668,7 @@ def load_activity_sets_lookup(csv_path):
         # Create dictionary: MetaSources -> Activity Set
         activity_sets_dict = dict(zip(df['MetaSources'], df['Activity Set']))
         
-        print(f"✓ Loaded {len(activity_sets_dict)} activity set mappings")
+        print(f"[SUCCESS] Loaded {len(activity_sets_dict)} activity set mappings")
         return activity_sets_dict
     except Exception as e:
         print(f"Error loading activity sets lookup: {e}")
@@ -727,7 +732,7 @@ def enrich_with_activity_sets(fbs_data, activity_sets_dict):
                 lookup_count += 1
     
     total_enriched = direct_count + lookup_count
-    print(f"✓ Added Activity Set to {total_enriched:,} records")
+    print(f"[SUCCESS] Added Activity Set to {total_enriched:,} records")
     print(f"  - From PrimaryActivity (direct): {direct_count:,}")
     print(f"  - From CSV lookup: {lookup_count:,}")
     
@@ -763,7 +768,7 @@ def load_naics_to_useeio_crosswalk(csv_path):
             useeio = str(row['USEEIO']).strip()
             naics_to_useeio[naics] = useeio
         
-        print(f"✓ Loaded {len(naics_to_useeio)} NAICS to USEEIO mappings")
+        print(f"[SUCCESS] Loaded {len(naics_to_useeio)} NAICS to USEEIO mappings")
         return naics_to_useeio
     except Exception as e:
         print(f"Error loading NAICS to USEEIO crosswalk: {e}")
@@ -816,7 +821,7 @@ def enrich_with_useeio(fbs_data, naics_to_useeio_dict):
             enriched_data.at[idx, 'USEEIO'] = naics_to_useeio_dict[naics_code]
             matched_count += 1
     
-    print(f"✓ Added USEEIO code to {matched_count:,} records")
+    print(f"[SUCCESS] Added USEEIO code to {matched_count:,} records")
     
     return enriched_data
 
@@ -847,7 +852,7 @@ def load_metasource_to_ghgsource_mapping(csv_path):
     
     try:
         df = pd.read_csv(csv_path)
-        print(f"✓ Loaded {len(df)} GHG Source categorization mappings")
+        print(f"[SUCCESS] Loaded {len(df)} GHG Source categorization mappings")
         print(f"  Columns: {df.columns.tolist()}")
         return df
     except Exception as e:
@@ -949,7 +954,7 @@ def enrich_with_ghg_source_categories(fbs_data, mapping_df):
             
             matched_count += 1
     
-    print(f"✓ Added comprehensive GHG categorization to {matched_count:,} records")
+    print(f"[SUCCESS] Added comprehensive GHG categorization to {matched_count:,} records")
     print(f"  - IPCC/UNFCCC Category")
     print(f"  - Activity Category")
     print(f"  - Activity Subcategory")
@@ -982,7 +987,7 @@ def load_flowable_categorization(csv_path):
         # Create dictionary: Flowable -> Gas category
         flowable_to_gas = dict(zip(df['Flowable'], df['Gas Category']))
         
-        print(f"✓ Loaded {len(flowable_to_gas)} flowable categorizations")
+        print(f"[SUCCESS] Loaded {len(flowable_to_gas)} flowable categorizations")
         return flowable_to_gas
     except Exception as e:
         print(f"Error loading flowable categorization: {e}")
@@ -1034,7 +1039,7 @@ def enrich_with_gas_category(fbs_data, flowable_to_gas_dict):
             enriched_data.at[idx, 'Gas Category'] = flowable_to_gas_dict[flowable_str]
             matched_count += 1
     
-    print(f"✓ Added Gas category to {matched_count:,} records")
+    print(f"[SUCCESS] Added Gas category to {matched_count:,} records")
     
     return enriched_data
 
@@ -1061,7 +1066,7 @@ def load_sector_classification(csv_path):
         df = pd.read_csv(csv_path)
         # Create dictionary: Sector code -> Sector name
         code_to_name = dict(zip(df['Sector code'].astype(str), df['Sector name']))
-        print(f"✓ Loaded {len(code_to_name)} sector classifications")
+        print(f"[SUCCESS] Loaded {len(code_to_name)} sector classifications")
         return code_to_name
     except Exception as e:
         print(f"Error loading sector classification: {e}")
@@ -1101,7 +1106,7 @@ def load_ipcc_ar5_100_gwp(parquet_path):
         # Create dictionary: Flow UUID -> Characterization Factor
         uuid_to_gwp = dict(zip(filtered['Flow UUID'], filtered['Characterization Factor']))
         
-        print(f"✓ Loaded {len(uuid_to_gwp)} {indicator} GWP factors (context: {context})")
+        print(f"[SUCCESS] Loaded {len(uuid_to_gwp)} {indicator} GWP factors (context: {context})")
         return uuid_to_gwp
     except Exception as e:
         print(f"Error loading IPCC GWP factors: {e}")
@@ -1203,10 +1208,10 @@ def enrich_with_ar5_100_gwp(fbs_data, uuid_to_gwp_dict):
                 unmatched_flowables.add(str(flowable))
     
     total_enriched = matched_count + already_co2e_count
-    print(f"✓ Added AR5-100 GWP to {total_enriched:,} records")
+    print(f"[SUCCESS] Added AR5-100 GWP to {total_enriched:,} records")
     print(f"  - From IPCC lookup (kg → MTCO2e): {matched_count:,}")
     print(f"  - Already in CO2e (kg CO2e → MTCO2e): {already_co2e_count:,}")
-    print(f"✓ Calculated Emissions (MTCO2e) for {total_enriched:,} records")
+    print(f"[SUCCESS] Calculated Emissions (MTCO2e) for {total_enriched:,} records")
     
     if unmatched_flowables:
         print(f"⚠ Warning: {len(unmatched_flowables)} flowables without AR5-100 GWP factors:")
@@ -1280,7 +1285,7 @@ def calculate_contribution_by_sector(fbs_data):
     
     # Count records with contribution calculated
     contrib_count = enriched_data["Contribution to USEEIO Sector's Scope 1 (%)"].notna().sum()
-    print(f"✓ Calculated contribution fractions for {contrib_count:,} records (stored as decimals 0-1)")
+    print(f"[SUCCESS] Calculated contribution fractions for {contrib_count:,} records (stored as decimals 0-1)")
     
     return enriched_data
 
@@ -1317,7 +1322,7 @@ def enrich_with_useeio_sector_name(fbs_data, sector_code_to_name):
     # Count matches
     match_count = enriched_data['USEEIO Sector Name'].notna().sum()
     match_rate = (match_count / len(enriched_data)) * 100 if len(enriched_data) > 0 else 0
-    print(f"✓ Matched {match_count:,} / {len(enriched_data):,} records ({match_rate:.1f}%)")
+    print(f"[SUCCESS] Matched {match_count:,} / {len(enriched_data):,} records ({match_rate:.1f}%)")
     
     return enriched_data
 
@@ -1387,10 +1392,10 @@ def rename_and_create_columns(fbs_data):
         # Count how many of each
         kg_count = enriched_data['Emissions (kg)'].notna().sum()
         kgco2e_count = enriched_data['Emissions (kgCO2e)'].notna().sum()
-        print(f"✓ Created Emissions (kg): {kg_count:,} records")
-        print(f"✓ Created Emissions (kgCO2e): {kgco2e_count:,} records")
+        print(f"[SUCCESS] Created Emissions (kg): {kg_count:,} records")
+        print(f"[SUCCESS] Created Emissions (kgCO2e): {kgco2e_count:,} records")
     
-    print(f"✓ Renamed {len([k for k in rename_map.keys() if k in fbs_data.columns])} columns")
+    print(f"[SUCCESS] Renamed {len([k for k in rename_map.keys() if k in fbs_data.columns])} columns")
     
     return enriched_data
 
@@ -1918,10 +1923,10 @@ def enrich_with_primary_activities(fbs_data, primary_activity_mapping):
                     enriched_count += 1
                     yaml_count += 1
     
-    print(f"✓ Processed {processed_count:,} records with MetaSources (non-direct)")
-    print(f"✓ Added PrimaryActivity from direct attribution: {direct_count:,} records")
-    print(f"✓ Added PrimaryActivity from YAML mapping: {yaml_count:,} records")
-    print(f"✓ Total PrimaryActivity enrichment: {enriched_count:,} records")
+    print(f"[SUCCESS] Processed {processed_count:,} records with MetaSources (non-direct)")
+    print(f"[SUCCESS] Added PrimaryActivity from direct attribution: {direct_count:,} records")
+    print(f"[SUCCESS] Added PrimaryActivity from YAML mapping: {yaml_count:,} records")
+    print(f"[SUCCESS] Total PrimaryActivity enrichment: {enriched_count:,} records")
     
     return enriched_data
 
@@ -1964,7 +1969,7 @@ def enrich_with_metadata(fbs_data, meta_map):
     records_with_ipcc = merged["IPCC_Category"].notna().sum() if "IPCC_Category" in merged.columns else 0
     match_rate = (records_with_ipcc / len(merged)) * 100
     
-    print(f"✓ Successfully matched {records_with_ipcc:,} records with IPCC categories ({match_rate:.1f}%)")
+    print(f"[SUCCESS] Successfully matched {records_with_ipcc:,} records with IPCC categories ({match_rate:.1f}%)")
     
     return merged
 
@@ -2011,7 +2016,7 @@ def compare_with_reference(fbs_calculated, fbs_reference):
     print(f"   Reference: {len(fbs_reference):,} rows")
     
     if len(fbs_calculated) == len(fbs_reference):
-        print("   ✓ Row counts match!")
+        print("   [SUCCESS] Row counts match!")
         results["row_count_match"] = True
     else:
         diff = len(fbs_calculated) - len(fbs_reference)
@@ -2071,7 +2076,7 @@ def compare_with_reference(fbs_calculated, fbs_reference):
         print(f"     {only_in_ref}")
     
     if len(only_in_ref) == 0:
-        print("   ✓ All reference columns present in generated data!")
+        print("   [SUCCESS] All reference columns present in generated data!")
         results["column_match"] = True
     else:
         print("   ✗ Some reference columns missing from generated data")
@@ -2112,7 +2117,7 @@ def compare_with_reference(fbs_calculated, fbs_reference):
                     print(f"   Warning: Could not compare column '{col}': {e}")
             
             if not mismatches:
-                print("   ✓ All data values match between generated and reference!")
+                print("   [SUCCESS] All data values match between generated and reference!")
                 results["data_match"] = True
             else:
                 print(f"   ✗ Found mismatches in {len(mismatches)} columns:")
@@ -2128,7 +2133,7 @@ def compare_with_reference(fbs_calculated, fbs_reference):
     # 4. Overall result
     print("\n" + "="*80)
     if results["row_count_match"] and results["column_match"] and results["data_match"]:
-        print("✓✓✓ SANITY CHECK PASSED ✓✓✓")
+        print("[SUCCESS][SUCCESS][SUCCESS] SANITY CHECK PASSED [SUCCESS][SUCCESS][SUCCESS]")
         print("Generated data matches reference parquet file!")
     else:
         print("⚠️  SANITY CHECK: Differences detected")
@@ -2206,7 +2211,7 @@ def validate_data(df, model_name):
             print(f"ℹ Found {tiny_count:,} very small emission values (< {config.MIN_FLOW_AMOUNT})")
     
     if not issues_found:
-        print("✓ Data validation passed - no issues found")
+        print("[SUCCESS] Data validation passed - no issues found")
         return True
     else:
         print("⚠ Data validation found issues - review warnings above")
@@ -2238,7 +2243,34 @@ def load_industry_output(csv_path):
     # First column contains the output values
     output_dict = df.iloc[:, 0].to_dict()
     
-    print(f"✓ Loaded {len(output_dict):,} industry output values")
+    print(f"[SUCCESS] Loaded {len(output_dict):,} industry output values")
+    print(f"  Total output: ${sum(output_dict.values()):,.0f}")
+    print(f"  Min: ${min(output_dict.values()):,.0f}, Max: ${max(output_dict.values()):,.0f}")
+    
+    return output_dict
+
+
+def load_commodity_output(csv_path):
+    """
+    Load commodity output data (q.csv) for the industry-to-commodity transformation.
+    
+    Parameters:
+    -----------
+    csv_path : str
+        Path to q.csv file (USEEIO commodity output in dollars)
+        
+    Returns:
+    --------
+    dict
+        Dictionary mapping USEEIO sector code (without /US suffix) to output value in USD
+    """
+    print(f"Loading commodity output data from: {csv_path}")
+    
+    df = pd.read_csv(csv_path, index_col=0)
+    df.index = df.index.str.replace('/US', '', regex=False)
+    output_dict = df.iloc[:, 0].to_dict()
+    
+    print(f"[SUCCESS] Loaded {len(output_dict):,} commodity output values")
     print(f"  Total output: ${sum(output_dict.values()):,.0f}")
     print(f"  Min: ${min(output_dict.values()):,.0f}, Max: ${max(output_dict.values()):,.0f}")
     
@@ -2268,16 +2300,18 @@ def load_market_share_matrix(csv_path):
     df.index = df.index.str.replace('/US', '', regex=False)
     df.columns = df.columns.str.replace('/US', '', regex=False)
     
-    print(f"✓ Loaded V_n matrix: {len(df)} industries × {len(df.columns)} commodities")
+    print(f"[SUCCESS] Loaded V_n matrix: {len(df)} industries × {len(df.columns)} commodities")
     
-    # Validate: each row should sum to approximately 1.0
-    row_sums = df.sum(axis=1)
-    max_deviation = abs(row_sums - 1.0).max()
+    # Validate: each COLUMN should sum to approximately 1.0
+    # V_n is normalized by commodity output q, so V_n[:,j] = V[:,j] / q_j
+    # and sum_i(V_n[i,j]) = sum_i(V[i,j]) / q_j = q_j / q_j = 1
+    col_sums = df.sum(axis=0)
+    max_deviation = abs(col_sums - 1.0).max()
     
     if max_deviation > 0.01:  # Allow 1% deviation
-        print(f"  ⚠ Warning: Maximum row sum deviation from 1.0: {max_deviation:.4f}")
+        print(f"  ⚠ Warning: Maximum column sum deviation from 1.0: {max_deviation:.4f}")
     else:
-        print(f"  ✓ Row sums validated (max deviation: {max_deviation:.6f})")
+        print(f"  [SUCCESS] Column sums validated (max deviation: {max_deviation:.6f})")
     
     return df
 
@@ -2334,7 +2368,7 @@ def normalize_emissions_by_output(df, industry_output_dict):
     total_output = df_normalized.loc[valid_mask, 'Industry Output (USD)'].sum()
     avg_intensity = total_kg / total_output if total_output > 0 else 0
     
-    print(f"✓ Calculated emission intensities for {valid_count:,} records")
+    print(f"[SUCCESS] Calculated emission intensities for {valid_count:,} records")
     print(f"  Total emissions: {total_kg:,.0f} kg")
     print(f"  Total output: ${total_output:,.0f}")
     print(f"  Average intensity: {avg_intensity:.6e} kg/USD")
@@ -2342,7 +2376,7 @@ def normalize_emissions_by_output(df, industry_output_dict):
     return df_normalized
 
 
-def transform_to_commodity_form(df_normalized, market_share_matrix, sector_code_to_name):
+def transform_to_commodity_form(df_normalized, market_share_matrix, commodity_output_dict, sector_code_to_name):
     """
     Transform industry-form emissions to commodity-form using V_n market share matrix.
     
@@ -2359,6 +2393,9 @@ def transform_to_commodity_form(df_normalized, market_share_matrix, sector_code_
         Normalized data with emission intensities
     market_share_matrix : pandas.DataFrame
         V_n matrix (industries × commodities)
+    commodity_output_dict : dict
+        Dictionary mapping USEEIO commodity codes to output values in USD (from q.csv).
+        Used to compute e_ij = intensity_i × V_n[i,j] × q_j.
     sector_code_to_name : dict
         Mapping of USEEIO sector codes to names (for commodity enrichment)
         
@@ -2418,9 +2455,11 @@ def transform_to_commodity_form(df_normalized, market_share_matrix, sector_code_
                 # Replace industry code with commodity code
                 commodity_record['USEEIO Sector Code'] = commodity_code
                 
-                # Transform emissions using V_n matrix (intensity * market_share * output)
-                # The market share represents the portion of industry output allocated to this commodity
-                commodity_record['Emissions (kg)'] = intensity * market_share * record['Industry Output (USD)']
+                # Transform emissions using V_n matrix: e_ij = (e_i/x_i) × V_n[i,j] × q_j
+                # V_n columns sum to 1 (normalized by commodity output q_j), so
+                # sum_j(e_ij) = (e_i/x_i) × sum_j(V_n[i,j] × q_j) = (e_i/x_i) × x_i = e_i
+                q_j = commodity_output_dict.get(commodity_code, 0)
+                commodity_record['Emissions (kg)'] = intensity * market_share * q_j
                 
                 # Transform emission intensity using V_n matrix (intensity * market_share)
                 # This allocates the intensity proportionally to each commodity
@@ -2432,7 +2471,7 @@ def transform_to_commodity_form(df_normalized, market_share_matrix, sector_code_
                 
                 commodity_records.append(commodity_record)
     
-    print(f"✓ Created {len(commodity_records):,} commodity records")
+    print(f"[SUCCESS] Created {len(commodity_records):,} commodity records")
     
     # Convert to DataFrame
     commodity_df = pd.DataFrame(commodity_records)
@@ -2476,7 +2515,7 @@ def transform_to_commodity_form(df_normalized, market_share_matrix, sector_code_
     # Set NAICS Sector Code to None for commodity form (no longer meaningful)
     commodity_agg['NAICS Sector Code'] = None
     
-    print(f"✓ Aggregated to {len(commodity_agg):,} commodity records (NAICS codes removed)")
+    print(f"[SUCCESS] Aggregated to {len(commodity_agg):,} commodity records (NAICS codes removed)")
     
     # Recalculate kgCO2e and MTCO2e using GWP
     commodity_agg['Emissions (kgCO2e)'] = commodity_agg['Emissions (kg)'] * commodity_agg['AR5-100 GWP']
@@ -2524,7 +2563,7 @@ def transform_to_commodity_form(df_normalized, market_share_matrix, sector_code_
     commodity_total_kg = commodity_agg['Emissions (kg)'].sum()
     difference_pct = abs(commodity_total_kg - original_total_kg) / original_total_kg * 100
     
-    print(f"✓ Emission totals:")
+    print(f"[SUCCESS] Emission totals:")
     print(f"  Industry form: {original_total_kg:,.0f} kg")
     print(f"  Commodity form: {commodity_total_kg:,.0f} kg")
     print(f"  Difference: {difference_pct:.2f}%")
@@ -2825,7 +2864,7 @@ def build_hierarchical_jsonld(df, include_all_fields=True):
         total_ipcc = sum(len(g['ipcc_categories']) for u in graph for n in u['naics_sectors'] 
                         for g in n['ghg_categories'])
         
-        print(f"✓ Built full hierarchy: {total_useeio} USEEIO sectors → {total_naics} NAICS → {total_ghg} GHG categories → {total_ipcc} IPCC categories")
+        print(f"[SUCCESS] Built full hierarchy: {total_useeio} USEEIO sectors → {total_naics} NAICS → {total_ghg} GHG categories → {total_ipcc} IPCC categories")
     
     else:
         # Light hierarchy structure (aggregated)
@@ -2867,7 +2906,7 @@ def build_hierarchical_jsonld(df, include_all_fields=True):
         total_gas_cats = sum(len(a['gas_categories']) for u in graph for g in u['ghg_categories'] 
                             for a in g['activity_sets'])
         
-        print(f"✓ Built light hierarchy: {total_useeio} USEEIO sectors → {total_ghg} GHG categories → {total_activity_sets} activity sets → {total_gas_cats} gas categories")
+        print(f"[SUCCESS] Built light hierarchy: {total_useeio} USEEIO sectors → {total_ghg} GHG categories → {total_activity_sets} activity sets → {total_gas_cats} gas categories")
     
     # Create JSON-LD with context
     jsonld = {
@@ -3011,7 +3050,7 @@ def build_ghg_source_classification_jsonld(df):
     total_fuels = len(fuels)
     total_gas_categories = len(gas_hierarchy)
     
-    print(f"✓ Built GHG source classification:")
+    print(f"[SUCCESS] Built GHG source classification:")
     print(f"  - {total_ghg_categories} activity categories")
     print(f"  - {total_fuels} unique fuels")
     print(f"  - {total_gas_categories} gas categories")
@@ -3065,7 +3104,7 @@ def build_ghg_source_classification_csv(df):
     # Reset index to get clean row numbers
     classification_df = classification_df.reset_index(drop=True)
     
-    print(f"✓ Built GHG source classification CSV with {len(classification_df)} unique combinations")
+    print(f"[SUCCESS] Built GHG source classification CSV with {len(classification_df)} unique combinations")
     
     return classification_df
 
@@ -3246,7 +3285,7 @@ def build_emission_events_jsonld(df):
         "@graph": events
     }
     
-    print(f"✓ Built {len(events):,} emission events")
+    print(f"[SUCCESS] Built {len(events):,} emission events")
     
     return jsonld_data
 
@@ -3352,7 +3391,7 @@ def build_d3_sunburst_hierarchy(df):
                 total_nodes += 1  # subsubcategory
                 total_nodes += len(subsubcat['children'])  # gas categories
     
-    print(f"✓ Built D3.js sunburst: {total_useeio} USEEIO sectors → {total_ghg_cats} GHG categories")
+    print(f"[SUCCESS] Built D3.js sunburst: {total_useeio} USEEIO sectors → {total_ghg_cats} GHG categories")
     
     return root
 
@@ -3397,7 +3436,7 @@ def export_event_based_outputs(enriched_data, output_dir, model_name):
         with open(full_path, 'w') as f:
             import json
             json.dump(full_jsonld, f, indent=2)
-        print(f"✓ Saved: {os.path.basename(full_path)}")
+        print(f"[SUCCESS] Saved: {os.path.basename(full_path)}")
         print(f"  Events: {len(full_jsonld['@graph']):,}")
     except Exception as e:
         print(f"⚠ Error saving full events: {e}")
@@ -3413,7 +3452,7 @@ def export_event_based_outputs(enriched_data, output_dir, model_name):
         with open(sunburst_path, 'w') as f:
             import json
             json.dump(sunburst_data, f, indent=2)
-        print(f"✓ Saved: {os.path.basename(sunburst_path)}")
+        print(f"[SUCCESS] Saved: {os.path.basename(sunburst_path)}")
         
         # Count total nodes for info
         def count_nodes(node):
@@ -3674,7 +3713,7 @@ def save_outputs(fbs_parquet, fbs_calculated, enriched_data, config_dict, commod
                         v_n_df.to_excel(writer, sheet_name='V_n_Matrix', index=True)
                     if x_df is not None:
                         x_df.to_excel(writer, sheet_name='x_Vector', index=False)
-                print(f"  ✓ Excel: {base_filename}.xlsx (with Author_Info, Model_Specs, Baseline, and reference data tabs)")
+                print(f"  [SUCCESS] Excel: {base_filename}.xlsx (with Author_Info, Model_Specs, Baseline, and reference data tabs)")
             else:
                 # Export single sheet
                 with pd.ExcelWriter(excel_path, engine='openpyxl') as writer:
@@ -3694,7 +3733,7 @@ def save_outputs(fbs_parquet, fbs_calculated, enriched_data, config_dict, commod
                         v_n_df.to_excel(writer, sheet_name='V_n_Matrix', index=True)
                     if x_df is not None:
                         x_df.to_excel(writer, sheet_name='x_Vector', index=False)
-                print(f"  ✓ Excel: {base_filename}.xlsx (with Author_Info, Model_Specs, and reference data tabs)")
+                print(f"  [SUCCESS] Excel: {base_filename}.xlsx (with Author_Info, Model_Specs, and reference data tabs)")
         except PermissionError:
             print(f"  ⚠ Excel export skipped - file is open")
         except Exception as e:
@@ -3706,7 +3745,7 @@ def save_outputs(fbs_parquet, fbs_calculated, enriched_data, config_dict, commod
         csv_path = os.path.join(subdir, f"{base_filename}.csv")
         try:
             export_data.to_csv(csv_path, index=False)
-            print(f"  ✓ CSV: {base_filename}.csv")
+            print(f"  [SUCCESS] CSV: {base_filename}.csv")
         except PermissionError:
             print(f"  ⚠ CSV export skipped - file is open")
         except Exception as e:
@@ -3717,7 +3756,7 @@ def save_outputs(fbs_parquet, fbs_calculated, enriched_data, config_dict, commod
             baseline_csv_path = os.path.join(subdir, f"{config.MODELNAME}{suffix}_baseline.csv")
             try:
                 fbs_parquet.to_csv(baseline_csv_path, index=False)
-                print(f"  ✓ CSV (baseline): {config.MODELNAME}{suffix}_baseline.csv")
+                print(f"  [SUCCESS] CSV (baseline): {config.MODELNAME}{suffix}_baseline.csv")
             except PermissionError:
                 print(f"  ⚠ Baseline CSV export skipped - file is open")
             except Exception as e:
@@ -3729,7 +3768,7 @@ def save_outputs(fbs_parquet, fbs_calculated, enriched_data, config_dict, commod
         parquet_path = os.path.join(subdir, f"{base_filename}.parquet")
         try:
             export_data.to_parquet(parquet_path, index=False, engine='pyarrow', compression='snappy')
-            print(f"  ✓ Parquet: {base_filename}.parquet")
+            print(f"  [SUCCESS] Parquet: {base_filename}.parquet")
         except PermissionError:
             print(f"  ⚠ Parquet export skipped - file is open")
         except Exception as e:
@@ -3749,7 +3788,7 @@ def save_outputs(fbs_parquet, fbs_calculated, enriched_data, config_dict, commod
                 json.dump(emission_events_jsonld, f, indent=2)
             
             event_count = len(emission_events_jsonld.get('@graph', []))
-            print(f"  ✓ JSON-LD (event-based): {base_filename}.jsonld ({event_count:,} events)")
+            print(f"  [SUCCESS] JSON-LD (event-based): {base_filename}.jsonld ({event_count:,} events)")
         except PermissionError:
             print(f"  ⚠ JSON-LD export skipped - file is open")
         except Exception as e:
@@ -3776,7 +3815,7 @@ def save_outputs(fbs_parquet, fbs_calculated, enriched_data, config_dict, commod
                 return count
             
             total_nodes = count_nodes(sunburst_hierarchy)
-            print(f"  ✓ JSON (sunburst): {base_filename}_sunburst.json ({total_nodes:,} nodes)")
+            print(f"  [SUCCESS] JSON (sunburst): {base_filename}_sunburst.json ({total_nodes:,} nodes)")
             
             # Copy industry sunburst to docs/visualization/data for web visualization
             if suffix == '_industry':
@@ -3786,7 +3825,7 @@ def save_outputs(fbs_parquet, fbs_calculated, enriched_data, config_dict, commod
                     viz_sunburst_path = os.path.join(viz_data_dir, "industry_sunburst.json")
                     try:
                         shutil.copy2(sunburst_path, viz_sunburst_path)
-                        print(f"  ✓ Copied to visualization: docs/visualization/data/industry_sunburst.json")
+                        print(f"  [SUCCESS] Copied to visualization: docs/visualization/data/industry_sunburst.json")
                     except Exception as e:
                         print(f"  ⚠ Could not copy to visualization folder: {e}")
                         print(f"  → Manual step: Copy {base_filename}_sunburst.json to docs/visualization/data/industry_sunburst.json")
@@ -3819,7 +3858,7 @@ def save_outputs(fbs_parquet, fbs_calculated, enriched_data, config_dict, commod
     )
     try:
         ghg_classification_csv_df.to_csv(ghg_classification_csv_path, index=False)
-        print(f"✓ GHG source classification CSV saved: {os.path.basename(ghg_classification_csv_path)}")
+        print(f"[SUCCESS] GHG source classification CSV saved: {os.path.basename(ghg_classification_csv_path)}")
     except PermissionError:
         print(f"⚠ Permission denied: Close {os.path.basename(ghg_classification_csv_path)} if it's open")
     except Exception as e:
@@ -3834,7 +3873,7 @@ def save_outputs(fbs_parquet, fbs_calculated, enriched_data, config_dict, commod
         with open(ghg_classification_jsonld_path, 'w') as f:
             import json
             json.dump(ghg_classification_jsonld, f, indent=2)
-        print(f"✓ GHG source classification JSON-LD saved: {os.path.basename(ghg_classification_jsonld_path)}")
+        print(f"[SUCCESS] GHG source classification JSON-LD saved: {os.path.basename(ghg_classification_jsonld_path)}")
     except PermissionError:
         print(f"⚠ Permission denied: Close {os.path.basename(ghg_classification_jsonld_path)} if it's open")
     except Exception as e:
@@ -3866,7 +3905,7 @@ def main(fbs_calculated=None):
     This function orchestrates the enrichment workflow:
     0. Validate FlowSA version
     1. Load configuration settings
-    2. Use provided FlowBySector data (generated by run_extraction.py)
+    2. Use provided FlowBySector data (generated by generate_ghg_dataset.py)
     3. Filter to relevant columns
     4. Load EPA GHGI metadata
     5. Enrich data with metadata
@@ -3917,7 +3956,7 @@ def main(fbs_calculated=None):
     print(f"  File exists: {os.path.exists(parquet_path)}")
     
     if os.path.exists(parquet_path):
-        print("  ✓ Loading existing baseline parquet data...")
+        print("  [SUCCESS] Loading existing baseline parquet data...")
         fbs_parquet = load_parquet_data(
             config_dict["input_path"], 
             config_dict["subfolder"], 
@@ -3942,12 +3981,12 @@ def main(fbs_calculated=None):
                 print(f"  Downloading {config_dict['modelname']} using flowsa.getFlowBySector()...")
                 fbs_parquet = flowsa.getFlowBySector(config_dict['modelname'])
                 
-                print(f"  ✓ Downloaded {len(fbs_parquet):,} records from FlowSA")
+                print(f"  [SUCCESS] Downloaded {len(fbs_parquet):,} records from FlowSA")
                 
                 # Save to the expected location with the EXACT filename from config
                 os.makedirs(fbs_folder, exist_ok=True)
                 fbs_parquet.to_parquet(parquet_path, engine='pyarrow', compression='snappy')
-                print(f"  ✓ Saved baseline to: {parquet_path}")
+                print(f"  [SUCCESS] Saved baseline to: {parquet_path}")
                 
                 # Apply the same Location formatting as load_parquet_data
                 fbs_parquet.Location = fbs_parquet.Location.apply('="{}"'.format)
@@ -3960,22 +3999,34 @@ def main(fbs_calculated=None):
             print("  Continuing without baseline (sanity check and baseline export will be skipped)")
             fbs_parquet = None
     
+    # Filter F01000 (Used/Secondhand Goods) from baseline.
+    # F01000 is a final demand sector that does not produce emissions and is not
+    # used in USEEIO input-output modeling or Scope 3 emission factor (SEF)
+    # calculations. Excluding it keeps the baseline consistent with the enriched
+    # outputs and avoids confusion for downstream users.
+    if fbs_parquet is not None and 'SectorProducedBy' in fbs_parquet.columns:
+        before = len(fbs_parquet)
+        fbs_parquet = fbs_parquet[fbs_parquet['SectorProducedBy'] != 'F01000'].copy()
+        removed = before - len(fbs_parquet)
+        if removed > 0:
+            print(f"  Excluded F01000 (Used/Secondhand Goods) from baseline: {removed} rows removed")
+
     # -------------------------------------------------------------------------
     # STEP 2: Verify FlowBySector data was provided
     # -------------------------------------------------------------------------
     if fbs_calculated is None:
         raise ValueError(
             "FlowBySector data must be generated before calling main().\n"
-            "This script should be called from run_extraction.py which generates the data."
+            "This script should be called from generate_ghg_dataset.py which generates the data."
         )
     
     print(f"\nStep 2: Using provided FlowBySector data ({len(fbs_calculated):,} records)...")
     
     # -------------------------------------------------------------------------
-    # STEP 2.5: Sanity check - Compare with reference parquet (if available)
+    # STEP 3: Sanity check - Compare with reference parquet (if available)
     # -------------------------------------------------------------------------
     if fbs_parquet is not None:
-        print("\nStep 2.5: Running sanity check against reference parquet...")
+        print("\nStep 3: Running sanity check against reference parquet...")
         
         # Aggregate calculated data to match reference format (without activity columns)
         fbs_calculated_aggregated = aggregate_to_reference_format(fbs_calculated)
@@ -4004,59 +4055,59 @@ def main(fbs_calculated=None):
                     return
     
     # -------------------------------------------------------------------------  
-    # STEP 3: Prepare data for enrichment (no column filtering yet)
+    # STEP 4: Prepare data for enrichment (no column filtering yet)
     # -------------------------------------------------------------------------
-    print("\nStep 3: Preparing data for enrichment...")
+    print("\nStep 4: Preparing data for enrichment...")
     fbs_filtered = fbs_calculated.copy()  # Keep all columns for now
     
     # -------------------------------------------------------------------------
-    # STEP 4: Load EPA GHGI metadata mapping
+    # STEP 5: Load EPA GHGI metadata mapping
     # -------------------------------------------------------------------------
-    print("\nStep 4: Loading EPA GHGI metadata...")
+    print("\nStep 5: Loading EPA GHGI metadata...")
     mapping_csv_path = os.path.join(config_dict["output_dir"], config.EPA_GHGI_META_CSV)
     meta_map = load_metadata_mapping(mapping_csv_path)
     
     # -------------------------------------------------------------------------
-    # STEP 4.5: Load fuel lookup tables
+    # STEP 5.1: Load fuel lookup tables
     # -------------------------------------------------------------------------
-    print("\nStep 4.5: Loading fuel lookup tables...")
+    print("\nStep 5.1: Loading fuel lookup tables...")
     fuel_by_table = load_fuel_lookup(config.FUEL_BY_TABLE_CSV)
     fuel_by_term = load_fuel_lookup(config.FUEL_BY_TERM_CSV)
     
     # -------------------------------------------------------------------------
-    # STEP 4.6: Load NAICS to USEEIO crosswalk
+    # STEP 5.2: Load NAICS to USEEIO crosswalk
     # -------------------------------------------------------------------------
-    print("\nStep 4.6: Loading NAICS to USEEIO crosswalk...")
+    print("\nStep 5.2: Loading NAICS to USEEIO crosswalk...")
     naics_to_useeio_dict = load_naics_to_useeio_crosswalk(config.NAICS_TO_USEEIO_CSV)
     
     # -------------------------------------------------------------------------
-    # STEP 4.7: Load GHG Source categorization mapping
+    # STEP 5.3: Load GHG Source categorization mapping
     # -------------------------------------------------------------------------
-    print("\nStep 4.7: Loading GHG Source categorization mapping...")
+    print("\nStep 5.3: Loading GHG Source categorization mapping...")
     metasource_to_ghgsource_mapping = load_metasource_to_ghgsource_mapping(config.METASOURCE_TO_GHGSOURCE_CSV)
     
     # -------------------------------------------------------------------------
-    # STEP 4.9: Load Flowable categorization
+    # STEP 5.4: Load Flowable categorization
     # -------------------------------------------------------------------------
-    print("\nStep 4.9: Loading Flowable categorization...")
+    print("\nStep 5.4: Loading Flowable categorization...")
     flowable_to_gas_dict = load_flowable_categorization(config.FLOWABLE_CATEGORIZATION_CSV)
     
     # -------------------------------------------------------------------------
-    # STEP 4.10: Load IPCC AR5-100 GWP factors
+    # STEP 5.5: Load IPCC AR5-100 GWP factors
     # -------------------------------------------------------------------------
-    print("\nStep 4.10: Loading IPCC AR5-100 GWP factors...")
+    print("\nStep 5.5: Loading IPCC AR5-100 GWP factors...")
     uuid_to_gwp_dict = load_ipcc_ar5_100_gwp(config.IPCC_AR5_100_PARQUET)
     
     # -------------------------------------------------------------------------
-    # STEP 4.11: Load USEEIO sector classification
+    # STEP 5.6: Load USEEIO sector classification
     # -------------------------------------------------------------------------
-    print("\nStep 4.11: Loading USEEIO sector classification...")
+    print("\nStep 5.6: Loading USEEIO sector classification...")
     sector_code_to_name = load_sector_classification(config.SECTOR_CLASSIFICATION_CSV)
     
     # -------------------------------------------------------------------------
-    # STEP 5: Load method YAML and extract PrimaryActivity information
+    # STEP 6: Load method YAML and extract PrimaryActivity information
     # -------------------------------------------------------------------------
-    print("\nStep 5: Loading method YAML for PrimaryActivity information...")
+    print("\nStep 6: Loading method YAML for PrimaryActivity information...")
     
     # Determine the method YAML file path
     method_yaml_path = os.path.join(
@@ -4090,70 +4141,70 @@ def main(fbs_calculated=None):
     primary_activity_mapping = extract_primary_activities_mapping(yaml_content) if yaml_content else {}
     
     # -------------------------------------------------------------------------
-    # STEP 6: Enrich data with metadata (if metadata is available)
+    # STEP 7: Enrich data with metadata (if metadata is available)
     # -------------------------------------------------------------------------
     if meta_map is not None and "MetaSources" in fbs_filtered.columns:
-        print("\nStep 6: Enriching data with EPA GHGI metadata...")
+        print("\nStep 7: Enriching data with EPA GHGI metadata...")
         enriched_data = enrich_with_metadata(fbs_filtered, meta_map)
     else:
-        print("\nStep 6: Skipping metadata enrichment (metadata not available)")
+        print("\nStep 7: Skipping metadata enrichment (metadata not available)")
         enriched_data = fbs_filtered.copy()
         
         if "MetaSources" not in fbs_filtered.columns:
             print("  Reason: No 'MetaSources' column in FlowBySector data")
     
     # -------------------------------------------------------------------------
-    # STEP 7.1: Enrich data with USEEIO sector codes
+    # STEP 8: Enrich data with USEEIO sector codes
     # -------------------------------------------------------------------------
-    print("\nStep 7.1: Enriching data with USEEIO sector codes...")
+    print("\nStep 8: Enriching data with USEEIO sector codes...")
     enriched_data = enrich_with_useeio(enriched_data, naics_to_useeio_dict)
     
     # -------------------------------------------------------------------------
-    # STEP 7.2: Enrich with USEEIO sector names
+    # STEP 9: Enrich with USEEIO sector names
     # -------------------------------------------------------------------------
-    print("\nStep 7.2: Enriching with USEEIO sector names...")
+    print("\nStep 9: Enriching with USEEIO sector names...")
     enriched_data = enrich_with_useeio_sector_name(enriched_data, sector_code_to_name)
     
     # -------------------------------------------------------------------------
-    # STEP 7.3: Enrich data with PrimaryActivity information
+    # STEP 10: Enrich data with PrimaryActivity information
     # -------------------------------------------------------------------------
-    print("\nStep 7.3: Enriching data with PrimaryActivity information...")
+    print("\nStep 10: Enriching data with PrimaryActivity information...")
     enriched_data = enrich_with_primary_activities(enriched_data, primary_activity_mapping)
     
     # -------------------------------------------------------------------------
-    # STEP 7.5: Enrich data with fuel type
+    # STEP 11: Enrich data with fuel type
     # -------------------------------------------------------------------------
-    print("\nStep 7.5: Enriching data with fuel type...")
+    print("\nStep 11: Enriching data with fuel type...")
     enriched_data = enrich_with_fuel(enriched_data, fuel_by_table, fuel_by_term)
     
     # -------------------------------------------------------------------------
-    # STEP 7.6: Enrich data with comprehensive GHG categorization
+    # STEP 12: Enrich data with comprehensive GHG categorization
     # -------------------------------------------------------------------------
-    print("\nStep 7.6: Enriching data with comprehensive GHG categorization...")
+    print("\nStep 12: Enriching data with comprehensive GHG categorization...")
     enriched_data = enrich_with_ghg_source_categories(enriched_data, metasource_to_ghgsource_mapping)
     
     # -------------------------------------------------------------------------
-    # STEP 7.7: Enrich data with Gas category
+    # STEP 13: Enrich data with Gas category
     # -------------------------------------------------------------------------
-    print("\nStep 7.7: Enriching data with Gas category...")
+    print("\nStep 13: Enriching data with Gas category...")
     enriched_data = enrich_with_gas_category(enriched_data, flowable_to_gas_dict)
     
     # -------------------------------------------------------------------------
-    # STEP 7.8: Enrich data with AR5-100 GWP and calculate MTCO2e
+    # STEP 14: Enrich data with AR5-100 GWP and calculate MTCO2e
     # -------------------------------------------------------------------------
-    print("\nStep 7.8: Enriching data with AR5-100 GWP and calculating MTCO2e...")
+    print("\nStep 14: Enriching data with AR5-100 GWP and calculating MTCO2e...")
     enriched_data = enrich_with_ar5_100_gwp(enriched_data, uuid_to_gwp_dict)
     
     # -------------------------------------------------------------------------
-    # STEP 7.9: Calculate contribution percentages by USEEIO sector
+    # STEP 15: Calculate contribution percentages by USEEIO sector
     # -------------------------------------------------------------------------
-    print("\nStep 7.9: Calculating contribution percentages by USEEIO sector...")
+    print("\nStep 15: Calculating contribution percentages by USEEIO sector...")
     enriched_data = calculate_contribution_by_sector(enriched_data)
     
     # -------------------------------------------------------------------------
-    # STEP 7.10: Rename columns and create emission columns
+    # STEP 16: Rename columns and create emission columns
     # -------------------------------------------------------------------------
-    print("\nStep 7.10: Renaming columns and creating emission columns...")
+    print("\nStep 16: Renaming columns and creating emission columns...")
     enriched_data = rename_and_create_columns(enriched_data)
     
     # =========================================================================
@@ -4167,58 +4218,71 @@ def main(fbs_calculated=None):
     print("="*80)
     
     # -------------------------------------------------------------------------
-    # STEP 7.11: Load economic data files (x.csv and V_n.csv)
+    # STEP 17: Load economic data files (x.csv and V_n.csv)
     # -------------------------------------------------------------------------
-    print("\nStep 7.11: Loading economic data files...")
+    print("\nStep 17: Loading economic data files...")
     
     # Path to data files
     x_csv_path = os.path.join(parent_dir, 'data', 'x.csv')
     v_n_csv_path = os.path.join(parent_dir, 'data', 'V_n.csv')
+    q_csv_path = os.path.join(parent_dir, 'data', 'q.csv')
     
     # Check if files exist
     if not os.path.exists(x_csv_path):
         print(f"⚠ Warning: Industry output file not found: {x_csv_path}")
         print("  Skipping commodity transformation")
         industry_output_dict = None
+        commodity_output_dict = None
         market_share_matrix = None
     elif not os.path.exists(v_n_csv_path):
         print(f"⚠ Warning: Market share matrix not found: {v_n_csv_path}")
         print("  Skipping commodity transformation")
         industry_output_dict = None
+        commodity_output_dict = None
+        market_share_matrix = None
+    elif not os.path.exists(q_csv_path):
+        print(f"⚠ Warning: Commodity output file not found: {q_csv_path}")
+        print("  Skipping commodity transformation")
+        industry_output_dict = None
+        commodity_output_dict = None
         market_share_matrix = None
     else:
         # Load industry output data (x.csv)
         industry_output_dict = load_industry_output(x_csv_path)
         
+        # Load commodity output data (q.csv)
+        commodity_output_dict = load_commodity_output(q_csv_path)
+        
         # Load market share matrix (V_n.csv)
         market_share_matrix = load_market_share_matrix(v_n_csv_path)
     
     # -------------------------------------------------------------------------
-    # STEP 7.12: Normalize and transform to commodity form
+    # STEP 18: Normalize and transform to commodity form
     # -------------------------------------------------------------------------
     commodity_data = None
     
-    if industry_output_dict is not None and market_share_matrix is not None:
-        print("\nStep 7.12: Normalizing and transforming to commodity form...")
+    if industry_output_dict is not None and commodity_output_dict is not None and market_share_matrix is not None:
+        print("\nStep 18: Normalizing and transforming to commodity form...")
         
         # Normalize emissions by industry output (adds intensity column to industry form too)
         enriched_data = normalize_emissions_by_output(enriched_data, industry_output_dict)
         
         # Transform to commodity form using V_n matrix
         commodity_data = transform_to_commodity_form(
-            enriched_data, 
+            enriched_data,
             market_share_matrix,
+            commodity_output_dict,
             sector_code_to_name
         )
         
-        print(f"✓ Commodity transformation complete")
+        print(f"[SUCCESS] Commodity transformation complete")
         print(f"  Industry form: {len(enriched_data):,} records (with emission intensity)")
         print(f"  Commodity form: {len(commodity_data):,} records (with emission intensity)")
         
         # -------------------------------------------------------------------------
-        # STEP 7.13: Sort commodity data to match industry form
+        # STEP 19: Sort commodity data to match industry form
         # -------------------------------------------------------------------------
-        print("\nStep 7.13: Sorting commodity data...")
+        print("\nStep 19: Sorting commodity data...")
         
         # Sort by USEEIO Sector Code, then by contribution (descending)
         sort_columns = []
@@ -4238,9 +4302,9 @@ def main(fbs_calculated=None):
                 ascending=sort_ascending,
                 na_position='last'
             )
-            print(f"✓ Sorted commodity data by: {' → '.join(sort_columns)}")
+            print(f"[SUCCESS] Sorted commodity data by: {' → '.join(sort_columns)}")
         
-        print(f"✓ Commodity data ready for export")
+        print(f"[SUCCESS] Commodity data ready for export")
         print(f"  Records: {len(commodity_data):,}")
         print(f"  Columns: {len(commodity_data.columns)}")
     else:
@@ -4252,15 +4316,15 @@ def main(fbs_calculated=None):
     print("="*80)
     
     # -------------------------------------------------------------------------
-    # STEP 8: Validate data quality
+    # STEP 20: Validate data quality
     # -------------------------------------------------------------------------
-    print("\nStep 8: Validating data quality...")
+    print("\nStep 20: Validating data quality...")
     validate_data(enriched_data, config_dict["modelname"])
     
     # -------------------------------------------------------------------------
-    # STEP 9: Reorder columns and sort by USEEIO, NAICS, then contribution
+    # STEP 21: Reorder columns and sort by USEEIO, NAICS, then contribution
     # -------------------------------------------------------------------------
-    print("\nStep 9: Reordering columns and sorting data...")
+    print("\nStep 21: Reordering columns and sorting data...")
     # Filter to columns that exist
     final_columns = [col for col in config.KEEP_COLUMNS if col in enriched_data.columns]
     enriched_data = enriched_data[final_columns]
@@ -4287,30 +4351,30 @@ def main(fbs_calculated=None):
             ascending=sort_ascending,
             na_position='last'
         )
-        print(f"✓ Sorted {len(enriched_data):,} records by: {' → '.join(sort_columns)}")
+        print(f"[SUCCESS] Sorted {len(enriched_data):,} records by: {' → '.join(sort_columns)}")
     
     # -------------------------------------------------------------------------
-    # STEP 9.5: Add unique row identifier (after sorting)
+    # STEP 22: Add unique row identifier (after sorting)
     # -------------------------------------------------------------------------
-    print("\nStep 9.5: Adding unique row identifiers...")
+    print("\nStep 22: Adding unique row identifiers...")
     
     # Add unique ID to industry form (1-based indexing)
     enriched_data.insert(0, 'Row ID', range(1, len(enriched_data) + 1))
-    print(f"✓ Added Row ID to industry form: 1 to {len(enriched_data):,}")
+    print(f"[SUCCESS] Added Row ID to industry form: 1 to {len(enriched_data):,}")
     
     # Add unique ID to commodity form if it exists (separate sequence)
     if commodity_data is not None:
         commodity_data.insert(0, 'Row ID', range(1, len(commodity_data) + 1))
-        print(f"✓ Added Row ID to commodity form: 1 to {len(commodity_data):,}")
+        print(f"[SUCCESS] Added Row ID to commodity form: 1 to {len(commodity_data):,}")
     
     # Apply QC column filtering if configured
     if config.EXCLUDE_QC_COLUMNS and config.QC_ONLY_COLUMNS:
         qc_cols_to_remove = [col for col in config.QC_ONLY_COLUMNS if col in enriched_data.columns]
         if qc_cols_to_remove:
             enriched_data = enriched_data.drop(columns=qc_cols_to_remove)
-            print(f"✓ Excluded {len(qc_cols_to_remove)} QC columns from output")
+            print(f"[SUCCESS] Excluded {len(qc_cols_to_remove)} QC columns from output")
     
-    print(f"✓ Final output has {len(enriched_data.columns)} columns")
+    print(f"[SUCCESS] Final output has {len(enriched_data.columns)} columns")
     
     # -------------------------------------------------------------------------
     # STEP 10: Filter baseline data to relevant columns (for comparison)
@@ -4330,9 +4394,9 @@ def main(fbs_calculated=None):
     )
     
     # -------------------------------------------------------------------------
-    # STEP 11: Save all outputs
+    # STEP 23: Save all outputs
     # -------------------------------------------------------------------------
-    print("\nStep 11: Saving outputs...")
+    print("\nStep 23: Saving outputs...")
     save_outputs(fbs_parquet, fbs_filtered_final, enriched_data, config_dict, commodity_data=commodity_data)
     
     # -------------------------------------------------------------------------
@@ -4341,7 +4405,7 @@ def main(fbs_calculated=None):
     print("="*80)
     print("PROCESSING COMPLETE!")
     print("="*80)
-    print(f"✓ Model processed: {config_dict['modelname']}")
+    print(f"[SUCCESS] Model processed: {config_dict['modelname']}")
     print(f"\nIndustry form:")
     print(f"  Records: {len(enriched_data):,}")
     print(f"  Columns: {len(enriched_data.columns)}")
@@ -4488,8 +4552,8 @@ def main(fbs_calculated=None):
 
 if __name__ == "__main__":
     print("ERROR: This script should not be run directly.")
-    print("Please use: python scripts/run_extraction.py")
-    print("\nThe run_extraction.py script orchestrates the full workflow:")
+    print("Please use: python scripts/generate_ghg_dataset.py")
+    print("\nThe generate_ghg_dataset.py script orchestrates the full workflow:")
     print("  1. Extract EPA GHGI metadata")
     print("  2. Generate FlowBySector data")
     print("  3. Enrich with metadata (this script)")

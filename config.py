@@ -137,7 +137,7 @@ KEEP_COLUMNS = [
 
 # Columns to exclude from final analysis (useful for quality checks but not needed in final output)
 # Set EXCLUDE_QC_COLUMNS = True to remove these columns from the final output
-EXCLUDE_QC_COLUMNS = True  # Set to True to exclude quality control columns
+EXCLUDE_QC_COLUMNS = False  # Set to True to exclude quality control columns
 
 QC_ONLY_COLUMNS = [
     "MetaSources",           # EPA GHGI source references - metadata added via enrichment

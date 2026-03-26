@@ -33,6 +33,10 @@ logs/
 # Chained disaggregation sunburst (WIP, not ready for publish)
 docs/chained/
 
+# Release artifacts (distributed via GitHub Releases, not tracked in git)
+releases/
+*.zip
+
 # Notebooks
 .ipynb_checkpoints/
 

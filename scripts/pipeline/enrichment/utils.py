@@ -11,7 +11,7 @@ import pandas as pd
 from pathlib import Path
 
 # Add parent directory to path to import config
-parent_dir = Path(__file__).parent.parent.parent
+parent_dir = Path(__file__).parent.parent.parent.parent
 sys.path.append(str(parent_dir))
 import config
 

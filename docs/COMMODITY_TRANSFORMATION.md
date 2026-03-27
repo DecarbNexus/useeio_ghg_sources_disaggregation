@@ -2,202 +2,166 @@
 
 ## Overview
 
-The GHG extraction pipeline now supports transforming industry-form emissions data into commodity-form for USEEIO supply chain modeling. This transformation allocates emissions from producing industries to the commodities (products) they create using Input-Output market share data.
+The pipeline transforms industry-form emissions into commodity-form using the same
+formula as useeior's B matrix construction:
 
-## What Changed
+$$B_{commodity} = B_{industry} \times V_n$$
 
-### New Features
+where `B_industry` is the flow × industry intensity matrix and `V_n` is the 403×403
+market share (make) matrix. The commodity-form result is validated against the
+B matrix exported directly from useeior, achieving machine-precision agreement
+(max relative error ≈ 7.5 × 10⁻¹³).
 
-1. **Industry Output Normalization** - Emissions are normalized by industry economic output (from `x.csv`) to create emission intensity coefficients (kg emissions per dollar of output)
+### Why Matrix Multiply?
 
-2. **Commodity Allocation** - Emission intensities are allocated to commodities using the V_n market share matrix (from `V_n.csv`), which shows how each industry's output is distributed across different commodity categories
+useeior builds its B matrix (the satellite account in commodity form) via a single
+matrix multiplication. The previous approach used nested for-loops iterating over
+industries and commodities, which was both slower and harder to validate.
+By switching to `numpy` matrix multiplication (`intensity_industry @ V_n`), we:
 
-3. **Dual Output System** - The pipeline now exports **both** forms:
-   - **Industry form**: Emissions by producing industry (existing output)
-   - **Commodity form**: Emissions by product/commodity (new output with `_commodity` suffix)
+- Match useeior's exact computation
+- Enable direct QC/QA comparison against the exported B matrix
+- Reduce transformation time from minutes to seconds
 
-### Files Modified
+## Prerequisites
 
-- **`scripts/enrich_fbs_with_meta.py`**: Added transformation functions and updated pipeline
+Before running the Python pipeline, you need the R-exported reference data.
+This is a **one-time step** (see [scripts/setup/README.md](../scripts/setup/README.md)):
 
-### New Functions
+```bash
+Rscript scripts/setup/export_reference_data.R
+```
 
-1. **`load_industry_output(csv_path)`** - Loads industry output values (x.csv)
-   - Input: Path to x.csv file
-   - Output: Dictionary mapping USEEIO sector codes to output in USD
+This exports five CSVs to `data/`, including:
 
-2. **`load_market_share_matrix(csv_path)`** - Loads V_n market share matrix
-   - Input: Path to V_n.csv file  
-   - Output: DataFrame with industries as rows, commodities as columns
+| File | Role in Commodity Transform |
+|------|-----------|
+| `adjusted_output.csv` | CPI-adjusted 2022 industry output in 2017$ — the denominator for emission intensities |
+| `B_matrix.csv` | useeior's B matrix (flows × commodities) — the QC/QA validation truth |
+| `V_n.csv` | Market share matrix (industries × commodities) — used in the matrix multiply |
+| `q.csv` | Commodity output vector — used to convert commodity intensities back to absolute kg |
+| `naics_bea_allocation.csv` | NAICS→BEA allocation weights — handles 1:many mappings upstream |
 
-3. **`normalize_emissions_by_output(df, industry_output_dict)`** - Normalizes emissions
-   - Divides Emissions (kg) by industry output (USD)
-   - Creates emission intensity coefficients (kg/USD)
+### Why CPI-Adjusted Output?
 
-4. **`transform_to_commodity_form(df_normalized, market_share_matrix, sector_code_to_name)`** - Transforms to commodity form
-   - Multiplies intensities by market shares
-   - Allocates emissions to commodity codes
-   - Aggregates across commodities
-   - Recalculates MTCO2e and contribution percentages
+useeior's "CbS denominator" is **not** the raw industry output. It calls
+`adjustOutputbyCPI(2022, 2017, "US", FALSE, model, "Industry")`, which deflates
+2022 raw output to 2017 dollars using sector-specific CPI ratios. Using raw output
+(e.g., from a simple `x.csv`) produces intensities that don't match the B matrix.
+The R export script captures this exact adjusted output.
 
-5. **`save_outputs(..., commodity_data=None)`** - Updated to export both forms
-   - Exports industry form with original filenames
-   - Exports commodity form with `_commodity` suffix if provided
-
-## Data Requirements
-
-### Required Files (place in `data/` directory)
-
-1. **`x.csv`** - Industry output in USD
-   - Format: 2 columns (sector code with "/US", dollar value)
-   - Example:
-     ```
-     "","value"
-     "1111A0/US",38216000000
-     "1111B0/US",52183000000
-     ```
-   - 404 rows (403 industries + header)
-
-2. **`V_n.csv`** - Market share matrix (industry × commodity)
-   - Format: Industries as rows, commodities as columns
-   - Values: Market shares (0-1, sum to ~1.0 per row)
-   - Example:
-     ```
-     "","1111A0/US","1111B0/US",...
-     "1111A0/US",1.00005274,0,0,...
-     "1111B0/US",0,0.99996507,0,...
-     ```
-   - 403 industry rows × 403 commodity columns
-
-## Pipeline Integration
-
-### New Steps (7.14 - 7.16)
-
-**Step 7.14**: Load economic data files
-- Loads x.csv and V_n.csv
-- Validates data structure
-- Strips "/US" suffix from sector codes
-
-**Step 7.15**: Normalize and transform to commodity form
-- Normalizes emissions by industry output
-- Transforms using V_n market share matrix  
-- Creates commodity-form records
-
-**Step 7.16**: Prepare commodity data for export
-- Aligns column structure with industry form
-- Ensures consistency for dual export
-
-### Processing Flow
+## Processing Flow
 
 ```
-Industry Emissions (kg)
-    ↓
-÷ Industry Output (USD) [from x.csv]
-    ↓
-Emission Intensity (kg/USD)
-    ↓
-× Market Share (0-1) [from V_n.csv]
-    ↓
+FlowBySector emissions (kg)
+    │
+    │  enrich_with_useeio() expands 1:many NAICS→BEA
+    │  using allocation weights from naics_bea_allocation.csv
+    ▼
+Industry Emissions (kg) by BEA sector
+    │
+    │  ÷ CPI-adjusted output (USD) [from adjusted_output.csv]
+    ▼
+Emission Intensity (kg/USD) — "B_industry" rows
+    │
+    │  Pivot to matrix: flows × industries
+    │  Matrix multiply: intensity_industry @ V_n
+    ▼
+Commodity Intensity (kg/USD) — "B_commodity" rows
+    │
+    │  × commodity output q_j [from q.csv]
+    ▼
 Commodity Emissions (kg)
-    ↓
-Aggregate by commodity + dimensions
-    ↓
-Recalculate MTCO2e & Contribution %
-    ↓
-Export to all formats
+    │
+    │  Recalculate kgCO2e, MTCO2e, Contribution %
+    ▼
+Export industry + commodity forms
+    │
+    │  Compare commodity intensities against B_matrix.csv
+    ▼
+QC/QA workbook (outputs/QCQA.xlsx)
 ```
+
+## Implementation Details
+
+### Module: `scripts/pipeline/transform.py`
+
+#### `normalize_emissions_by_output(df, adjusted_output_dict)`
+
+Divides `Emissions (kg)` by CPI-adjusted industry output for each BEA sector code,
+producing an `Emissions Intensity (kg/USD_2017)` column.
+
+- `adjusted_output_dict` comes from `load_adjusted_output()` which reads `data/adjusted_output.csv`
+- Records with missing or zero output get `NaN` intensity (logged as warnings)
+
+#### `transform_to_commodity_form(df_normalized, market_share_matrix, commodity_output_dict, sector_code_to_name)`
+
+1. **Aggregate** intensity by (flow dimensions, USEEIO Sector Code)
+2. **Pivot** to a matrix: rows = unique flow combinations, columns = BEA industry codes
+3. **Align** columns with V_n rows (industries); warn about any missing codes
+4. **Matrix multiply**: `intensity_commodity = intensity_industry @ V_n`
+5. **Unpivot** back to long form; drop zero-intensity records (< 1e-20)
+6. **Recalculate** `Emissions (kg) = intensity × q_j`, then `kgCO2e = kg × GWP`, `MTCO2e = kgCO2e / 1e6`
+7. **Contribution %** recalculated per commodity sector
+
+### Module: `scripts/pipeline/loaders.py`
+
+New loaders for the R-exported data:
+
+- `load_adjusted_output()` → dict: `{sector_code: adjusted_USD}`
+- `load_naics_bea_allocation()` → dict: `{naics: [(bea_code, weight), ...]}`
+- `load_b_matrix()` → DataFrame (flows × commodities)
+- `load_market_share_matrix(csv_path)` → DataFrame (industries × commodities)
+
+### Module: `scripts/pipeline/enrichers.py`
+
+`enrich_with_useeio()` now accepts an `allocation_dict` parameter. When a NAICS code
+maps to multiple BEA codes, the function expands rows and weights `FlowAmount` by
+the allocation fraction (based on relative industry output).
+
+## QC/QA: B Matrix Validation
+
+After the commodity transform, `generate_ghg_dataset.py` compares the computed
+commodity intensities against useeior's exported B matrix (`data/B_matrix.csv`):
+
+1. **Comparison** — For each (Gas, Commodity Sector) pair, compute:
+   - `python_value`: sum of computed commodity intensities
+   - `r_value`: corresponding cell in the B matrix
+   - `abs_diff` and `rel_diff`
+
+2. **Flagging** — Pairs with relative difference > 1e-6 are flagged
+
+3. **Output** — `outputs/QCQA.xlsx` with four sheets:
+   - **Comparison**: All (Gas, Sector) pairs with both values and differences
+   - **Summary**: Counts, max/mean errors, pass/fail status
+   - **Flagged**: Only pairs exceeding the tolerance (should be empty)
+   - **Contribution Check**: Top contributors to any residual differences
+
+Current results: **0 flagged pairs**, max relative error ≈ 7.5 × 10⁻¹³ (machine epsilon).
 
 ## Output Files
 
-### Industry Form (existing filenames)
-- `GHG_national_2022_m2_DecarbNexus.xlsx`
-- `GHG_national_2022_m2_DecarbNexus.csv`
-- `GHG_national_2022_m2_DecarbNexus.parquet`
-- `GHG_national_2022_m2_DecarbNexus.jsonld`
-- `GHG_national_2022_m2_DecarbNexus_sunburst.jsonld`
+### Industry Form
+- `GHG_national_2022_m2_DecarbNexus_industry.xlsx` / `.csv` / `.parquet` / `.jsonld`
 
-### Commodity Form (new with `_commodity` suffix)
-- `GHG_national_2022_m2_DecarbNexus_commodity.xlsx`
-- `GHG_national_2022_m2_DecarbNexus_commodity.csv`
-- `GHG_national_2022_m2_DecarbNexus_commodity.parquet`
-- `GHG_national_2022_m2_DecarbNexus_commodity.jsonld`
-- `GHG_national_2022_m2_DecarbNexus_commodity_sunburst.jsonld`
+### Commodity Form (with `_commodity` suffix)
+- `GHG_national_2022_m2_DecarbNexus_commodity.xlsx` / `.csv` / `.parquet` / `.jsonld`
 
-## Usage
+### QC/QA
+- `outputs/QCQA.xlsx` — B matrix comparison workbook
 
-### Running the Pipeline
+## Running the Pipeline
 
 ```bash
-# Standard run (will automatically include commodity transformation if data files exist)
-python scripts/enrich_fbs_with_meta.py
+# One-time R setup (if not already done)
+Rscript scripts/setup/export_reference_data.R
+
+# Run the full pipeline
+python scripts/generate_ghg_dataset.py
 ```
 
-### Expected Output
-
-```
-================================================================================
-INDUSTRY-TO-COMMODITY TRANSFORMATION
-================================================================================
-Converting industry-form emissions to commodity-form for USEEIO modeling
-This enables supply chain analysis by product/commodity rather than by industry
-================================================================================
-
-Step 7.14: Loading economic data files...
-Loading industry output data from: data/x.csv
-✓ Loaded 403 industry output values
-  Total output: $25,874,000,000,000
-  Min: $38,216,000,000, Max: $2,850,000,000,000
-
-Loading market share matrix from: data/V_n.csv
-✓ Loaded V_n matrix: 403 industries × 403 commodities
-  ✓ Row sums validated (max deviation: 0.000123)
-
-Step 7.15: Normalizing and transforming to commodity form...
-Normalizing emissions by industry output...
-✓ Calculated emission intensities for 8,772 records
-  Total emissions: 6,123,456,789 kg
-  Average intensity: 2.367e-04 kg/USD
-
-Transforming to commodity form using V_n matrix...
-  Processing 8,772 records with valid emission intensities
-  Progress: 50/384 industries (13.0%)
-  Progress: 100/384 industries (26.0%)
-  ...
-✓ Created 123,456 commodity records
-  Aggregating by: USEEIO Sector Code, NAICS Sector Code, Activity Category, ...
-✓ Aggregated to 9,234 commodity records
-  Calculating contribution percentages for commodity form...
-✓ Emission totals:
-  Industry form: 6,123,456,789 kg
-  Commodity form: 6,123,441,023 kg
-  Difference: 0.03%
-
-✓ Commodity transformation complete
-  Industry form: 8,772 records
-  Commodity form: 9,234 records
-
-================================================================================
-SAVING OUTPUTS
-================================================================================
-
-Industry form:
-----------------------------------------
-  Excluded 5 QC columns from flat exports
-  ✓ Excel: GHG_national_2022_m2_DecarbNexus.xlsx
-  ✓ CSV: GHG_national_2022_m2_DecarbNexus.csv
-  ✓ Parquet: GHG_national_2022_m2_DecarbNexus.parquet
-  ✓ JSON-LD (full): GHG_national_2022_m2_DecarbNexus.jsonld
-  ✓ JSON-LD (light): GHG_national_2022_m2_DecarbNexus_sunburst.jsonld
-
-Commodity form:
-----------------------------------------
-  Excluded 5 QC columns from flat exports
-  ✓ Excel: GHG_national_2022_m2_DecarbNexus_commodity.xlsx
-  ✓ CSV: GHG_national_2022_m2_DecarbNexus_commodity.csv
-  ✓ Parquet: GHG_national_2022_m2_DecarbNexus_commodity.parquet
-  ✓ JSON-LD (full): GHG_national_2022_m2_DecarbNexus_commodity.jsonld
-  ✓ JSON-LD (light): GHG_national_2022_m2_DecarbNexus_commodity_sunburst.jsonld
-```
+The commodity transformation runs automatically as part of the pipeline when the
+required data files exist in `data/`.
 
 ## Validation
 

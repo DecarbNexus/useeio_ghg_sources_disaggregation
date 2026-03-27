@@ -21,6 +21,11 @@ MODEL_DESCRIPTION = "2022 GHG National Model - Method 2"
 # Model year
 MODEL_YEAR = 2022
 
+# useeior model identity (keep in sync with scripts/setup/export_reference_data.R)
+USEEIOR_TAG = "v1.5.3"
+USEEIOR_VER = "1.5.3"
+MODEL_SPEC_NAME = "USEEIOv2.2.22-GHG"
+
 # =============================================================================
 # FLOWSA VERSION REQUIREMENTS
 # =============================================================================
@@ -61,6 +66,19 @@ ACTIVITY_SETS_CSV = "data/ListOfActivitySets.csv"
 
 # NAICS to USEEIO Crosswalk file
 NAICS_TO_USEEIO_CSV = "data/NAICS_to_USEEIO_crosswalk.csv"
+
+# NAICS→BEA allocation weights (exported from R via scripts/setup/export_reference_data.R)
+NAICS_BEA_ALLOCATION_CSV = "data/naics_bea_allocation.csv"
+
+# CPI-adjusted industry output — the CbS denominator (exported from R)
+ADJUSTED_OUTPUT_CSV = "data/adjusted_output.csv"
+
+# CPI-adjusted commodity output — used to back-convert commodity intensities to absolute kg
+# Same CPI adjustment as ADJUSTED_OUTPUT_CSV but for Commodity type (exported from R)
+ADJUSTED_COMMODITY_OUTPUT_CSV = "data/adjusted_commodity_output.csv"
+
+# B matrix — flows × commodities (exported from R, used for QC/QA validation)
+B_MATRIX_CSV = "data/B_matrix.csv"
 
 # Comprehensive activity categorization file (includes IPCC category, Activity Category, Subcategory, Type)
 METASOURCE_TO_GHGSOURCE_CSV = "data/activity_categorization.csv"

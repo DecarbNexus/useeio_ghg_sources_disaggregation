@@ -79,29 +79,30 @@ This dataset helps you:
 ## Quick start (to reproduce the data)
 
 1) Install Python (≥ 3.9, ≤ 3.11) and ensure pip is available. **NOT Python 3.12+** (FlowSA v2.0.3 requires Python 3.9-3.11)
-2) Clone or download this repository
-3) Edit `config.py` (see below) if you want to change the model year or configuration options
-4) Run the analysis:
-   - Option A – script (recommended):
-     ```bash
-     python scripts/run_extraction.py
-     ```
-     This runs the full pipeline end-to-end, writing Excel/CSVs to the local `outputs/` folder
-   - Option B – interactive: run the main enrichment script directly:
-     ```bash
-     python scripts/enrich_fbs_with_meta.py
-     ```
+2) Install R (≥ 4.1) — needed once to export reference data from useeior
+3) Clone or download this repository
+4) Edit `config.py` (see below) if you want to change the model year or configuration options
+5) **One-time R setup** — export reference matrices from useeior:
+   ```bash
+   Rscript scripts/setup/export_reference_data.R
+   ```
+   This builds the `USEEIOv2.2.22-GHG` model in R and exports five CSV files to `data/`
+   (CPI-adjusted output, NAICS→BEA allocation weights, B matrix for validation, etc.).
+   See [scripts/setup/README.md](scripts/setup/README.md) for details.
 
-5) Optional: First-time setup requires extracting EPA GHGI metadata:
+6) Run the Python pipeline:
    ```bash
-   python scripts/extract_meta_from_EPA_GHGI.py
+   python scripts/generate_ghg_dataset.py
    ```
-   (The `run_extraction.py` script handles this automatically)
-   
-   To extract legacy IPCC_Category and Subcategory fields (disabled by default):
-   ```bash
-   python scripts/extract_meta_from_EPA_GHGI.py --extract-categories
-   ```
+   This runs the full pipeline end-to-end:
+   - Extracts EPA GHGI metadata from FlowSA YAML
+   - Loads FlowBySector data and enriches with metadata, activities, fuels, GWP, sectors
+   - Expands 1:many NAICS→BEA mappings using allocation weights from R
+   - Normalizes emissions by CPI-adjusted industry output (denominator from R)
+   - Transforms to commodity form via matrix multiply (`B_industry @ V_n`)
+   - Validates commodity-form results against useeior's B matrix
+   - Writes industry-form and commodity-form outputs to `outputs/`
+   - Generates a QC/QA workbook (`outputs/QCQA.xlsx`) comparing against the B matrix
 
 Artifacts will be saved under the local `outputs/` folder. For distribution, data files are packaged and published as GitHub Releases rather than committed to the repository.
 
@@ -112,8 +113,9 @@ Artifacts will be saved under the local `outputs/` folder. For distribution, dat
 This workflow installs packages on first run. At minimum, you'll need:
 
 - Internet access (to download FlowSA data and install packages)
-- Python 3.9-3.11 (NOT 3.12+) for FlowSA v2.0.3 compatibility
-- Python packages: pandas, ruamel.yaml, pyarrow, openpyxl, flowsa
+- **R ≥ 4.1** (one-time setup to export reference data from useeior; see [scripts/setup/README.md](scripts/setup/README.md))
+- **Python 3.9-3.11** (NOT 3.12+) for FlowSA v2.0.3 compatibility
+- Python packages: pandas, numpy, ruamel.yaml, pyarrow, openpyxl, flowsa
 - FlowSA v2.0.3 (install via: `python scripts/install_flowsa_2.0.3.py`)
 
 The scripts will download EPA GHGI data from FlowSA's AWS server on first run (~500 MB cached data).
@@ -146,16 +148,44 @@ EXCLUDE_QC_COLUMNS = False  # Set to True to exclude QC columns from final outpu
 
 ## Project structure
 
-- `scripts/enrich_fbs_with_meta.py` – Main enrichment script; loads FlowBySector data, applies enrichments, and exports outputs
-- `scripts/extract_meta_from_EPA_GHGI.py` – Extracts EPA GHGI table metadata from FlowSA YAML
-- `scripts/run_extraction.py` – Run the full pipeline (extract metadata + enrich data)
-- `scripts/clear_flowsa_cache.py` – Clear cached FlowByActivity files if data mismatch occurs
-- `scripts/install_flowsa_2.0.3.py` – Install the correct FlowSA version for reproducibility
-- `config.py` – User configuration (model, year, export options). Edit this
-- `terminology.py` – Terminology and column mapping definitions
-- `data/` – Lookup tables for fuel types, sector classifications, GWP factors, etc.
-- `outputs/` – Local generation folder (not tracked in repository; data distributed via Releases)
-- `local/` – Your scratch area; ignored by Git
+```
+Flowsa_extract_GHG_sources/
+├── config.py                          # User configuration (model, year, export options)
+├── terminology.py                     # Terminology and column mapping definitions
+├── data/                              # Lookup tables and R-exported reference data
+│   ├── adjusted_output.csv            # CPI-adjusted industry output (from R)
+│   ├── naics_bea_allocation.csv       # NAICS→BEA allocation weights (from R)
+│   ├── B_matrix.csv                   # useeior B matrix for QC/QA (from R)
+│   ├── V_n.csv                        # Market share matrix (from R)
+│   ├── q.csv                          # Commodity output vector
+│   ├── NAICS_to_USEEIO_crosswalk.csv  # NAICS→USEEIO sector mapping
+│   └── ...                            # Fuel types, sector classifications, etc.
+├── scripts/
+│   ├── generate_ghg_dataset.py        # Main pipeline script (run this)
+│   ├── setup/
+│   │   └── export_reference_data.R    # One-time R export of useeior matrices
+│   ├── pipeline/                      # Modular Python package
+│   │   ├── __init__.py
+│   │   ├── loaders.py                 # Data loading (parquet, CSV, YAML)
+│   │   ├── enrichers.py               # Metadata enrichment functions
+│   │   ├── transform.py               # Normalization + commodity transform
+│   │   ├── exporters.py               # Output formatting (Excel, CSV, JSON-LD)
+│   │   ├── validators.py              # Data quality checks
+│   │   └── utils.py                   # Shared utility functions
+│   └── tools/                         # Utility scripts
+├── outputs/                           # Generated files (not tracked; via Releases)
+│   ├── QCQA.xlsx                      # QC/QA workbook (B matrix comparison)
+│   └── ...                            # Industry + commodity form outputs
+├── docs/                              # Documentation
+└── local/                             # Scratch area (ignored by Git)
+```
+
+### Key scripts
+
+- `scripts/generate_ghg_dataset.py` – **Main pipeline script**; runs the full workflow from data loading through enrichment, commodity transformation, and export
+- `scripts/setup/export_reference_data.R` – One-time R setup; exports CPI-adjusted output, allocation weights, and B matrix from useeior
+- `scripts/pipeline/` – Modular Python package with separate modules for loading, enrichment, transformation, export, and validation
+- `config.py` – User configuration; edit model name, year, export options, and file paths
 
 ## How to use the outputs (practical guide)
 
@@ -217,17 +247,45 @@ Advanced users can extend the enrichment pipeline by modifying `scripts/enrich_f
 
 We welcome feedback on which features to prioritize for future releases. Please open a thread in the repository's Discussions to share your thoughts on what would be most useful.
 
-## Beginner setup: getting Python running (no prior coding experience)
+## Beginner setup: getting Python and R running (no prior coding experience)
 
 Windows (recommended simplest path):
 1) Install Python 3.11: https://www.python.org/downloads/ (NOT 3.12+)
    - During installation, check "Add Python to PATH"
-2) Download/clone this repository
-3) Open PowerShell or Command Prompt in the repository folder
-4) Create a virtual environment:
+2) Install R ≥ 4.1: https://cran.r-project.org/bin/windows/base/
+   - During installation, check "Add R to PATH"
+3) Download/clone this repository
+4) Open PowerShell or Command Prompt in the repository folder
+5) Create a virtual environment:
    ```bash
    python -m venv .venv
    .venv\Scripts\activate
+   ```
+6) Install FlowSA v2.0.3:
+   ```bash
+   python scripts/install_flowsa_2.0.3.py
+   ```
+7) Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+8) Run the one-time R setup (exports useeior reference data):
+   ```bash
+   Rscript scripts/setup/export_reference_data.R
+   ```
+9) Run the pipeline:
+   ```bash
+   python scripts/generate_ghg_dataset.py
+   ```
+
+macOS/Linux:
+1) Install Python 3.11: https://www.python.org/downloads/
+2) Install R ≥ 4.1: https://cran.r-project.org/
+3) Open Terminal in the repository folder
+4) Create a virtual environment:
+   ```bash
+   python3.11 -m venv .venv
+   source .venv/bin/activate
    ```
 5) Install FlowSA v2.0.3:
    ```bash
@@ -237,26 +295,9 @@ Windows (recommended simplest path):
    ```bash
    pip install -r requirements.txt
    ```
-7) Run the pipeline:
+7) Run the one-time R setup:
    ```bash
-   python scripts/run_extraction.py
-   ```
-
-macOS/Linux:
-1) Install Python 3.11: https://www.python.org/downloads/
-2) Open Terminal in the repository folder
-3) Create a virtual environment:
-   ```bash
-   python3.11 -m venv .venv
-   source .venv/bin/activate
-   ```
-4) Install FlowSA v2.0.3:
-   ```bash
-   python scripts/install_flowsa_2.0.3.py
-   ```
-5) Install dependencies:
-   ```bash
-   pip install -r requirements.txt
+   Rscript scripts/setup/export_reference_data.R
    ```
 6) Run the pipeline:
    ```bash

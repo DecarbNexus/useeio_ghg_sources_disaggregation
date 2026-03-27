@@ -57,7 +57,7 @@ def aggregate_to_reference_format(fbs_with_activities):
         'FlowAmount': 'sum'
     }).reset_index()
     
-    print(f"✓ Aggregated from {len(fbs_with_activities):,} to {len(aggregated):,} records")
+    print(f"[SUCCESS] Aggregated from {len(fbs_with_activities):,} to {len(aggregated):,} records")
     
     return aggregated
 
@@ -104,7 +104,7 @@ def compare_with_reference(fbs_calculated, fbs_reference):
     print(f"   Reference: {len(fbs_reference):,} rows")
     
     if len(fbs_calculated) == len(fbs_reference):
-        print("   ✓ Row counts match!")
+        print("   [SUCCESS] Row counts match!")
         results["row_count_match"] = True
     else:
         diff = len(fbs_calculated) - len(fbs_reference)
@@ -123,22 +123,121 @@ def compare_with_reference(fbs_calculated, fbs_reference):
                 print(f"\n   FlowUUIDs only in reference ({len(only_in_ref)}):")
                 # Show first 10 with their MetaSource if available
                 for uuid in list(only_in_ref)[:10]:
-                    meta_info = fbs_reference[fbs_reference["FlowUUID"] == uuid]["MetaSource"].iloc[0] if "MetaSource" in fbs_reference.columns else "N/A"
-                    print(f"     - {uuid} (MetaSource: {meta_info})")
+                    row = fbs_reference[fbs_reference["FlowUUID"] == uuid].iloc[0]
+                    meta_source = row.get("MetaSources", "N/A")
+                    flowable = row.get("Flowable", "N/A")
+                    sector = row.get("SectorProducedBy", "N/A")
+                    print(f"     - {uuid}")
+                    print(f"       MetaSource: {meta_source}")
+                    print(f"       Flowable: {flowable}, Sector: {sector}")
                 if len(only_in_ref) > 10:
                     print(f"     ... and {len(only_in_ref) - 10} more")
             
             if only_in_calc:
                 print(f"\n   FlowUUIDs only in calculated ({len(only_in_calc)}):")
                 for uuid in list(only_in_calc)[:10]:
-                    meta_info = fbs_calculated[fbs_calculated["FlowUUID"] == uuid]["MetaSource"].iloc[0] if "MetaSource" in fbs_calculated.columns else "N/A"
-                    print(f"     - {uuid} (MetaSource: {meta_info})")
+                    row = fbs_calculated[fbs_calculated["FlowUUID"] == uuid].iloc[0]
+                    meta_source = row.get("MetaSources", "N/A")
+                    flowable = row.get("Flowable", "N/A")
+                    sector = row.get("SectorProducedBy", "N/A")
+                    print(f"     - {uuid}")
+                    print(f"       MetaSource: {meta_source}")
+                    print(f"       Flowable: {flowable}, Sector: {sector}")
                 if len(only_in_calc) > 10:
                     print(f"     ... and {len(only_in_calc) - 10} more")
     
-    # TODO: Add column comparison logic
-    # TODO: Add data value comparison logic
-    # TODO: Add summary statistics comparison
+    # 2. Compare columns (using reference columns as baseline)
+    print(f"\n2. Column Comparison:")
+    ref_cols = set(fbs_reference.columns)
+    calc_cols = set(fbs_calculated.columns)
+    
+    common_cols = sorted(ref_cols & calc_cols)
+    only_in_calc = sorted(calc_cols - ref_cols)
+    only_in_ref = sorted(ref_cols - calc_cols)
+    
+    print(f"   Common columns: {len(common_cols)}")
+    print(f"   Only in generated: {len(only_in_calc)}")
+    if only_in_calc:
+        print(f"     {only_in_calc}")
+    print(f"   Only in reference: {len(only_in_ref)}")
+    if only_in_ref:
+        print(f"     {only_in_ref}")
+    
+    if len(only_in_ref) == 0:
+        print("   [SUCCESS] All reference columns present in generated data!")
+        results["column_match"] = True
+    else:
+        print("   ✗ Some reference columns missing from generated data")
+        results["details"].append(f"Missing columns: {only_in_ref}")
+    
+    # 3. Compare data values for common columns
+    if len(fbs_calculated) == len(fbs_reference) and common_cols:
+        print(f"\n3. Data Value Comparison (for {len(common_cols)} common columns):")
+        
+        # Sort both dataframes identically for row-by-row comparison
+        # Use common columns for sorting
+        sort_cols = [col for col in ["Class", "SourceName", "Flowable", "SectorProducedBy", "Location", "Year"] 
+                     if col in common_cols]
+        
+        if sort_cols:
+            fbs_calc_sorted = fbs_calculated[common_cols].sort_values(by=sort_cols).reset_index(drop=True)
+            fbs_ref_sorted = fbs_reference[common_cols].sort_values(by=sort_cols).reset_index(drop=True)
+            
+            # Compare column by column
+            mismatches = {}
+            for col in common_cols:
+                try:
+                    # Handle numeric columns
+                    if pd.api.types.is_numeric_dtype(fbs_calc_sorted[col]) and pd.api.types.is_numeric_dtype(fbs_ref_sorted[col]):
+                        # Use relative tolerance for floating point comparison
+                        diff = ~pd.isna(fbs_calc_sorted[col]) & ~pd.isna(fbs_ref_sorted[col]) & \
+                               ~pd.Series(pd.np.isclose(fbs_calc_sorted[col], fbs_ref_sorted[col], rtol=1e-9, atol=1e-12, equal_nan=True))
+                        diff_count = diff.sum()
+                    else:
+                        # Use exact match for non-numeric
+                        diff = (fbs_calc_sorted[col].astype(str) != fbs_ref_sorted[col].astype(str)) & \
+                               ~(fbs_calc_sorted[col].isna() & fbs_ref_sorted[col].isna())
+                        diff_count = diff.sum()
+                    
+                    if diff_count > 0:
+                        mismatches[col] = diff_count
+                except Exception as e:
+                    print(f"   Warning: Could not compare column '{col}': {e}")
+            
+            if not mismatches:
+                print("   [SUCCESS] All data values match between generated and reference!")
+                results["data_match"] = True
+            else:
+                print(f"   ✗ Found mismatches in {len(mismatches)} columns:")
+                for col, count in sorted(mismatches.items(), key=lambda x: -x[1])[:10]:  # Show top 10
+                    print(f"     - {col}: {count:,} differing values")
+                results["details"].append(f"Value mismatches in {len(mismatches)} columns")
+        else:
+            print("   ⚠️  Cannot compare values - no common sortable columns")
+            results["details"].append("No common columns for value comparison")
+    else:
+        print(f"\n3. Data Value Comparison: Skipped (row count mismatch or no common columns)")
+    
+    # 4. Overall result
+    print("\n" + "="*80)
+    if results["row_count_match"] and results["column_match"] and results["data_match"]:
+        print("[SUCCESS][SUCCESS][SUCCESS] SANITY CHECK PASSED [SUCCESS][SUCCESS][SUCCESS]")
+        print("Generated data matches reference parquet file!")
+    else:
+        print("⚠️  SANITY CHECK: Differences detected")
+        if results["details"]:
+            print("\nIssues found:")
+            for detail in results["details"]:
+                print(f"  - {detail}")
+        
+        # Known issue note
+        if not results["row_count_match"]:
+            print("\n📝 Known Issue:")
+            print("   There may be 2 extra rows in the reference from EPA_GHGI_T_4_64:")
+            print("   - FlowUUID: b79859f9-9979-3708-9390-a3d6c0690561")
+            print("   - FlowUUID: abbacdaf-9d6d-3805-bd10-d35905d7dff8")
+            print("   This is a known discrepancy between FlowSA versions.")
+    print("="*80 + "\n")
     
     return results
 
@@ -200,17 +299,8 @@ def validate_data(df, model_name):
             print(f"ℹ Found {tiny_count:,} very small emission values (< {config.MIN_FLOW_AMOUNT})")
     
     if not issues_found:
-        print("✓ Data validation passed - no issues found")
+        print("[SUCCESS] Data validation passed - no issues found")
         return True
     else:
         print("⚠ Data validation found issues - review warnings above")
         return False
-
-
-# TODO: Add more validation functions as needed during incremental migration
-# Candidates from enrich_fbs_with_meta.py:
-# - validate_sector_codes()
-# - validate_flow_names()
-# - check_data_completeness()
-# - validate_attribution_percentages()
-# - etc.

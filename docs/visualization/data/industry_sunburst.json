@@ -2044,7 +2044,7 @@
       "useeio_code": "221300"
     },
     {
-      "name": "230302",
+      "name": "230301",
       "children": [
         {
           "name": "Fuel Combustion",
@@ -2054,7 +2054,7 @@
               "children": [
                 {
                   "name": "Carbon dioxide",
-                  "contributionToUSEEIOSectorScope1Percent": 0.7970348748087616,
+                  "contributionToUSEEIOSectorScope1Percent": 0.8600205535973893,
                   "category": "gas_category"
                 }
               ],
@@ -2065,7 +2065,7 @@
               "children": [
                 {
                   "name": "Nitrous oxide",
-                  "contributionToUSEEIOSectorScope1Percent": 0.0009657127157527869,
+                  "contributionToUSEEIOSectorScope1Percent": 0.001042028160457879,
                   "category": "gas_category"
                 }
               ],
@@ -2076,7 +2076,7 @@
               "children": [
                 {
                   "name": "Methane",
-                  "contributionToUSEEIOSectorScope1Percent": 0.000643808460996056,
+                  "contributionToUSEEIOSectorScope1Percent": 0.0006946854228547548,
                   "category": "gas_category"
                 }
               ],
@@ -2093,12 +2093,12 @@
               "children": [
                 {
                   "name": "Fluorinated gases (F-Gases)",
-                  "contributionToUSEEIOSectorScope1Percent": 0.1811371698661951,
+                  "contributionToUSEEIOSectorScope1Percent": 0.11376421554926498,
                   "category": "gas_category"
                 },
                 {
                   "name": "Carbon dioxide",
-                  "contributionToUSEEIOSectorScope1Percent": 0.009022161314463699,
+                  "contributionToUSEEIOSectorScope1Percent": 0.005666419019669346,
                   "category": "gas_category"
                 }
               ],
@@ -2109,12 +2109,96 @@
               "children": [
                 {
                   "name": "Fluorinated gases (F-Gases)",
-                  "contributionToUSEEIOSectorScope1Percent": 0.010665062616586334,
+                  "contributionToUSEEIOSectorScope1Percent": 0.017919553119791584,
                   "category": "gas_category"
                 },
                 {
                   "name": "Carbon dioxide",
-                  "contributionToUSEEIOSectorScope1Percent": 0.0005312102172446259,
+                  "contributionToUSEEIOSectorScope1Percent": 0.0008925451305730773,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            }
+          ],
+          "category": "activity_category"
+        }
+      ],
+      "category": "useeio_sector",
+      "useeio_code": "230301"
+    },
+    {
+      "name": "230302",
+      "children": [
+        {
+          "name": "Fuel Combustion",
+          "children": [
+            {
+              "name": "Petroleum Combustion",
+              "children": [
+                {
+                  "name": "Carbon dioxide",
+                  "contributionToUSEEIOSectorScope1Percent": 0.8220595720026744,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            },
+            {
+              "name": "Fuel Oil",
+              "children": [
+                {
+                  "name": "Nitrous oxide",
+                  "contributionToUSEEIOSectorScope1Percent": 0.000996033432012314,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            },
+            {
+              "name": "Fuel Oil Combustion",
+              "children": [
+                {
+                  "name": "Methane",
+                  "contributionToUSEEIOSectorScope1Percent": 0.0006640222713279701,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            }
+          ],
+          "category": "activity_category"
+        },
+        {
+          "name": "Process & Fugitive Gases",
+          "children": [
+            {
+              "name": "Refrigerant Use",
+              "children": [
+                {
+                  "name": "Fluorinated gases (F-Gases)",
+                  "contributionToUSEEIOSectorScope1Percent": 0.1549161506250362,
+                  "category": "gas_category"
+                },
+                {
+                  "name": "Carbon dioxide",
+                  "contributionToUSEEIOSectorScope1Percent": 0.007716133039879608,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            },
+            {
+              "name": "Foams",
+              "children": [
+                {
+                  "name": "Fluorinated gases (F-Gases)",
+                  "contributionToUSEEIOSectorScope1Percent": 0.013000551342938581,
+                  "category": "gas_category"
+                },
+                {
+                  "name": "Carbon dioxide",
+                  "contributionToUSEEIOSectorScope1Percent": 0.0006475372861329521,
                   "category": "gas_category"
                 }
               ],
@@ -2128,7 +2212,7 @@
       "useeio_code": "230302"
     },
     {
-      "name": "233230",
+      "name": "233210",
       "children": [
         {
           "name": "Fuel Combustion",
@@ -2138,7 +2222,7 @@
               "children": [
                 {
                   "name": "Carbon dioxide",
-                  "contributionToUSEEIOSectorScope1Percent": 0.8836314952660201,
+                  "contributionToUSEEIOSectorScope1Percent": 0.8573996044361708,
                   "category": "gas_category"
                 }
               ],
@@ -2149,7 +2233,7 @@
               "children": [
                 {
                   "name": "Nitrous oxide",
-                  "contributionToUSEEIOSectorScope1Percent": 0.0010706359257150334,
+                  "contributionToUSEEIOSectorScope1Percent": 0.0010388525353850898,
                   "category": "gas_category"
                 }
               ],
@@ -2160,7 +2244,7 @@
               "children": [
                 {
                   "name": "Methane",
-                  "contributionToUSEEIOSectorScope1Percent": 0.0007137572658804398,
+                  "contributionToUSEEIOSectorScope1Percent": 0.0006925683395260763,
                   "category": "gas_category"
                 }
               ],
@@ -2177,12 +2261,12 @@
               "children": [
                 {
                   "name": "Fluorinated gases (F-Gases)",
-                  "contributionToUSEEIOSectorScope1Percent": 0.08719540300306639,
+                  "contributionToUSEEIOSectorScope1Percent": 0.11881777629746366,
                   "category": "gas_category"
                 },
                 {
                   "name": "Carbon dioxide",
-                  "contributionToUSEEIOSectorScope1Percent": 0.004343067700320487,
+                  "contributionToUSEEIOSectorScope1Percent": 0.005918129037642873,
                   "category": "gas_category"
                 }
               ],
@@ -2193,12 +2277,96 @@
               "children": [
                 {
                   "name": "Fluorinated gases (F-Gases)",
-                  "contributionToUSEEIOSectorScope1Percent": 0.02195223412603914,
+                  "contributionToUSEEIOSectorScope1Percent": 0.01536763147967102,
                   "category": "gas_category"
                 },
                 {
                   "name": "Carbon dioxide",
-                  "contributionToUSEEIOSectorScope1Percent": 0.00109340671295849,
+                  "contributionToUSEEIOSectorScope1Percent": 0.0007654378741438965,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            }
+          ],
+          "category": "activity_category"
+        }
+      ],
+      "category": "useeio_sector",
+      "useeio_code": "233210"
+    },
+    {
+      "name": "233230",
+      "children": [
+        {
+          "name": "Fuel Combustion",
+          "children": [
+            {
+              "name": "Petroleum Combustion",
+              "children": [
+                {
+                  "name": "Carbon dioxide",
+                  "contributionToUSEEIOSectorScope1Percent": 0.872518790606299,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            },
+            {
+              "name": "Fuel Oil",
+              "children": [
+                {
+                  "name": "Nitrous oxide",
+                  "contributionToUSEEIOSectorScope1Percent": 0.0010571714205403102,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            },
+            {
+              "name": "Fuel Oil Combustion",
+              "children": [
+                {
+                  "name": "Methane",
+                  "contributionToUSEEIOSectorScope1Percent": 0.0007047809293227762,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            }
+          ],
+          "category": "activity_category"
+        },
+        {
+          "name": "Process & Fugitive Gases",
+          "children": [
+            {
+              "name": "Refrigerant Use",
+              "children": [
+                {
+                  "name": "Fluorinated gases (F-Gases)",
+                  "contributionToUSEEIOSectorScope1Percent": 0.10239518314286167,
+                  "category": "gas_category"
+                },
+                {
+                  "name": "Carbon dioxide",
+                  "contributionToUSEEIOSectorScope1Percent": 0.005100145159722743,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            },
+            {
+              "name": "Foams",
+              "children": [
+                {
+                  "name": "Fluorinated gases (F-Gases)",
+                  "contributionToUSEEIOSectorScope1Percent": 0.0173592894734042,
+                  "category": "gas_category"
+                },
+                {
+                  "name": "Carbon dioxide",
+                  "contributionToUSEEIOSectorScope1Percent": 0.0008646392678499798,
                   "category": "gas_category"
                 }
               ],
@@ -2222,7 +2390,7 @@
               "children": [
                 {
                   "name": "Carbon dioxide",
-                  "contributionToUSEEIOSectorScope1Percent": 0.9510927833555596,
+                  "contributionToUSEEIOSectorScope1Percent": 0.8921909915082443,
                   "category": "gas_category"
                 }
               ],
@@ -2233,7 +2401,7 @@
               "children": [
                 {
                   "name": "Nitrous oxide",
-                  "contributionToUSEEIOSectorScope1Percent": 0.0011523741605002572,
+                  "contributionToUSEEIOSectorScope1Percent": 0.001081006882649053,
                   "category": "gas_category"
                 }
               ],
@@ -2244,7 +2412,7 @@
               "children": [
                 {
                   "name": "Methane",
-                  "contributionToUSEEIOSectorScope1Percent": 0.0007682494210350796,
+                  "contributionToUSEEIOSectorScope1Percent": 0.0007206712369961076,
                   "category": "gas_category"
                 }
               ],
@@ -2261,12 +2429,12 @@
               "children": [
                 {
                   "name": "Fluorinated gases (F-Gases)",
-                  "contributionToUSEEIOSectorScope1Percent": 0.026410036734239667,
+                  "contributionToUSEEIOSectorScope1Percent": 0.08481934553263555,
                   "category": "gas_category"
                 },
                 {
                   "name": "Carbon dioxide",
-                  "contributionToUSEEIOSectorScope1Percent": 0.0013154429425679718,
+                  "contributionToUSEEIOSectorScope1Percent": 0.004224719965250434,
                   "category": "gas_category"
                 }
               ],
@@ -2277,12 +2445,12 @@
               "children": [
                 {
                   "name": "Fluorinated gases (F-Gases)",
-                  "contributionToUSEEIOSectorScope1Percent": 0.01834726460998705,
+                  "contributionToUSEEIOSectorScope1Percent": 0.016158438147265183,
                   "category": "gas_category"
                 },
                 {
                   "name": "Carbon dioxide",
-                  "contributionToUSEEIOSectorScope1Percent": 0.0009138487761111176,
+                  "contributionToUSEEIOSectorScope1Percent": 0.0008048267269611209,
                   "category": "gas_category"
                 }
               ],
@@ -2296,7 +2464,7 @@
       "useeio_code": "233240"
     },
     {
-      "name": "2332A0",
+      "name": "233262",
       "children": [
         {
           "name": "Fuel Combustion",
@@ -2306,7 +2474,7 @@
               "children": [
                 {
                   "name": "Carbon dioxide",
-                  "contributionToUSEEIOSectorScope1Percent": 0.8375082178682526,
+                  "contributionToUSEEIOSectorScope1Percent": 0.8573996044361671,
                   "category": "gas_category"
                 }
               ],
@@ -2317,7 +2485,7 @@
               "children": [
                 {
                   "name": "Nitrous oxide",
-                  "contributionToUSEEIOSectorScope1Percent": 0.0010147515009765243,
+                  "contributionToUSEEIOSectorScope1Percent": 0.001038852535385086,
                   "category": "gas_category"
                 }
               ],
@@ -2328,7 +2496,7 @@
               "children": [
                 {
                   "name": "Methane",
-                  "contributionToUSEEIOSectorScope1Percent": 0.0006765009836573114,
+                  "contributionToUSEEIOSectorScope1Percent": 0.0006925683395260739,
                   "category": "gas_category"
                 }
               ],
@@ -2345,12 +2513,12 @@
               "children": [
                 {
                   "name": "Fluorinated gases (F-Gases)",
-                  "contributionToUSEEIOSectorScope1Percent": 0.1375424951599388,
+                  "contributionToUSEEIOSectorScope1Percent": 0.11881777629746329,
                   "category": "gas_category"
                 },
                 {
                   "name": "Carbon dioxide",
-                  "contributionToUSEEIOSectorScope1Percent": 0.006850778224278748,
+                  "contributionToUSEEIOSectorScope1Percent": 0.005918129037642847,
                   "category": "gas_category"
                 }
               ],
@@ -2361,12 +2529,96 @@
               "children": [
                 {
                   "name": "Fluorinated gases (F-Gases)",
-                  "contributionToUSEEIOSectorScope1Percent": 0.015628809516094157,
+                  "contributionToUSEEIOSectorScope1Percent": 0.015367631479670973,
                   "category": "gas_category"
                 },
                 {
                   "name": "Carbon dioxide",
-                  "contributionToUSEEIOSectorScope1Percent": 0.0007784467468018123,
+                  "contributionToUSEEIOSectorScope1Percent": 0.0007654378741438933,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            }
+          ],
+          "category": "activity_category"
+        }
+      ],
+      "category": "useeio_sector",
+      "useeio_code": "233262"
+    },
+    {
+      "name": "2332A0",
+      "children": [
+        {
+          "name": "Fuel Combustion",
+          "children": [
+            {
+              "name": "Petroleum Combustion",
+              "children": [
+                {
+                  "name": "Carbon dioxide",
+                  "contributionToUSEEIOSectorScope1Percent": 0.8573996044361697,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            },
+            {
+              "name": "Fuel Oil",
+              "children": [
+                {
+                  "name": "Nitrous oxide",
+                  "contributionToUSEEIOSectorScope1Percent": 0.0010388525353850879,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            },
+            {
+              "name": "Fuel Oil Combustion",
+              "children": [
+                {
+                  "name": "Methane",
+                  "contributionToUSEEIOSectorScope1Percent": 0.000692568339526075,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            }
+          ],
+          "category": "activity_category"
+        },
+        {
+          "name": "Process & Fugitive Gases",
+          "children": [
+            {
+              "name": "Refrigerant Use",
+              "children": [
+                {
+                  "name": "Fluorinated gases (F-Gases)",
+                  "contributionToUSEEIOSectorScope1Percent": 0.11881777629746351,
+                  "category": "gas_category"
+                },
+                {
+                  "name": "Carbon dioxide",
+                  "contributionToUSEEIOSectorScope1Percent": 0.005918129037642858,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            },
+            {
+              "name": "Foams",
+              "children": [
+                {
+                  "name": "Fluorinated gases (F-Gases)",
+                  "contributionToUSEEIOSectorScope1Percent": 0.015367631479670994,
+                  "category": "gas_category"
+                },
+                {
+                  "name": "Carbon dioxide",
+                  "contributionToUSEEIOSectorScope1Percent": 0.0007654378741438946,
                   "category": "gas_category"
                 }
               ],
@@ -2390,7 +2642,7 @@
               "children": [
                 {
                   "name": "Carbon dioxide",
-                  "contributionToUSEEIOSectorScope1Percent": 0.9655620137171982,
+                  "contributionToUSEEIOSectorScope1Percent": 0.9380297482935991,
                   "category": "gas_category"
                 }
               ],
@@ -2401,7 +2653,7 @@
               "children": [
                 {
                   "name": "Nitrous oxide",
-                  "contributionToUSEEIOSectorScope1Percent": 0.0011699055385980394,
+                  "contributionToUSEEIOSectorScope1Percent": 0.001136546573195892,
                   "category": "gas_category"
                 }
               ],
@@ -2412,7 +2664,7 @@
               "children": [
                 {
                   "name": "Methane",
-                  "contributionToUSEEIOSectorScope1Percent": 0.0007799370061400085,
+                  "contributionToUSEEIOSectorScope1Percent": 0.0007576976964305618,
                   "category": "gas_category"
                 }
               ],
@@ -2429,12 +2681,12 @@
               "children": [
                 {
                   "name": "Fluorinated gases (F-Gases)",
-                  "contributionToUSEEIOSectorScope1Percent": 0.026299035245530376,
+                  "contributionToUSEEIOSectorScope1Percent": 0.04984823092919983,
                   "category": "gas_category"
                 },
                 {
                   "name": "Carbon dioxide",
-                  "contributionToUSEEIOSectorScope1Percent": 0.0013099141306845768,
+                  "contributionToUSEEIOSectorScope1Percent": 0.002482863020417614,
                   "category": "gas_category"
                 }
               ],
@@ -2445,12 +2697,12 @@
               "children": [
                 {
                   "name": "Fluorinated gases (F-Gases)",
-                  "contributionToUSEEIOSectorScope1Percent": 0.004647699655047131,
+                  "contributionToUSEEIOSectorScope1Percent": 0.007377453955121887,
                   "category": "gas_category"
                 },
                 {
                   "name": "Carbon dioxide",
-                  "contributionToUSEEIOSectorScope1Percent": 0.00023149470680141249,
+                  "contributionToUSEEIOSectorScope1Percent": 0.0003674595320347876,
                   "category": "gas_category"
                 }
               ],
@@ -2474,7 +2726,7 @@
               "children": [
                 {
                   "name": "Carbon dioxide",
-                  "contributionToUSEEIOSectorScope1Percent": 0.8958269594792678,
+                  "contributionToUSEEIOSectorScope1Percent": 0.8756844128240421,
                   "category": "gas_category"
                 }
               ],
@@ -2485,7 +2737,7 @@
               "children": [
                 {
                   "name": "Nitrous oxide",
-                  "contributionToUSEEIOSectorScope1Percent": 0.0010854123366820783,
+                  "contributionToUSEEIOSectorScope1Percent": 0.0010610069887513958,
                   "category": "gas_category"
                 }
               ],
@@ -2496,7 +2748,7 @@
               "children": [
                 {
                   "name": "Methane",
-                  "contributionToUSEEIOSectorScope1Percent": 0.0007236082062776806,
+                  "contributionToUSEEIOSectorScope1Percent": 0.0007073379747326006,
                   "category": "gas_category"
                 }
               ],
@@ -2513,12 +2765,12 @@
               "children": [
                 {
                   "name": "Fluorinated gases (F-Gases)",
-                  "contributionToUSEEIOSectorScope1Percent": 0.08750216108113364,
+                  "contributionToUSEEIOSectorScope1Percent": 0.10302321851889884,
                   "category": "gas_category"
                 },
                 {
                   "name": "Carbon dioxide",
-                  "contributionToUSEEIOSectorScope1Percent": 0.004358346844114563,
+                  "contributionToUSEEIOSectorScope1Percent": 0.005131426627121091,
                   "category": "gas_category"
                 }
               ],
@@ -2529,12 +2781,12 @@
               "children": [
                 {
                   "name": "Fluorinated gases (F-Gases)",
-                  "contributionToUSEEIOSectorScope1Percent": 0.010005170059428886,
+                  "contributionToUSEEIOSectorScope1Percent": 0.01370973637452061,
                   "category": "gas_category"
                 },
                 {
                   "name": "Carbon dioxide",
-                  "contributionToUSEEIOSectorScope1Percent": 0.0004983419930955659,
+                  "contributionToUSEEIOSectorScope1Percent": 0.0006828606919334427,
                   "category": "gas_category"
                 }
               ],
@@ -2558,7 +2810,7 @@
               "children": [
                 {
                   "name": "Carbon dioxide",
-                  "contributionToUSEEIOSectorScope1Percent": 0.8537764486584772,
+                  "contributionToUSEEIOSectorScope1Percent": 0.8619454849683443,
                   "category": "gas_category"
                 }
               ],
@@ -2569,7 +2821,7 @@
               "children": [
                 {
                   "name": "Nitrous oxide",
-                  "contributionToUSEEIOSectorScope1Percent": 0.0010344626050115772,
+                  "contributionToUSEEIOSectorScope1Percent": 0.0010443604683162135,
                   "category": "gas_category"
                 }
               ],
@@ -2580,7 +2832,7 @@
               "children": [
                 {
                   "name": "Methane",
-                  "contributionToUSEEIOSectorScope1Percent": 0.0006896417193505849,
+                  "contributionToUSEEIOSectorScope1Percent": 0.0006962402947212529,
                   "category": "gas_category"
                 }
               ],
@@ -2597,12 +2849,12 @@
               "children": [
                 {
                   "name": "Fluorinated gases (F-Gases)",
-                  "contributionToUSEEIOSectorScope1Percent": 0.12389271796542876,
+                  "contributionToUSEEIOSectorScope1Percent": 0.11405047607173309,
                   "category": "gas_category"
                 },
                 {
                   "name": "Carbon dioxide",
-                  "contributionToUSEEIOSectorScope1Percent": 0.006170904006047739,
+                  "contributionToUSEEIOSectorScope1Percent": 0.005680677212030314,
                   "category": "gas_category"
                 }
               ],
@@ -2613,12 +2865,12 @@
               "children": [
                 {
                   "name": "Fluorinated gases (F-Gases)",
-                  "contributionToUSEEIOSectorScope1Percent": 0.013750913390489969,
+                  "contributionToUSEEIOSectorScope1Percent": 0.01579598736867119,
                   "category": "gas_category"
                 },
                 {
                   "name": "Carbon dioxide",
-                  "contributionToUSEEIOSectorScope1Percent": 0.0006849116551940385,
+                  "contributionToUSEEIOSectorScope1Percent": 0.0007867736161863229,
                   "category": "gas_category"
                 }
               ],
@@ -2642,7 +2894,7 @@
               "children": [
                 {
                   "name": "Carbon dioxide",
-                  "contributionToUSEEIOSectorScope1Percent": 0.8420940343710691,
+                  "contributionToUSEEIOSectorScope1Percent": 0.8606116897937821,
                   "category": "gas_category"
                 }
               ],
@@ -2653,7 +2905,7 @@
               "children": [
                 {
                   "name": "Nitrous oxide",
-                  "contributionToUSEEIOSectorScope1Percent": 0.00102030782159542,
+                  "contributionToUSEEIOSectorScope1Percent": 0.001042744399809056,
                   "category": "gas_category"
                 }
               ],
@@ -2664,7 +2916,7 @@
               "children": [
                 {
                   "name": "Methane",
-                  "contributionToUSEEIOSectorScope1Percent": 0.0006802051973101923,
+                  "contributionToUSEEIOSectorScope1Percent": 0.0006951629157435453,
                   "category": "gas_category"
                 }
               ],
@@ -2681,12 +2933,12 @@
               "children": [
                 {
                   "name": "Fluorinated gases (F-Gases)",
-                  "contributionToUSEEIOSectorScope1Percent": 0.13879342182507562,
+                  "contributionToUSEEIOSectorScope1Percent": 0.11574580017368584,
                   "category": "gas_category"
                 },
                 {
                   "name": "Carbon dioxide",
-                  "contributionToUSEEIOSectorScope1Percent": 0.00691308494008846,
+                  "contributionToUSEEIOSectorScope1Percent": 0.005765118674483392,
                   "category": "gas_category"
                 }
               ],
@@ -2697,12 +2949,12 @@
               "children": [
                 {
                   "name": "Fluorinated gases (F-Gases)",
-                  "contributionToUSEEIOSectorScope1Percent": 0.010000820496733061,
+                  "contributionToUSEEIOSectorScope1Percent": 0.015373741821700792,
                   "category": "gas_category"
                 },
                 {
                   "name": "Carbon dioxide",
-                  "contributionToUSEEIOSectorScope1Percent": 0.0004981253481280085,
+                  "contributionToUSEEIOSectorScope1Percent": 0.00076574222079743,
                   "category": "gas_category"
                 }
               ],
@@ -2726,7 +2978,7 @@
               "children": [
                 {
                   "name": "Carbon dioxide",
-                  "contributionToUSEEIOSectorScope1Percent": 0.8646133170521104,
+                  "contributionToUSEEIOSectorScope1Percent": 0.8628308430401896,
                   "category": "gas_category"
                 }
               ],
@@ -2737,7 +2989,7 @@
               "children": [
                 {
                   "name": "Nitrous oxide",
-                  "contributionToUSEEIOSectorScope1Percent": 0.001047592898223882,
+                  "contributionToUSEEIOSectorScope1Percent": 0.001045433196216835,
                   "category": "gas_category"
                 }
               ],
@@ -2748,7 +3000,7 @@
               "children": [
                 {
                   "name": "Methane",
-                  "contributionToUSEEIOSectorScope1Percent": 0.0006983952479388989,
+                  "contributionToUSEEIOSectorScope1Percent": 0.0006969554466370357,
                   "category": "gas_category"
                 }
               ],
@@ -2765,12 +3017,12 @@
               "children": [
                 {
                   "name": "Fluorinated gases (F-Gases)",
-                  "contributionToUSEEIOSectorScope1Percent": 0.1115773616899878,
+                  "contributionToUSEEIOSectorScope1Percent": 0.11298377640543891,
                   "category": "gas_category"
                 },
                 {
                   "name": "Carbon dioxide",
-                  "contributionToUSEEIOSectorScope1Percent": 0.005557495222835554,
+                  "contributionToUSEEIOSectorScope1Percent": 0.005627546557121106,
                   "category": "gas_category"
                 }
               ],
@@ -2781,12 +3033,12 @@
               "children": [
                 {
                   "name": "Fluorinated gases (F-Gases)",
-                  "contributionToUSEEIOSectorScope1Percent": 0.0157227139099802,
+                  "contributionToUSEEIOSectorScope1Percent": 0.01601763196485497,
                   "category": "gas_category"
                 },
                 {
                   "name": "Carbon dioxide",
-                  "contributionToUSEEIOSectorScope1Percent": 0.0007831239789259685,
+                  "contributionToUSEEIOSectorScope1Percent": 0.0007978133895399988,
                   "category": "gas_category"
                 }
               ],
@@ -35453,6 +35705,240 @@
       "useeio_code": "52A000"
     },
     {
+      "name": "531HSO",
+      "children": [
+        {
+          "name": "Fuel Combustion",
+          "children": [
+            {
+              "name": "Natural Gas Combustion for Non-Manufacturing Purposes",
+              "children": [
+                {
+                  "name": "Carbon dioxide",
+                  "contributionToUSEEIOSectorScope1Percent": 0.929503139485232,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            },
+            {
+              "name": "Petroleum Combustion",
+              "children": [
+                {
+                  "name": "Carbon dioxide",
+                  "contributionToUSEEIOSectorScope1Percent": 0.062378542076899725,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            },
+            {
+              "name": "Natural Gas Combustion for Manufacturing Purposes",
+              "children": [
+                {
+                  "name": "Methane",
+                  "contributionToUSEEIOSectorScope1Percent": 0.0024168048345649808,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            },
+            {
+              "name": "Natural Gas Non-Manufacturing",
+              "children": [
+                {
+                  "name": "Nitrous oxide",
+                  "contributionToUSEEIOSectorScope1Percent": 0.00048336097905502375,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            },
+            {
+              "name": "Fuel Oil Combustion",
+              "children": [
+                {
+                  "name": "Methane",
+                  "contributionToUSEEIOSectorScope1Percent": 0.00028745871921389085,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            },
+            {
+              "name": "Fuel Oil",
+              "children": [
+                {
+                  "name": "Nitrous oxide",
+                  "contributionToUSEEIOSectorScope1Percent": 9.581957547828464e-05,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            }
+          ],
+          "category": "activity_category"
+        },
+        {
+          "name": "Process & Fugitive Gases",
+          "children": [
+            {
+              "name": "Refrigerant Use",
+              "children": [
+                {
+                  "name": "Fluorinated gases (F-Gases)",
+                  "contributionToUSEEIOSectorScope1Percent": 0.00459453195141752,
+                  "category": "gas_category"
+                },
+                {
+                  "name": "Carbon dioxide",
+                  "contributionToUSEEIOSectorScope1Percent": 0.00022884650599745682,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            },
+            {
+              "name": "Foams",
+              "children": [
+                {
+                  "name": "Fluorinated gases (F-Gases)",
+                  "contributionToUSEEIOSectorScope1Percent": 1.095044735293962e-05,
+                  "category": "gas_category"
+                },
+                {
+                  "name": "Carbon dioxide",
+                  "contributionToUSEEIOSectorScope1Percent": 5.454247880583743e-07,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            }
+          ],
+          "category": "activity_category"
+        }
+      ],
+      "category": "useeio_sector",
+      "useeio_code": "531HSO"
+    },
+    {
+      "name": "531HST",
+      "children": [
+        {
+          "name": "Fuel Combustion",
+          "children": [
+            {
+              "name": "Natural Gas Combustion for Non-Manufacturing Purposes",
+              "children": [
+                {
+                  "name": "Carbon dioxide",
+                  "contributionToUSEEIOSectorScope1Percent": 0.929503139485232,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            },
+            {
+              "name": "Petroleum Combustion",
+              "children": [
+                {
+                  "name": "Carbon dioxide",
+                  "contributionToUSEEIOSectorScope1Percent": 0.062378542076899725,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            },
+            {
+              "name": "Natural Gas Combustion for Manufacturing Purposes",
+              "children": [
+                {
+                  "name": "Methane",
+                  "contributionToUSEEIOSectorScope1Percent": 0.0024168048345649808,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            },
+            {
+              "name": "Natural Gas Non-Manufacturing",
+              "children": [
+                {
+                  "name": "Nitrous oxide",
+                  "contributionToUSEEIOSectorScope1Percent": 0.0004833609790550237,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            },
+            {
+              "name": "Fuel Oil Combustion",
+              "children": [
+                {
+                  "name": "Methane",
+                  "contributionToUSEEIOSectorScope1Percent": 0.0002874587192138908,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            },
+            {
+              "name": "Fuel Oil",
+              "children": [
+                {
+                  "name": "Nitrous oxide",
+                  "contributionToUSEEIOSectorScope1Percent": 9.581957547828461e-05,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            }
+          ],
+          "category": "activity_category"
+        },
+        {
+          "name": "Process & Fugitive Gases",
+          "children": [
+            {
+              "name": "Refrigerant Use",
+              "children": [
+                {
+                  "name": "Fluorinated gases (F-Gases)",
+                  "contributionToUSEEIOSectorScope1Percent": 0.00459453195141752,
+                  "category": "gas_category"
+                },
+                {
+                  "name": "Carbon dioxide",
+                  "contributionToUSEEIOSectorScope1Percent": 0.0002288465059974568,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            },
+            {
+              "name": "Foams",
+              "children": [
+                {
+                  "name": "Fluorinated gases (F-Gases)",
+                  "contributionToUSEEIOSectorScope1Percent": 1.095044735293962e-05,
+                  "category": "gas_category"
+                },
+                {
+                  "name": "Carbon dioxide",
+                  "contributionToUSEEIOSectorScope1Percent": 5.454247880583744e-07,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            }
+          ],
+          "category": "activity_category"
+        }
+      ],
+      "category": "useeio_sector",
+      "useeio_code": "531HST"
+    },
+    {
       "name": "531ORE",
       "children": [
         {
@@ -35518,7 +36004,7 @@
               "children": [
                 {
                   "name": "Nitrous oxide",
-                  "contributionToUSEEIOSectorScope1Percent": 9.581957547828463e-05,
+                  "contributionToUSEEIOSectorScope1Percent": 9.581957547828465e-05,
                   "category": "gas_category"
                 }
               ],
@@ -35540,7 +36026,7 @@
                 },
                 {
                   "name": "Carbon dioxide",
-                  "contributionToUSEEIOSectorScope1Percent": 0.00022884650599745682,
+                  "contributionToUSEEIOSectorScope1Percent": 0.00022884650599745685,
                   "category": "gas_category"
                 }
               ],
@@ -35556,7 +36042,7 @@
                 },
                 {
                   "name": "Carbon dioxide",
-                  "contributionToUSEEIOSectorScope1Percent": 5.454247880583744e-07,
+                  "contributionToUSEEIOSectorScope1Percent": 5.454247880583745e-07,
                   "category": "gas_category"
                 }
               ],
@@ -43576,17 +44062,116 @@
       "useeio_code": "813B00"
     },
     {
-      "name": "GSLGO",
+      "name": "GSLGE",
       "children": [
+        {
+          "name": "Fuel Combustion",
+          "children": [
+            {
+              "name": "Natural Gas Combustion for Non-Manufacturing Purposes",
+              "children": [
+                {
+                  "name": "Carbon dioxide",
+                  "contributionToUSEEIOSectorScope1Percent": 0.6320215323245335,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            },
+            {
+              "name": "Petroleum Combustion",
+              "children": [
+                {
+                  "name": "Carbon dioxide",
+                  "contributionToUSEEIOSectorScope1Percent": 0.3219615419240645,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            },
+            {
+              "name": "Coal Combustion for Non-Manufacturing Purposes",
+              "children": [
+                {
+                  "name": "Carbon dioxide",
+                  "contributionToUSEEIOSectorScope1Percent": 0.004392365473306738,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            },
+            {
+              "name": "Natural Gas Combustion for Manufacturing Purposes",
+              "children": [
+                {
+                  "name": "Methane",
+                  "contributionToUSEEIOSectorScope1Percent": 0.0016433217167152658,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            },
+            {
+              "name": "Fuel Oil Combustion",
+              "children": [
+                {
+                  "name": "Methane",
+                  "contributionToUSEEIOSectorScope1Percent": 0.0014836937414075078,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            },
+            {
+              "name": "Fuel Oil",
+              "children": [
+                {
+                  "name": "Nitrous oxide",
+                  "contributionToUSEEIOSectorScope1Percent": 0.0004945645928926315,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            },
+            {
+              "name": "Natural Gas Non-Manufacturing",
+              "children": [
+                {
+                  "name": "Nitrous oxide",
+                  "contributionToUSEEIOSectorScope1Percent": 0.00032866435159910134,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            }
+          ],
+          "category": "activity_category"
+        },
         {
           "name": "Process & Fugitive Gases",
           "children": [
+            {
+              "name": "Refrigerant Use",
+              "children": [
+                {
+                  "name": "Fluorinated gases (F-Gases)",
+                  "contributionToUSEEIOSectorScope1Percent": 0.027660802856441173,
+                  "category": "gas_category"
+                },
+                {
+                  "name": "Carbon dioxide",
+                  "contributionToUSEEIOSectorScope1Percent": 0.001377741661983231,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            },
             {
               "name": "Transportation Lubricants",
               "children": [
                 {
                   "name": "Carbon dioxide",
-                  "contributionToUSEEIOSectorScope1Percent": 0.9914469322997775,
+                  "contributionToUSEEIOSectorScope1Percent": 0.008634490877737008,
                   "category": "gas_category"
                 }
               ],
@@ -43597,12 +44182,311 @@
               "children": [
                 {
                   "name": "Fluorinated gases (F-Gases)",
-                  "contributionToUSEEIOSectorScope1Percent": 0.008147265071206894,
+                  "contributionToUSEEIOSectorScope1Percent": 1.2197266288407242e-06,
                   "category": "gas_category"
                 },
                 {
                   "name": "Carbon dioxide",
-                  "contributionToUSEEIOSectorScope1Percent": 0.0004058026290154722,
+                  "contributionToUSEEIOSectorScope1Percent": 6.075269042282714e-08,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            }
+          ],
+          "category": "activity_category"
+        }
+      ],
+      "category": "useeio_sector",
+      "useeio_code": "GSLGE"
+    },
+    {
+      "name": "GSLGH",
+      "children": [
+        {
+          "name": "Fuel Combustion",
+          "children": [
+            {
+              "name": "Natural Gas Combustion for Non-Manufacturing Purposes",
+              "children": [
+                {
+                  "name": "Carbon dioxide",
+                  "contributionToUSEEIOSectorScope1Percent": 0.7214005786965857,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            },
+            {
+              "name": "Petroleum Combustion",
+              "children": [
+                {
+                  "name": "Carbon dioxide",
+                  "contributionToUSEEIOSectorScope1Percent": 0.10053684684249622,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            },
+            {
+              "name": "Coal Combustion for Non-Manufacturing Purposes",
+              "children": [
+                {
+                  "name": "Carbon dioxide",
+                  "contributionToUSEEIOSectorScope1Percent": 0.017920749039606474,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            },
+            {
+              "name": "Natural Gas Combustion for Manufacturing Purposes",
+              "children": [
+                {
+                  "name": "Methane",
+                  "contributionToUSEEIOSectorScope1Percent": 0.001875716533047368,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            },
+            {
+              "name": "Fuel Oil Combustion",
+              "children": [
+                {
+                  "name": "Methane",
+                  "contributionToUSEEIOSectorScope1Percent": 0.0004633034416148932,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            },
+            {
+              "name": "Natural Gas Non-Manufacturing",
+              "children": [
+                {
+                  "name": "Nitrous oxide",
+                  "contributionToUSEEIOSectorScope1Percent": 0.00037514331603307334,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            },
+            {
+              "name": "Fuel Oil",
+              "children": [
+                {
+                  "name": "Nitrous oxide",
+                  "contributionToUSEEIOSectorScope1Percent": 0.00015443448441769192,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            }
+          ],
+          "category": "activity_category"
+        },
+        {
+          "name": "Process & Fugitive Gases",
+          "children": [
+            {
+              "name": "Refrigerant Use",
+              "children": [
+                {
+                  "name": "Fluorinated gases (F-Gases)",
+                  "contributionToUSEEIOSectorScope1Percent": 0.14677844701152562,
+                  "category": "gas_category"
+                },
+                {
+                  "name": "Carbon dioxide",
+                  "contributionToUSEEIOSectorScope1Percent": 0.007310806652233047,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            },
+            {
+              "name": "Transportation Lubricants",
+              "children": [
+                {
+                  "name": "Carbon dioxide",
+                  "contributionToUSEEIOSectorScope1Percent": 0.0026962365807737254,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            },
+            {
+              "name": "Foams",
+              "children": [
+                {
+                  "name": "Fluorinated gases (F-Gases)",
+                  "contributionToUSEEIOSectorScope1Percent": 0.00046459656766363925,
+                  "category": "gas_category"
+                },
+                {
+                  "name": "Carbon dioxide",
+                  "contributionToUSEEIOSectorScope1Percent": 2.3140834002782852e-05,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            }
+          ],
+          "category": "activity_category"
+        }
+      ],
+      "category": "useeio_sector",
+      "useeio_code": "GSLGH"
+    },
+    {
+      "name": "GSLGO",
+      "children": [
+        {
+          "name": "Process & Fugitive Gases",
+          "children": [
+            {
+              "name": "Transportation Lubricants",
+              "children": [
+                {
+                  "name": "Carbon dioxide",
+                  "contributionToUSEEIOSectorScope1Percent": 0.005168389049565439,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            },
+            {
+              "name": "Foams",
+              "children": [
+                {
+                  "name": "Fluorinated gases (F-Gases)",
+                  "contributionToUSEEIOSectorScope1Percent": 0.0004578758525132488,
+                  "category": "gas_category"
+                },
+                {
+                  "name": "Carbon dioxide",
+                  "contributionToUSEEIOSectorScope1Percent": 2.2806085611383242e-05,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            },
+            {
+              "name": "Refrigerant Use",
+              "children": [
+                {
+                  "name": "Fluorinated gases (F-Gases)",
+                  "contributionToUSEEIOSectorScope1Percent": 0.0019144978613545706,
+                  "category": "gas_category"
+                },
+                {
+                  "name": "Carbon dioxide",
+                  "contributionToUSEEIOSectorScope1Percent": 9.535816726128649e-05,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            }
+          ],
+          "category": "activity_category"
+        },
+        {
+          "name": "Fuel Combustion",
+          "children": [
+            {
+              "name": "Petroleum Fuels",
+              "children": [
+                {
+                  "name": "Carbon dioxide",
+                  "contributionToUSEEIOSectorScope1Percent": 0.9356844877799606,
+                  "category": "gas_category"
+                },
+                {
+                  "name": "Nitrous oxide",
+                  "contributionToUSEEIOSectorScope1Percent": 0.006781197095745769,
+                  "category": "gas_category"
+                },
+                {
+                  "name": "Methane",
+                  "contributionToUSEEIOSectorScope1Percent": 0.000288718795953269,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            },
+            {
+              "name": "Natural Gas Combustion for Non-Manufacturing Purposes",
+              "children": [
+                {
+                  "name": "Carbon dioxide",
+                  "contributionToUSEEIOSectorScope1Percent": 0.02697363792184405,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            },
+            {
+              "name": "Petroleum Combustion",
+              "children": [
+                {
+                  "name": "Carbon dioxide",
+                  "contributionToUSEEIOSectorScope1Percent": 0.021868602742679488,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            },
+            {
+              "name": "Coal Combustion for Non-Manufacturing Purposes",
+              "children": [
+                {
+                  "name": "Carbon dioxide",
+                  "contributionToUSEEIOSectorScope1Percent": 0.000525898234692977,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            },
+            {
+              "name": "Fuel Oil Combustion",
+              "children": [
+                {
+                  "name": "Methane",
+                  "contributionToUSEEIOSectorScope1Percent": 0.00010077697115232838,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            },
+            {
+              "name": "Natural Gas Combustion for Manufacturing Purposes",
+              "children": [
+                {
+                  "name": "Methane",
+                  "contributionToUSEEIOSectorScope1Percent": 7.013426395893711e-05,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            },
+            {
+              "name": "Fuel Oil",
+              "children": [
+                {
+                  "name": "Nitrous oxide",
+                  "contributionToUSEEIOSectorScope1Percent": 3.359232456128197e-05,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            },
+            {
+              "name": "Natural Gas Non-Manufacturing",
+              "children": [
+                {
+                  "name": "Nitrous oxide",
+                  "contributionToUSEEIOSectorScope1Percent": 1.4026853144141966e-05,
                   "category": "gas_category"
                 }
               ],
@@ -43656,11 +44540,32 @@
           "name": "Fuel Combustion",
           "children": [
             {
+              "name": "Petroleum Fuels",
+              "children": [
+                {
+                  "name": "Carbon dioxide",
+                  "contributionToUSEEIOSectorScope1Percent": 0.42908732010410844,
+                  "category": "gas_category"
+                },
+                {
+                  "name": "Nitrous oxide",
+                  "contributionToUSEEIOSectorScope1Percent": 0.003109729536945768,
+                  "category": "gas_category"
+                },
+                {
+                  "name": "Methane",
+                  "contributionToUSEEIOSectorScope1Percent": 0.00013240101341554622,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            },
+            {
               "name": "Natural Gas Combustion for Non-Manufacturing Purposes",
               "children": [
                 {
                   "name": "Carbon dioxide",
-                  "contributionToUSEEIOSectorScope1Percent": 0.9770525493113912,
+                  "contributionToUSEEIOSectorScope1Percent": 0.5534567290641841,
                   "category": "gas_category"
                 }
               ],
@@ -43671,7 +44576,7 @@
               "children": [
                 {
                   "name": "Carbon dioxide",
-                  "contributionToUSEEIOSectorScope1Percent": 0.01926393192733052,
+                  "contributionToUSEEIOSectorScope1Percent": 0.010912158983597823,
                   "category": "gas_category"
                 }
               ],
@@ -43682,7 +44587,7 @@
               "children": [
                 {
                   "name": "Methane",
-                  "contributionToUSEEIOSectorScope1Percent": 0.002540438245434594,
+                  "contributionToUSEEIOSectorScope1Percent": 0.001439045057196488,
                   "category": "gas_category"
                 }
               ],
@@ -43693,7 +44598,7 @@
               "children": [
                 {
                   "name": "Nitrous oxide",
-                  "contributionToUSEEIOSectorScope1Percent": 0.0005080876618500805,
+                  "contributionToUSEEIOSectorScope1Percent": 0.00028780901866905993,
                   "category": "gas_category"
                 }
               ],
@@ -43704,7 +44609,7 @@
               "children": [
                 {
                   "name": "Methane",
-                  "contributionToUSEEIOSectorScope1Percent": 8.877387983879654e-05,
+                  "contributionToUSEEIOSectorScope1Percent": 5.028644692298786e-05,
                   "category": "gas_category"
                 }
               ],
@@ -43715,7 +44620,7 @@
               "children": [
                 {
                   "name": "Nitrous oxide",
-                  "contributionToUSEEIOSectorScope1Percent": 2.9591294022932136e-05,
+                  "contributionToUSEEIOSectorScope1Percent": 1.676214939539447e-05,
                   "category": "gas_category"
                 }
               ],
@@ -43732,7 +44637,23 @@
               "children": [
                 {
                   "name": "Carbon dioxide",
-                  "contributionToUSEEIOSectorScope1Percent": 0.0005166276801317854,
+                  "contributionToUSEEIOSectorScope1Percent": 0.0012687962417489173,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            },
+            {
+              "name": "Foams",
+              "children": [
+                {
+                  "name": "Fluorinated gases (F-Gases)",
+                  "contributionToUSEEIOSectorScope1Percent": 0.00022762474836233903,
+                  "category": "gas_category"
+                },
+                {
+                  "name": "Carbon dioxide",
+                  "contributionToUSEEIOSectorScope1Percent": 1.133763545276908e-05,
                   "category": "gas_category"
                 }
               ],
@@ -43807,6 +44728,73 @@
       ],
       "category": "useeio_sector",
       "useeio_code": "S00202"
+    },
+    {
+      "name": "S00203",
+      "children": [
+        {
+          "name": "Fuel Combustion",
+          "children": [
+            {
+              "name": "Petroleum Fuels",
+              "children": [
+                {
+                  "name": "Carbon dioxide",
+                  "contributionToUSEEIOSectorScope1Percent": 0.9897014834028888,
+                  "category": "gas_category"
+                },
+                {
+                  "name": "Nitrous oxide",
+                  "contributionToUSEEIOSectorScope1Percent": 0.0071726750978105555,
+                  "category": "gas_category"
+                },
+                {
+                  "name": "Methane",
+                  "contributionToUSEEIOSectorScope1Percent": 0.00030538651048839797,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            }
+          ],
+          "category": "activity_category"
+        },
+        {
+          "name": "Process & Fugitive Gases",
+          "children": [
+            {
+              "name": "Transportation Lubricants",
+              "children": [
+                {
+                  "name": "Carbon dioxide",
+                  "contributionToUSEEIOSectorScope1Percent": 0.0022515155874116783,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            },
+            {
+              "name": "Foams",
+              "children": [
+                {
+                  "name": "Fluorinated gases (F-Gases)",
+                  "contributionToUSEEIOSectorScope1Percent": 0.000541945916380884,
+                  "category": "gas_category"
+                },
+                {
+                  "name": "Carbon dioxide",
+                  "contributionToUSEEIOSectorScope1Percent": 2.6993485019750773e-05,
+                  "category": "gas_category"
+                }
+              ],
+              "category": "activity_type"
+            }
+          ],
+          "category": "activity_category"
+        }
+      ],
+      "category": "useeio_sector",
+      "useeio_code": "S00203"
     },
     {
       "name": "S00500",
@@ -43887,7 +44875,7 @@
               "children": [
                 {
                   "name": "Carbon dioxide",
-                  "contributionToUSEEIOSectorScope1Percent": 0.005416089687206105,
+                  "contributionToUSEEIOSectorScope1Percent": 0.005516080321000177,
                   "category": "gas_category"
                 }
               ],
@@ -43898,12 +44886,12 @@
               "children": [
                 {
                   "name": "Fluorinated gases (F-Gases)",
-                  "contributionToUSEEIOSectorScope1Percent": 0.00036467702369308774,
+                  "contributionToUSEEIOSectorScope1Percent": 0.0003581249403609225,
                   "category": "gas_category"
                 },
                 {
                   "name": "Carbon dioxide",
-                  "contributionToUSEEIOSectorScope1Percent": 1.816399658815456e-05,
+                  "contributionToUSEEIOSectorScope1Percent": 1.7837647485911894e-05,
                   "category": "gas_category"
                 }
               ],
@@ -43914,12 +44902,12 @@
               "children": [
                 {
                   "name": "Fluorinated gases (F-Gases)",
-                  "contributionToUSEEIOSectorScope1Percent": 0.01690534944961958,
+                  "contributionToUSEEIOSectorScope1Percent": 0.026326197618275343,
                   "category": "gas_category"
                 },
                 {
                   "name": "Carbon dioxide",
-                  "contributionToUSEEIOSectorScope1Percent": 0.0008420292197593432,
+                  "contributionToUSEEIOSectorScope1Percent": 0.0013112670463162484,
                   "category": "gas_category"
                 }
               ],
@@ -43936,17 +44924,17 @@
               "children": [
                 {
                   "name": "Carbon dioxide",
-                  "contributionToUSEEIOSectorScope1Percent": 0.6729263583041015,
+                  "contributionToUSEEIOSectorScope1Percent": 0.6089761651526732,
                   "category": "gas_category"
                 },
                 {
                   "name": "Nitrous oxide",
-                  "contributionToUSEEIOSectorScope1Percent": 0.004876907040972193,
+                  "contributionToUSEEIOSectorScope1Percent": 0.00441344006066587,
                   "category": "gas_category"
                 },
                 {
                   "name": "Methane",
-                  "contributionToUSEEIOSectorScope1Percent": 0.00020764102694034134,
+                  "contributionToUSEEIOSectorScope1Percent": 0.00018790828261381427,
                   "category": "gas_category"
                 }
               ],
@@ -43957,7 +44945,7 @@
               "children": [
                 {
                   "name": "Carbon dioxide",
-                  "contributionToUSEEIOSectorScope1Percent": 0.20342273385040852,
+                  "contributionToUSEEIOSectorScope1Percent": 0.24953781669676398,
                   "category": "gas_category"
                 }
               ],
@@ -43968,7 +44956,7 @@
               "children": [
                 {
                   "name": "Carbon dioxide",
-                  "contributionToUSEEIOSectorScope1Percent": 0.09120401770298063,
+                  "contributionToUSEEIOSectorScope1Percent": 0.09784522486018077,
                   "category": "gas_category"
                 }
               ],
@@ -43979,7 +44967,7 @@
               "children": [
                 {
                   "name": "Carbon dioxide",
-                  "contributionToUSEEIOSectorScope1Percent": 0.0026209350239691674,
+                  "contributionToUSEEIOSectorScope1Percent": 0.004130148696822872,
                   "category": "gas_category"
                 }
               ],
@@ -43990,7 +44978,7 @@
               "children": [
                 {
                   "name": "Methane",
-                  "contributionToUSEEIOSectorScope1Percent": 0.0005289202647581846,
+                  "contributionToUSEEIOSectorScope1Percent": 0.0006488242763047826,
                   "category": "gas_category"
                 }
               ],
@@ -44001,7 +44989,7 @@
               "children": [
                 {
                   "name": "Methane",
-                  "contributionToUSEEIOSectorScope1Percent": 0.00042029501240569653,
+                  "contributionToUSEEIOSectorScope1Percent": 0.00045089965367944406,
                   "category": "gas_category"
                 }
               ],
@@ -44012,7 +45000,7 @@
               "children": [
                 {
                   "name": "Nitrous oxide",
-                  "contributionToUSEEIOSectorScope1Percent": 0.0001400983409878358,
+                  "contributionToUSEEIOSectorScope1Percent": 0.00015029988833534783,
                   "category": "gas_category"
                 }
               ],
@@ -44023,7 +45011,7 @@
               "children": [
                 {
                   "name": "Nitrous oxide",
-                  "contributionToUSEEIOSectorScope1Percent": 0.00010578405560893231,
+                  "contributionToUSEEIOSectorScope1Percent": 0.0001297648585206497,
                   "category": "gas_category"
                 }
               ],

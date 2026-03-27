@@ -22,69 +22,68 @@
 
 ```
 Flowsa_extract_GHG_sources/
-├── config.py                  # Central configuration
+├── config.py                          # Central configuration
+├── terminology.py                     # Column names and JSON-LD mappings
 ├── scripts/
-│   └── enrich_fbs_with_meta.py   # Main enrichment pipeline (2,364 lines)
-├── data/                      # Lookup tables (CSV/Parquet)
-│   ├── ListOfFossilFuelsByTable.csv
-│   ├── ListOfFossilFuelsByTerm.csv
-│   ├── ListOfActivitySets.csv
+│   ├── generate_ghg_dataset.py        # Main pipeline orchestrator
+│   ├── pipeline/                      # Modular enrichment package
+│   │   ├── __init__.py                # Package exports
+│   │   ├── loaders.py                 # Data loading (parquet, CSV, YAML, R exports)
+│   │   ├── enrichers.py              # Metadata enrichment functions
+│   │   ├── transform.py              # Normalization + commodity transform (matrix multiply)
+│   │   ├── exporters.py              # Output formatting (Excel, CSV, Parquet, JSON-LD)
+│   │   ├── validators.py             # Data quality checks
+│   │   └── utils.py                  # Shared utility functions
+│   ├── setup/
+│   │   └── export_reference_data.R   # One-time R export of useeior matrices
+│   └── tools/                        # Utility scripts
+├── data/                              # Lookup tables + R-exported reference data
+│   ├── adjusted_output.csv            # CPI-adjusted industry output (from R)
+│   ├── naics_bea_allocation.csv       # NAICS→BEA allocation weights (from R)
+│   ├── B_matrix.csv                   # useeior B matrix for QC/QA (from R)
+│   ├── V_n.csv                        # Market share matrix (from R)
+│   ├── q.csv                          # Commodity output vector
 │   ├── NAICS_to_USEEIO_crosswalk.csv
-│   ├── MetaSource_to_GHGSourceCategory_mapping.csv
-│   ├── flowable_categorization.csv
-│   └── IPCC_v1.1.1_27ba917.parquet
-├── outputs/                   # Generated files
-├── local/                     # Verification scripts
-└── docs/                      # Documentation
-
+│   └── ...                            # Fuel types, sector classifications, etc.
+├── outputs/                           # Generated files (not tracked in repo)
+│   ├── QCQA.xlsx                      # B matrix comparison workbook
+│   └── ...                            # Industry + commodity form outputs
+├── docs/                              # Documentation
+└── local/                             # Scratch area (not tracked)
 ```
 
-### Module Structure (Current: Single File)
+### Module Design
 
-The `enrich_fbs_with_meta.py` script follows a linear pipeline pattern:
+The pipeline uses a modular package (`scripts/pipeline/`) with clear separation of concerns:
 
-1. **Setup (Lines 1-150)**: Imports, version checking
-2. **Utility Functions (Lines 150-400)**: Data loading, filtering
-3. **Enrichment Functions (Lines 400-1200)**: Individual enrichment layers
-4. **Main Workflow (Lines 1900-2300)**: Orchestration logic
-5. **Entry Point (Lines 2300+)**: Command-line execution
+| Module | Responsibility |
+|--------|---------------|
+| `loaders.py` | Pure I/O — load parquet, CSV, YAML, R-exported data. No business logic. |
+| `enrichers.py` | Core transformations — apply metadata, fuel, sector, GWP enrichments. Return new DataFrames. |
+| `transform.py` | Normalization by CPI-adjusted output + commodity transform via matrix multiply. |
+| `exporters.py` | Output formatting — Excel, CSV, Parquet, JSON-LD. Independent of enrichment logic. |
+| `validators.py` | Data quality checks — compare against reference data, validate totals. |
+| `utils.py` | Shared helpers — column name construction, version checks, filtering. |
 
-### Recommended Refactoring
+### Pipeline Flow (`generate_ghg_dataset.py`)
 
-For team environments or extensive customization, consider modularizing:
+The orchestrator script runs these steps in order:
 
-```python
-# scripts/enrich_fbs_with_meta.py (orchestration only)
-from modules.data_loading import load_fbs_data, load_all_lookups
-from modules.enrichment_ghgi import enrich_with_metadata, enrich_with_primary_activities
-from modules.enrichment_gwp import enrich_with_ar5_100_gwp, calculate_contribution
-from modules.output import filter_columns, save_outputs
+1. **Load data** — FlowBySector parquet, EPA GHGI metadata, fuel lookups, YAML, crosswalks
+2. **Load R-exported reference data** — allocation weights, CPI-adjusted output, B matrix
+3. **Enrich** — metadata, primary activities, fuel types, USEEIO sectors (with 1:many allocation), activity sets, GHG source categories, gas categories, AR5-100 GWP
+4. **Rename & create columns** — human-readable names, `Emissions (kg)`, `Emissions (kgCO2e)`, etc.
+5. **Contribution %** — calculate each record's share of its sector total
+6. **Normalize** — divide `Emissions (kg)` by CPI-adjusted output → intensity (kg/USD)
+7. **Commodity transform** — matrix multiply `intensity_industry @ V_n`, then `× q_j` for absolute emissions
+8. **QC/QA** — compare commodity intensities against useeior's B matrix, write `QCQA.xlsx`
+9. **Export** — industry-form and commodity-form outputs in all formats
 
-def main():
-    # Step 1-5: Load data
-    fbs_data = load_fbs_data(config.MODELNAME)
-    lookups = load_all_lookups()
-    
-    # Step 6-11: Enrich
-    enriched = fbs_data
-    enriched = enrich_with_metadata(enriched, lookups['ghgi'])
-    enriched = enrich_with_primary_activities(enriched, lookups['yaml'])
-    # ... etc
-    
-    # Step 12-13: Output
-    save_outputs(enriched, config_dict)
-```
+### Key Design Decisions
 
-**Benefits:**
-- Easier unit testing
-- Parallel development
-- Code reuse across models
-- Clearer dependencies
-
-**Trade-offs:**
-- More files to navigate
-- Import management
-- Overhead for single-user projects
+- **Pre-baked R exports**: Rather than replicating useeior's CPI adjustment, RoUS handling, and multi-year interpolation in Python, we export the **final computed values** from R and use them directly. This guarantees numerical agreement with useeior.
+- **1:many NAICS→BEA expansion**: When a NAICS code maps to multiple BEA codes (e.g., NAICS 325 → multiple BEA detail sectors), `enrich_with_useeio()` expands rows and weights `FlowAmount` by allocation fractions derived from relative industry output.
+- **Matrix multiply for commodity transform**: Matches useeior's `B = B_industry %*% V_n` exactly. The intensity matrix is pivoted, multiplied by `V_n` in numpy, then unpivoted back to long form.
 
 ---
 
@@ -544,7 +543,7 @@ Checks:
 # tests/test_enrichment.py
 import unittest
 import pandas as pd
-from scripts.enrich_fbs_with_meta import enrich_with_ar5_100_gwp
+from scripts.pipeline.enrichers import enrich_with_ar5_100_gwp
 
 class TestGWPEnrichment(unittest.TestCase):
     def setUp(self):
@@ -722,7 +721,7 @@ KEEP_COLUMNS = [
 
 **Step 3: Create loader function**
 ```python
-# scripts/enrich_fbs_with_meta.py
+# scripts/pipeline/loaders.py (add to existing module)
 def load_climate_zone_lookup(csv_path):
     """Load USEEIO to Climate Zone mapping."""
     if not os.path.exists(csv_path):

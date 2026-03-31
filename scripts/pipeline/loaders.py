@@ -192,23 +192,23 @@ def load_fuel_lookup(lookup_csv_path):
         lookup_df = pd.read_csv(lookup_csv_path)
         
         # Determine the column names based on file content
-        if 'Table ref' in lookup_df.columns:
-            # Table-based lookup
+        if 'MetaSources' in lookup_df.columns:
+            # MetaSources-based lookup (full MetaSources string as key)
             lookup_dict = dict(zip(
-                lookup_df['Table ref'].str.strip(),
-                lookup_df['FuelConsumed'].str.strip()
+                lookup_df['MetaSources'].str.strip(),
+                lookup_df['Fuel'].str.strip()
             ))
         elif 'Fossil Fuel terms for lookup' in lookup_df.columns:
             # Term-based lookup
             lookup_dict = dict(zip(
                 lookup_df['Fossil Fuel terms for lookup'].str.strip(),
-                lookup_df['FuelConsumed'].str.strip()
+                lookup_df['Fuel'].str.strip()
             ))
         elif 'fuel terms for lookup' in lookup_df.columns:
             # Alternative term-based lookup (lowercase)
             lookup_dict = dict(zip(
                 lookup_df['fuel terms for lookup'].str.strip(),
-                lookup_df['FuelConsumed'].str.strip()
+                lookup_df['Fuel'].str.strip()
             ))
         else:
             print(f"Warning: Unrecognized column format in {lookup_csv_path}")
@@ -476,9 +476,7 @@ def extract_primary_activities_mapping(yaml_content):
     """
     if not yaml_content:
         return {}
-    
-    print("Extracting PrimaryActivity information from m1 method YAML...")
-    
+        
     mapping = {}
     anchor_definitions = {}  # Store anchor definitions: {anchor_name: source_name}
     lines = yaml_content.split('\n')
@@ -492,7 +490,6 @@ def extract_primary_activities_mapping(yaml_content):
                 source_name = match.group(1).strip()
                 anchor_name = match.group(2).strip()
                 anchor_definitions[anchor_name] = source_name
-                print(f"  Found anchor definition: &{anchor_name} defined at {source_name}")
     
     current_source = None
     current_activity_set = None
@@ -550,7 +547,6 @@ def extract_primary_activities_mapping(yaml_content):
                 if anchor_name in anchor_definitions:
                     # This source references another source's definition
                     ref_source = anchor_definitions[anchor_name]
-                    print(f"  {current_source} references *{anchor_name} (copying from {ref_source})")
                     
                     # Copy all mappings from the referenced source after this pass completes
                     # Mark it for later copying
@@ -670,30 +666,8 @@ def extract_primary_activities_mapping(yaml_content):
                     'full': values_dict['full'].copy(),
                     'short': values_dict['short'].copy()
                 }
-                print(f"    Copied {key} -> {new_key}: {' | '.join(values_dict['full'])}")
     
     print(f"OK - Extracted PrimaryActivity mappings for {len(mapping)} source/activity combinations")
-    
-    # Print some examples for debugging
-    test_keys = [
-        'EPA_GHGI_T_2_1.electric_power', 
-        'EPA_GHGI_T_4_127.refrigerants', 
-        'EPA_GHGI_T_4_109', 
-        'EPA_GHGI_T_2_1.carbonate_use',
-        'EPA_GHGI_T_3_15.direct_gasoline',  # Uses *mobile anchor
-        'EPA_GHGI_T_3_9.residential',  # Uses *stationary_combustion anchor
-        'EPA_GHGI_T_3_13.direct_petroleum'  # Has hierarchy mapping
-    ]
-    for key in test_keys:
-        if key in mapping:
-            full_activities = ' | '.join(mapping[key]['full'])
-            short_activities = ' | '.join(mapping[key]['short'])
-            if full_activities == short_activities:
-                print(f"  {key} -> {full_activities}")
-            else:
-                print(f"  {key}:")
-                print(f"    Full:  {full_activities[:150]}...")
-                print(f"    Short: {short_activities[:150]}...")
     
     return mapping
 

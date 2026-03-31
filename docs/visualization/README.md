@@ -168,7 +168,7 @@ The `.github/workflows/update-docs-data.yml` workflow automatically copies updat
 
 ## Credits
 
-- **Data Sources:** [USEEIO](https://github.com/USEPA/useeior/) & [FLOWSA](https://github.com/USEPA/flowsa)
+- **Data Sources:** [USEEIO](https://github.com/cornerstone-data/useeior/) & [FLOWSA](https://github.com/cornerstone-data/flowsa)
 - **Visualization:** D3.js v7
 - **Font:** Lato (Google Fonts)
 - **License:** Data is licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)

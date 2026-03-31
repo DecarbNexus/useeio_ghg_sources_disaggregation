@@ -213,20 +213,20 @@ Flowsa_extract_GHG_sources/
 5) **Use categorization fields** for analysis:
    - "Activity Category" to distinguish combustion vs. process vs. fugitive emissions
    - "IPCC/UNFCCC Category" for international reporting categories
-   - "Fuel Consumed" to identify fuel-specific emissions (where applicable)
+   - "Fuel" to identify fuel-specific emissions (where applicable)
 
 6) **Check the Baseline tab** (if included) to verify against original FlowBySector data
 6) Check the "Baseline" tab (or baseline CSV) for the original FlowBySector data used as input
 
 Deeper dive (optional columns):
-- `Fuel Consumed`: Type of fuel (when applicable)
+- `Fuel`: Type of fuel (when applicable)
 - `AR5-100 GWP`: IPCC AR5 100-year Global Warming Potential
 - `US GHGI Table ID`: EPA GHGI source table
 - `Attribution Sources`: How emissions were allocated to sectors
 
 Additional reading and context:
 - EPA's Supply Chain Emission Factors: https://www.epa.gov/climateleadership/supply-chain-emission-factors
-- FlowSA documentation: https://github.com/USEPA/flowsa
+- FlowSA documentation: https://github.com/cornerstone-data/flowsa
 - EPA GHGI: https://www.epa.gov/ghgemissions/inventory-us-greenhouse-gas-emissions-and-sinks
 
 ## Limitations & planned development
@@ -371,9 +371,9 @@ All license requirements are fully satisfied. See licensing files in `outputs/` 
 ## Credits and acknowledgement
 
 Huge thanks to the USEPA teams whose work powers this project:
-- FlowSA: https://github.com/USEPA/flowsa
-- Supply Chain Emission Factors: https://github.com/USEPA/supply-chain-factors
-- USEEIO: https://github.com/USEPA/useeior
+- FlowSA: https://github.com/cornerstone-data/flowsa
+- Supply Chain Emission Factors: https://github.com/cornerstone-data/supply-chain-factors
+- USEEIO: https://github.com/cornerstone-data/useeior
 
 Project by Damien Lieber @ [DecarbNexus LLC](https://decarbnexus.com)
 

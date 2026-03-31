@@ -16,7 +16,7 @@ from collections import defaultdict
 parent_dir = Path(__file__).parent.parent.parent.parent
 sys.path.append(str(parent_dir))
 import config
-from .utils import build_emission_event_full, generate_event_id
+from .utils import build_emission_event_full, generate_event_id, compute_ghg_source_id
 from terminology import TERMINOLOGY, get_jsonld_property
 
 def build_hierarchical_jsonld(df, include_all_fields=True):
@@ -34,7 +34,7 @@ def build_hierarchical_jsonld(df, include_all_fields=True):
             - Activity Subcategory (child)
               - Activity Type (child)
                 - GHG Source (child)
-                  - Fuel Consumed (child)
+                  - Fuel (child)
                     - Gas Category (child)
                       - Gas (leaf with emission values)
     
@@ -93,7 +93,7 @@ def build_hierarchical_jsonld(df, include_all_fields=True):
             'Row ID',  # Exclude Row ID from hierarchy (only for tabular exports)
             'USEEIO Sector Name', 'USEEIO Sector Code', 'NAICS Sector Code',
             'Activity Category', 'IPCC/UNFCCC Category', 'Activity Subcategory',
-            'Activity Type', 'GHG Source', 'Fuel Consumed', 'Gas Category', 'Gas',
+            'Activity Type', 'GHG Source', 'Fuel', 'Gas Category', 'Gas',
             'US GHGI Chapter', 'US GHGI Table ID', 'US GHGI Table Name', 'Attribution Sources'
         }
         
@@ -110,7 +110,7 @@ def build_hierarchical_jsonld(df, include_all_fields=True):
             ghg_subcategory = row.get('Activity Subcategory')
             ghg_sub_subcategory = row.get('Activity Type')
             ghg_source = row.get('GHG Source')
-            fuel = row.get('Fuel Consumed')
+            fuel = row.get('Fuel')
             gas_category = row.get('Gas Category')
             gas = row.get('Gas')
             ghgi_table_id = row.get('US GHGI Table ID')
@@ -406,7 +406,7 @@ def build_ghg_source_classification_jsonld(df):
         ghg_subcat = row.get('Activity Subcategory', 'Unknown')
         ghg_subsubcat = row.get('Activity Type', 'Unknown')
         activity = row.get('Activity', 'Unknown')
-        fuel = row.get('Fuel Consumed')
+        fuel = row.get('Fuel')
         gas_cat = row.get('Gas Category', 'Unknown')
         gas = row.get('Gas', 'Unknown')
         
@@ -535,20 +535,41 @@ def build_ghg_source_classification_csv(df):
     classification_columns = [
         'Activity Category',
         'IPCC/UNFCCC Category',
+        'IPCC Category Code',
         'Activity Subcategory',
         'Activity Type',
         'Activity',
-        'Fuel Consumed',
+        'Fuel',
         'Gas Category',
         'Gas'
     ]
     
-    # Get unique combinations (drop duplicates)
-    classification_df = df[classification_columns].drop_duplicates().sort_values(by=classification_columns)
-    
+    # Drop rows where Activity Category is unmatched (enrichment lookup miss)
+    available = [c for c in classification_columns if c in df.columns]
+    dropna_cols = [c for c in ['Activity Category'] if c in available]
+    subset = df[available + (['US GHGI Table ID'] if 'US GHGI Table ID' in df.columns else [])].dropna(subset=dropna_cols) if dropna_cols else df[available + (['US GHGI Table ID'] if 'US GHGI Table ID' in df.columns else [])]
+
+    # Aggregate table IDs per unique combination, then drop duplicates on classification cols
+    if 'US GHGI Table ID' in subset.columns:
+        table_ids = (
+            subset.dropna(subset=['US GHGI Table ID'])
+            .groupby(available, dropna=False)['US GHGI Table ID']
+            .apply(lambda s: ', '.join(sorted(s.dropna().unique())))
+            .reset_index()
+            .rename(columns={'US GHGI Table ID': 'EPA GHGI Table IDs'})
+        )
+        classification_df = subset[available].drop_duplicates().sort_values(by=available).merge(
+            table_ids, on=available, how='left'
+        )
+    else:
+        classification_df = subset[available].drop_duplicates().sort_values(by=available)
+
     # Reset index to get clean row numbers
     classification_df = classification_df.reset_index(drop=True)
-    
+
+    # Add stable hash key as first column
+    classification_df.insert(0, 'GHG Source ID', compute_ghg_source_id(classification_df))
+
     print(f"[SUCCESS] Built GHG source classification CSV with {len(classification_df)} unique combinations")
     
     return classification_df
@@ -1000,6 +1021,31 @@ def save_outputs(fbs_parquet, fbs_calculated, enriched_data, config_dict, commod
                 x_df = pd.read_csv('data/x.csv')
             except:
                 x_df = None
+
+            # B matrix (flows × commodities) — commodity form only
+            b_matrix_df = None
+            b_matrix_long_df = None
+            if suffix == '_commodity' and hasattr(config, 'B_MATRIX_CSV'):
+                try:
+                    import os as _os
+                    _b_path = _os.path.join(
+                        str(__file__).split('scripts')[0],
+                        config.B_MATRIX_CSV
+                    )
+                    from .loaders import load_b_matrix as _load_b
+                    _b = _load_b(_b_path)
+                    if not _b.empty:
+                        # Wide form: index = flow name, columns = commodity codes
+                        b_matrix_df = _b.reset_index().rename(columns={_b.index.name or 'index': 'Flow'})
+                        # Long form: one row per (flow, commodity, value) — easier for analysis
+                        b_matrix_long_df = (
+                            _b.reset_index()
+                            .rename(columns={_b.index.name or 'index': 'Flow'})
+                            .melt(id_vars='Flow', var_name='USEEIO Commodity Code', value_name='Intensity (kg/USD)')
+                        )
+                        b_matrix_long_df = b_matrix_long_df[b_matrix_long_df['Intensity (kg/USD)'] != 0].reset_index(drop=True)
+                except Exception:
+                    pass
             
             # Check if baseline tab should be included
             if config.INCLUDE_BASELINE_TAB and fbs_parquet is not None:
@@ -1022,6 +1068,10 @@ def save_outputs(fbs_parquet, fbs_calculated, enriched_data, config_dict, commod
                         v_n_df.to_excel(writer, sheet_name='V_n_Matrix', index=True)
                     if x_df is not None:
                         x_df.to_excel(writer, sheet_name='x_Vector', index=False)
+                    if b_matrix_df is not None:
+                        b_matrix_df.to_excel(writer, sheet_name='B_Matrix', index=False)
+                    if b_matrix_long_df is not None:
+                        b_matrix_long_df.to_excel(writer, sheet_name='B_Matrix_Long', index=False)
                 print(f"  [SUCCESS] Excel: {base_filename}.xlsx (with Author_Info, Model_Specs, Baseline, and reference data tabs)")
             else:
                 # Export single sheet
@@ -1042,6 +1092,10 @@ def save_outputs(fbs_parquet, fbs_calculated, enriched_data, config_dict, commod
                         v_n_df.to_excel(writer, sheet_name='V_n_Matrix', index=True)
                     if x_df is not None:
                         x_df.to_excel(writer, sheet_name='x_Vector', index=False)
+                    if b_matrix_df is not None:
+                        b_matrix_df.to_excel(writer, sheet_name='B_Matrix', index=False)
+                    if b_matrix_long_df is not None:
+                        b_matrix_long_df.to_excel(writer, sheet_name='B_Matrix_Long', index=False)
                 print(f"  [SUCCESS] Excel: {base_filename}.xlsx (with Author_Info, Model_Specs, and reference data tabs)")
         except PermissionError:
             print(f"  ⚠ Excel export skipped - file is open")

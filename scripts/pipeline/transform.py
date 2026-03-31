@@ -16,7 +16,7 @@ from pathlib import Path
 parent_dir = Path(__file__).parent.parent.parent.parent
 sys.path.append(str(parent_dir))
 import config
-from .utils import get_emissions_intensity_col
+from .utils import get_emissions_intensity_col, get_emissions_intensity_kgco2e_col, get_emissions_intensity_mtco2e_musd_col
 
 
 def calculate_contribution_by_sector(fbs_data):
@@ -139,7 +139,35 @@ def normalize_emissions_by_output(df, adjusted_output_dict):
     print(f"  Total emissions: {total_kg:,.0f} kg")
     print(f"  Total adjusted output: ${total_output:,.0f}")
     print(f"  Average intensity: {avg_intensity:.6e} kg/USD")
-    
+
+    # ----- CO2e intensity -----
+    # Rows with valid output AND a kgCO2e value (includes CO2e-only gases where Emissions (kg) is null)
+    kgco2e_intensity_col = get_emissions_intensity_kgco2e_col()
+    mtco2e_musd_intensity_col = get_emissions_intensity_mtco2e_musd_col()
+
+    valid_co2e_mask = valid_mask & df_normalized['Emissions (kgCO2e)'].notna()
+    df_normalized.loc[valid_co2e_mask, kgco2e_intensity_col] = (
+        df_normalized.loc[valid_co2e_mask, 'Emissions (kgCO2e)']
+        / df_normalized.loc[valid_co2e_mask, 'Industry Output (USD)']
+    )
+    # MTCO2e/million_USD = kgCO2e/USD × 1000  (1 MT = 1000 kg; 1M USD = 1e6 USD → net factor 1000)
+    df_normalized.loc[valid_co2e_mask, mtco2e_musd_intensity_col] = (
+        df_normalized.loc[valid_co2e_mask, kgco2e_intensity_col] * 1000
+    )
+
+    co2e_count = valid_co2e_mask.sum()
+    # CO2e-only rows: gases reported only in CO2e units (e.g. HFCs/PFCs unspecified)
+    co2e_only_mask = (
+        df_normalized['Emissions (kg)'].isna()
+        & df_normalized['Emissions (kgCO2e)'].notna()
+        & valid_mask
+    )
+    co2e_only_count = co2e_only_mask.sum()
+    co2e_only_total = df_normalized.loc[co2e_only_mask, 'Emissions (kgCO2e)'].sum()
+    print(f"[SUCCESS] Calculated kgCO2e/USD intensities for {co2e_count:,} records")
+    print(f"  CO2e-only rows (null kg, excluded from kg/USD intensity): {co2e_only_count:,} rows, "
+          f"{co2e_only_total:,.0f} kgCO2e")
+
     return df_normalized
 
 
@@ -174,24 +202,32 @@ def transform_to_commodity_form(df_normalized, market_share_matrix, commodity_ou
         Commodity-form data with recalculated emissions
     """
     print("Transforming to commodity form using matrix multiply (B_industry @ V_n)...")
-    
+
     emissions_intensity_col = get_emissions_intensity_col()
-    
-    # Only process records with valid intensities
+    kgco2e_intensity_col = get_emissions_intensity_kgco2e_col()
+    mtco2e_musd_intensity_col = get_emissions_intensity_mtco2e_musd_col()
+
+    # Only process records with valid kg intensities (first pass)
     valid_mask = df_normalized[emissions_intensity_col].notna()
     df_to_transform = df_normalized[valid_mask].copy()
+
+    # Save industry-form kgCO2e total for conservation check later
+    _industry_kgco2e_total = (
+        df_normalized.loc[df_normalized[kgco2e_intensity_col].notna(), 'Emissions (kgCO2e)'].sum()
+    )
     
-    print(f"  Processing {len(df_to_transform):,} records with valid emission intensities")
+    print(f"  Processing {len(df_to_transform):,} records with valid kg emission intensities (first pass)")
     
     # ----- Step 1: Identify grouping dimensions (everything except sector and quantities) -----
     # These columns define unique "flow" rows in the intensity matrix
     group_cols = [
         'Activity Category',
         'IPCC/UNFCCC Category',
+        'IPCC Category Code',
         'Activity Subcategory',
         'Activity Type',
         'Activity',
-        'Fuel Consumed',
+        'Fuel',
         'Gas Category',
         'Gas',
         'US GHGI Table ID',
@@ -276,19 +312,105 @@ def transform_to_commodity_form(df_normalized, market_share_matrix, commodity_ou
         axis=1,
     )
     commodity_long['FlowAmount'] = commodity_long['Emissions (kg)']
-    
+
     # Recalculate GWP-derived columns
     gwp_col = 'AR5-100 GWP'
     if gwp_col in commodity_long.columns:
         commodity_long['Emissions (kgCO2e)'] = commodity_long['Emissions (kg)'] * commodity_long[gwp_col]
         commodity_long['Emissions (MTCO2e)'] = commodity_long['Emissions (kgCO2e)'] / 1_000_000
-    
+
     # Set NAICS Sector Code to None (not meaningful for commodity form)
     commodity_long['NAICS Sector Code'] = None
-    
+
     # Enrich with USEEIO Sector Names
     commodity_long['USEEIO Sector Name'] = commodity_long['USEEIO Sector Code'].map(sector_code_to_name)
-    
+
+    # ----- Step 8b: Second pass — CO2e-only gases (e.g. HFCs/PFCs reported only in kg CO2e) -----
+    # These rows have a valid kgCO2e intensity but no kg intensity (Emissions (kg) was null).
+    co2e_only_src_mask = (
+        df_normalized[kgco2e_intensity_col].notna()
+        & df_normalized[emissions_intensity_col].isna()
+    )
+    df_co2e_only = df_normalized[co2e_only_src_mask].copy()
+
+    if not df_co2e_only.empty:
+        print(f"  Second pass: {len(df_co2e_only):,} CO2e-only industry records → commodity form...")
+
+        # Re-use the same group dimensions
+        co2e_group_cols = [col for col in group_cols if col in df_co2e_only.columns]
+
+        co2e_agg_df = (
+            df_co2e_only
+            .groupby(co2e_group_cols + ['USEEIO Sector Code'], dropna=False)
+            .agg({kgco2e_intensity_col: 'sum'})
+            .reset_index()
+        )
+
+        co2e_group_keys = co2e_agg_df[co2e_group_cols].drop_duplicates().reset_index(drop=True)
+        co2e_group_keys['_flow_id'] = range(len(co2e_group_keys))
+        co2e_agg_df = co2e_agg_df.merge(co2e_group_keys, on=co2e_group_cols, how='left')
+
+        co2e_intensity_industry = co2e_agg_df.pivot_table(
+            index='_flow_id',
+            columns='USEEIO Sector Code',
+            values=kgco2e_intensity_col,
+            aggfunc='sum',
+            fill_value=0.0,
+        )
+
+        co2e_common = co2e_intensity_industry.columns.intersection(market_share_matrix.index)
+        co2e_I = co2e_intensity_industry.reindex(columns=co2e_common, fill_value=0.0)
+        co2e_V = market_share_matrix.reindex(index=co2e_common, fill_value=0.0)
+
+        co2e_commodity_matrix = co2e_I.values @ co2e_V.values
+        co2e_commodity_df = pd.DataFrame(
+            co2e_commodity_matrix,
+            index=co2e_I.index,
+            columns=co2e_V.columns,
+        )
+        co2e_commodity_df.index.name = '_flow_id'
+
+        co2e_long = co2e_commodity_df.reset_index().melt(
+            id_vars='_flow_id',
+            var_name='USEEIO Sector Code',
+            value_name=kgco2e_intensity_col,
+        )
+        co2e_long = co2e_long[co2e_long[kgco2e_intensity_col].abs() > 1e-20].copy()
+        co2e_long = co2e_long.merge(co2e_group_keys, on='_flow_id', how='left')
+        co2e_long.drop(columns='_flow_id', inplace=True)
+
+        # Recalculate absolute quantities from commodity kgCO2e intensity × q_j
+        co2e_long['Emissions (kgCO2e)'] = co2e_long.apply(
+            lambda r: r[kgco2e_intensity_col] * commodity_output_dict.get(r['USEEIO Sector Code'], 0),
+            axis=1,
+        )
+        co2e_long['Emissions (MTCO2e)'] = co2e_long['Emissions (kgCO2e)'] / 1_000_000
+        co2e_long['Emissions (kg)'] = None   # no kg equivalent for CO2e-only gases
+        co2e_long['FlowAmount'] = co2e_long['Emissions (kgCO2e)']
+        co2e_long['NAICS Sector Code'] = None
+        co2e_long['USEEIO Sector Name'] = co2e_long['USEEIO Sector Code'].map(sector_code_to_name)
+
+        print(f"  CO2e-only second pass: {len(co2e_long):,} non-zero commodity records")
+        commodity_long = pd.concat([commodity_long, co2e_long], ignore_index=True)
+
+    # ----- Step 8c: Compute CO2e intensity columns for all commodity rows -----
+    q_series = commodity_long['USEEIO Sector Code'].map(commodity_output_dict)
+    valid_q = q_series.notna() & (q_series > 0) & commodity_long['Emissions (kgCO2e)'].notna()
+    commodity_long[kgco2e_intensity_col] = None
+    commodity_long[mtco2e_musd_intensity_col] = None
+    commodity_long.loc[valid_q, kgco2e_intensity_col] = (
+        commodity_long.loc[valid_q, 'Emissions (kgCO2e)'] / q_series[valid_q]
+    )
+    commodity_long.loc[valid_q, mtco2e_musd_intensity_col] = (
+        commodity_long.loc[valid_q, kgco2e_intensity_col] * 1000
+    )
+
+    # kgCO2e conservation check
+    commodity_total_kgco2e = commodity_long['Emissions (kgCO2e)'].sum()
+    co2e_ratio = commodity_total_kgco2e / _industry_kgco2e_total if _industry_kgco2e_total > 0 else float('nan')
+    print(f"  kgCO2e conservation — Industry: {_industry_kgco2e_total:,.0f}  "
+          f"Commodity: {commodity_total_kgco2e:,.0f}  Ratio: {co2e_ratio:.4f}")
+
     # ----- Step 9: Contribution % by commodity sector -----
     print("  Calculating contribution percentages for commodity form...")
     commodity_long = calculate_contribution_by_sector(commodity_long)
@@ -300,17 +422,20 @@ def transform_to_commodity_form(df_normalized, market_share_matrix, commodity_ou
         'NAICS Sector Code',
         'Activity Category',
         'IPCC/UNFCCC Category',
+        'IPCC Category Code',
         'Activity Subcategory',
         'Activity Type',
         'Activity',
-        'Fuel Consumed',
+        'Fuel',
         'Gas Category',
         'Gas',
         'Emissions (kg)',
         get_emissions_intensity_col(),
         'AR5-100 GWP',
         'Emissions (kgCO2e)',
+        get_emissions_intensity_kgco2e_col(),
         'Emissions (MTCO2e)',
+        get_emissions_intensity_mtco2e_musd_col(),
         "Contribution to USEEIO Sector's Scope 1 (%)",
         'US GHGI Chapter',
         'US GHGI Table ID',

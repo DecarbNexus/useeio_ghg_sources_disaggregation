@@ -49,10 +49,10 @@ from pipeline.utils import (
     rename_and_create_columns,
     _extract_meta_id,
     count_unique_valid,
+    compute_ghg_source_id,
 )
 from pipeline.validators import (
     aggregate_to_reference_format,
-    compare_with_reference,
     validate_data
 )
 from pipeline.loaders import (
@@ -141,7 +141,7 @@ def check_requirements():
                 if version not in required_versions:
                     print(f"       [WARNING] Version mismatch detected!")
                     print(f"       To install correct version:")
-                    print(f"         python install_flowsa_2.0.3.py")
+                    print(f"         python scripts/tools/install_flowsa.py")
                     
         except ImportError:
             missing_packages.append(package)
@@ -159,10 +159,15 @@ def check_requirements():
 def run_metadata_extraction():
     """Run EPA GHGI metadata extraction."""
     print("\nStep 1: Extracting EPA GHGI metadata...")
-    
+
+    meta_dir = os.path.join(config.OUTPUT_DIR, "metadata")
+    csv_out  = os.path.join(meta_dir, config.EPA_GHGI_META_CSV)
+    yaml_out = os.path.join(meta_dir, config.EPA_GHGI_META_YAML)
+    os.makedirs(meta_dir, exist_ok=True)
+
     try:
         from tools.extract_metadata import main as extract_main
-        extract_main()
+        extract_main(csv_out=csv_out, yaml_out=yaml_out)
         print("SUCCESS: Metadata extraction completed!")
         return True
     except Exception as e:
@@ -313,7 +318,9 @@ def _load_pipeline_inputs(config_dict):
     """
     print("\n--- Loading pipeline inputs ---")
 
-    meta_map = load_metadata_mapping(os.path.join(config_dict["output_dir"], config.EPA_GHGI_META_CSV))
+    meta_map = load_metadata_mapping(
+        os.path.join(config_dict["output_dir"], "metadata", config.EPA_GHGI_META_CSV)
+    )
     fuel_by_table = load_fuel_lookup(config.FUEL_BY_TABLE_CSV)
     fuel_by_term = load_fuel_lookup(config.FUEL_BY_TERM_CSV)
     naics_to_useeio_dict = load_naics_to_useeio_crosswalk(config.NAICS_TO_USEEIO_CSV)
@@ -350,6 +357,41 @@ def _load_pipeline_inputs(config_dict):
         "sector_code_to_name": sector_code_to_name,
         "primary_activity_mapping": primary_activity_mapping,
     }
+
+
+def _fill_classification_defaults(df):
+    """Fill empty classification fields with sensible defaults.
+
+    - ``Fuel``: empty → "N/A"
+    - ``Activity``: empty → value from ``Activity Type``
+    - ``Activity Type``: empty → value from ``Activity Subcategory``
+    - ``Activity Subcategory``: empty → value from ``Activity Category``
+
+    Applied after all enrichment steps so that the cascade uses the
+    most specific value already resolved rather than overwriting real data.
+    """
+    out = df.copy()
+
+    def _is_empty(series):
+        return series.isna() | (series.astype(str).str.strip() == '')
+
+    # Fuel: blank → "N/A"
+    if 'Fuel' in out.columns:
+        mask = _is_empty(out['Fuel'])
+        out.loc[mask, 'Fuel'] = 'N/A'
+
+    # Activity hierarchy cascade (most specific → most general)
+    hierarchy = [
+        ('Activity',           'Activity Type'),
+        ('Activity Type',      'Activity Subcategory'),
+        ('Activity Subcategory', 'Activity Category'),
+    ]
+    for child, parent in hierarchy:
+        if child in out.columns and parent in out.columns:
+            mask = _is_empty(out[child]) & ~_is_empty(out[parent])
+            out.loc[mask, child] = out.loc[mask, parent]
+
+    return out
 
 
 def _run_enrichment_pipeline(fbs_filtered, inputs):
@@ -402,6 +444,10 @@ def _run_enrichment_pipeline(fbs_filtered, inputs):
     print("  Renaming columns and creating emission columns...")
     enriched_data = rename_and_create_columns(enriched_data)
 
+    # Fill empty classification fields
+    print("  Filling empty classification fields...")
+    enriched_data = _fill_classification_defaults(enriched_data)
+
     return enriched_data
 
 
@@ -417,9 +463,9 @@ def _run_commodity_transformation(enriched_data, inputs):
     """
     print("\n--- Industry-to-commodity transformation ---")
 
-    adjusted_output_path = os.path.join(parent_dir, 'data', 'adjusted_output.csv')
-    v_n_csv_path = os.path.join(parent_dir, 'data', 'V_n.csv')
-    adj_commodity_path = os.path.join(parent_dir, 'data', 'adjusted_commodity_output.csv')
+    adjusted_output_path = os.path.join(parent_dir, config.ADJUSTED_OUTPUT_CSV)
+    v_n_csv_path         = os.path.join(parent_dir, config.V_N_CSV)
+    adj_commodity_path   = os.path.join(parent_dir, config.ADJUSTED_COMMODITY_OUTPUT_CSV)
 
     missing = [p for p in [adjusted_output_path, v_n_csv_path, adj_commodity_path] if not os.path.exists(p)]
     if missing:
@@ -433,6 +479,17 @@ def _run_commodity_transformation(enriched_data, inputs):
     commodity_output_dict = load_commodity_output(adj_commodity_path)
     market_share_matrix = load_market_share_matrix(v_n_csv_path)
 
+    # Strip bookkeeping/adjustment sectors before normalization and commodity transform so
+    # they never appear in intensities, QCQA, or outputs. (_finalize_and_export also filters
+    # as a safety net for the industry-form CSV.)
+    excluded = getattr(config, 'EXCLUDED_SECTOR_CODES', ['F01000', 'S00401', 'S00900'])
+    if 'USEEIO Sector Code' in enriched_data.columns:
+        before = len(enriched_data)
+        enriched_data = enriched_data[~enriched_data['USEEIO Sector Code'].isin(excluded)].copy()
+        removed = before - len(enriched_data)
+        if removed > 0:
+            print(f"  Stripped {removed} rows for excluded sectors {excluded} before normalization")
+
     # Normalize emissions by CPI-adjusted industry output (also adds intensity column)
     enriched_data = normalize_emissions_by_output(enriched_data, adjusted_output_dict)
 
@@ -440,6 +497,16 @@ def _run_commodity_transformation(enriched_data, inputs):
     commodity_data = transform_to_commodity_form(
         enriched_data, market_share_matrix, commodity_output_dict, inputs["sector_code_to_name"]
     )
+
+    # Strip excluded sectors from commodity form too — they appear as commodity columns in V_n
+    # even though they were stripped as industry rows above, so the matrix multiply still
+    # produces entries for them (with intensity derived from other industries' contributions).
+    if 'USEEIO Sector Code' in commodity_data.columns:
+        before_c = len(commodity_data)
+        commodity_data = commodity_data[~commodity_data['USEEIO Sector Code'].isin(excluded)].copy()
+        removed_c = before_c - len(commodity_data)
+        if removed_c > 0:
+            print(f"  Stripped {removed_c} commodity rows for excluded sectors {excluded}")
 
     # Sort commodity data: USEEIO Sector Code → Contribution % desc
     sort_cols, sort_asc = [], []
@@ -465,15 +532,20 @@ def _finalize_and_export(enriched_data, commodity_data, fbs_parquet, fbs_filtere
     """
     print("\n--- Finalize and export ---")
 
-    # Consolidated F01000 exclusion
+    # Consolidated sector exclusion: bookkeeping/adjustment sectors with no real production activity
+    excluded = getattr(config, 'EXCLUDED_SECTOR_CODES', ['F01000', 'S00401', 'S00900'])
     if 'USEEIO Sector Code' in enriched_data.columns:
         before = len(enriched_data)
-        enriched_data = enriched_data[enriched_data['USEEIO Sector Code'] != 'F01000'].copy()
+        enriched_data = enriched_data[~enriched_data['USEEIO Sector Code'].isin(excluded)].copy()
         removed = before - len(enriched_data)
         if removed > 0:
-            print(f"  Excluded F01000 (Used/Secondhand Goods): {removed} rows removed from industry form")
+            print(f"  Excluded bookkeeping sectors {excluded}: {removed} rows removed from industry form")
     if commodity_data is not None and 'USEEIO Sector Code' in commodity_data.columns:
-        commodity_data = commodity_data[commodity_data['USEEIO Sector Code'] != 'F01000'].copy()
+        before_c = len(commodity_data)
+        commodity_data = commodity_data[~commodity_data['USEEIO Sector Code'].isin(excluded)].copy()
+        removed_c = before_c - len(commodity_data)
+        if removed_c > 0:
+            print(f"  Excluded bookkeeping sectors {excluded}: {removed_c} rows removed from commodity form")
 
     # Validate data quality
     print("  Validating data quality...")
@@ -493,13 +565,15 @@ def _finalize_and_export(enriched_data, commodity_data, fbs_parquet, fbs_filtere
         sort_cols.append("Contribution to USEEIO Sector's Scope 1 (%)"); sort_asc.append(False)
     if sort_cols:
         enriched_data = enriched_data.sort_values(by=sort_cols, ascending=sort_asc, na_position='last')
-        print(f"  Sorted {len(enriched_data):,} records by: {' → '.join(sort_cols)}")
+        print(f"  Sorted {len(enriched_data):,} records by: {' -> '.join(sort_cols)}")
 
     # Add 1-based Row IDs (after sorting so IDs reflect final order)
-    print("  Adding Row IDs...")
+    print("  Adding Row IDs and GHG Source IDs...")
     enriched_data.insert(0, 'Row ID', range(1, len(enriched_data) + 1))
+    enriched_data.insert(1, 'GHG Source ID', compute_ghg_source_id(enriched_data))
     if commodity_data is not None:
         commodity_data.insert(0, 'Row ID', range(1, len(commodity_data) + 1))
+        commodity_data.insert(1, 'GHG Source ID', compute_ghg_source_id(commodity_data))
 
     # Optionally drop QC-only columns
     if config.EXCLUDE_QC_COLUMNS and config.QC_ONLY_COLUMNS:
@@ -522,7 +596,7 @@ def _finalize_and_export(enriched_data, commodity_data, fbs_parquet, fbs_filtere
 
 
 def _generate_qcqa_workbook(commodity_data, output_dir):
-    """Compare commodity-form intensity against the B matrix and write QC/QA workbook.
+    """Compare commodity-form intensity against useeior's B matrix and write QC/QA workbook.
 
     Writes outputs/QCQA.xlsx with sheets:
       - Comparison: Full (USEEIO Code, Gas, Our Intensity, B Value, Abs Error, Rel Error)
@@ -530,7 +604,7 @@ def _generate_qcqa_workbook(commodity_data, output_dir):
       - Flagged: Pairs where relative error exceeds threshold
       - Contribution Check: Per commodity sector sum of Contribution %
     """
-    b_matrix_path = os.path.join(parent_dir, 'data', 'B_matrix.csv')
+    b_matrix_path = os.path.join(parent_dir, config.B_MATRIX_CSV)
     if not os.path.exists(b_matrix_path):
         print("  Skipping QC/QA — B_matrix.csv not found. Run the R export script first.")
         return
@@ -548,17 +622,36 @@ def _generate_qcqa_workbook(commodity_data, output_dir):
         return
 
     emissions_intensity_col = get_emissions_intensity_col()
+    from pipeline.utils import get_emissions_intensity_kgco2e_col
+    kgco2e_intensity_col = get_emissions_intensity_kgco2e_col()
     rel_error_threshold = 0.001  # 0.1%
 
     # --- Build our intensity lookup: (flow_id, commodity_code) → intensity ---
     # B matrix rows are like "Carbon dioxide/emission/air" — we need to match our Gas column
     # Our commodity data has Gas column; B matrix row names are "Flowable/Context" identifiers
-    # We'll aggregate our data to (Gas, USEEIO Sector Code) → sum of intensity
+    # We'll aggregate our data to (Gas, USEEIO Sector Code) → sum of intensity.
+    #
+    # CO2e-only gases (e.g. "HFCs and PFCs, unspecified") have null emissions_intensity_col
+    # (kg/USD) because they are only reported in CO2e units. Pandas sums nulls to 0, which
+    # would make them look incorrect. Fall back to kgco2e_intensity_col for those rows since
+    # the B matrix also stores them in CO2e/USD for such flows.
+    _cmp_data = commodity_data.copy()
+    _cmp_data['_effective_intensity'] = _cmp_data[emissions_intensity_col]
+    if kgco2e_intensity_col in _cmp_data.columns:
+        co2e_fallback_mask = (
+            _cmp_data[emissions_intensity_col].isna()
+            & _cmp_data[kgco2e_intensity_col].notna()
+        )
+        _cmp_data.loc[co2e_fallback_mask, '_effective_intensity'] = (
+            _cmp_data.loc[co2e_fallback_mask, kgco2e_intensity_col]
+        )
+
     our = (
-        commodity_data
+        _cmp_data
         .groupby(['Gas', 'USEEIO Sector Code'], dropna=False)
-        .agg({emissions_intensity_col: 'sum'})
+        .agg({'_effective_intensity': 'sum'})
         .reset_index()
+        .rename(columns={'_effective_intensity': emissions_intensity_col})
     )
 
     # Build comparison rows
@@ -634,27 +727,60 @@ def _generate_qcqa_workbook(commodity_data, output_dir):
     else:
         contrib_check = pd.DataFrame(columns=['USEEIO Sector Code', 'Sum of Contribution %', 'Expected', 'Deviation'])
 
+    # --- CO2e-Only Gases sheet: gases with null kg, non-null kgCO2e (e.g. HFCs/PFCs unspecified) ---
+    co2e_only_df = commodity_data[
+        commodity_data['Emissions (kg)'].isna() & commodity_data['Emissions (kgCO2e)'].notna()
+    ]
+    co2e_cols_present = [c for c in ['Gas Category', 'Gas'] if c in co2e_only_df.columns]
+    if co2e_cols_present and not co2e_only_df.empty:
+        co2e_only_summary = (
+            co2e_only_df
+            .groupby(co2e_cols_present, dropna=False)
+            .agg(
+                N=('Emissions (kgCO2e)', 'size'),
+                Total_kgCO2e=('Emissions (kgCO2e)', 'sum'),
+                Unique_Sectors=('USEEIO Sector Code', 'nunique'),
+            )
+            .reset_index()
+            .sort_values('Total_kgCO2e', ascending=False)
+        )
+    else:
+        co2e_only_summary = pd.DataFrame(columns=['Gas Category', 'Gas', 'N', 'Total_kgCO2e', 'Unique_Sectors'])
+
     # --- Write workbook ---
     qcqa_path = os.path.join(output_dir, 'QCQA.xlsx')
     os.makedirs(output_dir, exist_ok=True)
-    with pd.ExcelWriter(qcqa_path, engine='openpyxl') as writer:
-        comparison_df.to_excel(writer, sheet_name='Comparison', index=False)
-        summary_df.to_excel(writer, sheet_name='Summary', index=False)
-        flagged_df.to_excel(writer, sheet_name='Flagged', index=False)
-        contrib_check.to_excel(writer, sheet_name='Contribution Check', index=False)
+    try:
+        with pd.ExcelWriter(qcqa_path, engine='openpyxl') as writer:
+            comparison_df.to_excel(writer, sheet_name='Comparison', index=False)
+            summary_df.to_excel(writer, sheet_name='Summary', index=False)
+            flagged_df.to_excel(writer, sheet_name='Flagged', index=False)
+            contrib_check.to_excel(writer, sheet_name='Contribution Check', index=False)
+            co2e_only_summary.to_excel(writer, sheet_name='CO2e-Only Gases', index=False)
+    except PermissionError:
+        print(f"  [WARNING] Could not write QCQA.xlsx — file is open in another program. "
+              f"Close it and re-run to update: {qcqa_path}")
+        return
 
     print(f"[SUCCESS] QC/QA workbook written: {qcqa_path}")
     print(f"  Comparison: {len(comparison_df):,} (Gas, Sector) pairs")
     print(f"  Flagged: {len(flagged_df):,} pairs with rel error > {rel_error_threshold*100:.1f}%")
     if len(flagged_df) == 0:
         print("  All commodity intensities match B matrix within tolerance!")
+    if not co2e_only_summary.empty:
+        print(f"  CO2e-Only Gases ({len(co2e_only_summary)} groups, "
+              f"{co2e_only_summary['Total_kgCO2e'].sum():,.0f} kgCO2e total):")
+        for _, row in co2e_only_summary.iterrows():
+            print(f"    {row.get('Gas', '?')} ({row.get('Gas Category', '?')}): "
+                  f"{row['N']:,} rows, {row['Total_kgCO2e']:,.0f} kgCO2e, "
+                  f"{int(row['Unique_Sectors'])} sectors")
 
 
 def _print_enrichment_summary(enriched_data, commodity_data, config_dict):
     """Print the completion banner, enrichment dimension counts, and output file locations."""
     combination_cols = [
         'Activity Category', 'Activity Subcategory', 'Activity Type', 'Activity',
-        'Gas Category', 'Gas', 'Fuel Consumed'
+        'Gas Category', 'Gas', 'Fuel'
     ]
 
     # Completion banner
@@ -688,7 +814,7 @@ def _print_enrichment_summary(enriched_data, commodity_data, config_dict):
     print(f"\n  Gas Categories:          {count_unique_valid(stats_df, 'Gas Category'):,}")
     print(f"  Gases:                   {count_unique_valid(stats_df, 'Gas'):,}")
 
-    n = count_unique_valid(stats_df, 'Fuel Consumed')
+    n = count_unique_valid(stats_df, 'Fuel')
     if n: print(f"\n  Fuel Types:              {n:,}")
     n = count_unique_valid(stats_df, 'IPCC/UNFCCC Category')
     if n: print(f"  IPCC Categories:         {n:,}")
@@ -697,7 +823,9 @@ def _print_enrichment_summary(enriched_data, commodity_data, config_dict):
 
     if 'Emissions (MTCO2e)' in stats_df.columns:
         combo_df = stats_df[stats_df['Emissions (MTCO2e)'].notna() & (stats_df['Emissions (MTCO2e)'] != 0)]
-        print(f"\n  Unique Combinations (Activity + Gas + Fuel): {len(combo_df[combination_cols].drop_duplicates()):,}")
+        avail_combo = [c for c in combination_cols if c in combo_df.columns]
+        if avail_combo:
+            print(f"\n  Unique Combinations (Activity + Gas + Fuel): {len(combo_df[avail_combo].drop_duplicates()):,}")
 
     if commodity_data is not None:
         print("\n" + "-" * 40)
@@ -711,7 +839,7 @@ def _print_enrichment_summary(enriched_data, commodity_data, config_dict):
             ("Activities",              "Activity"),
             ("Gas Categories",          "Gas Category"),
             ("Gases",                   "Gas"),
-            ("Fuel Types",              "Fuel Consumed"),
+            ("Fuel Types",              "Fuel"),
         ]:
             n = count_unique_valid(commodity_data, col)
             if n: print(f"  {label + ':':<25} {n:,}")
@@ -720,7 +848,9 @@ def _print_enrichment_summary(enriched_data, commodity_data, config_dict):
             comm_combo_df = commodity_data[
                 commodity_data['Emissions (MTCO2e)'].notna() & (commodity_data['Emissions (MTCO2e)'] != 0)
             ]
-            print(f"\n  Unique Combinations (Activity + Gas + Fuel): {len(comm_combo_df[combination_cols].drop_duplicates()):,}")
+            avail_combo_c = [c for c in combination_cols if c in comm_combo_df.columns]
+            if avail_combo_c:
+                print(f"\n  Unique Combinations (Activity + Gas + Fuel): {len(comm_combo_df[avail_combo_c].drop_duplicates()):,}")
 
     print("=" * 80)
 
@@ -838,23 +968,6 @@ def run_data_enrichment(fbs_data):
     print(f"\nStep 3: FlowBySector input: {len(fbs_data):,} records")
     fbs_filtered = fbs_data.copy()
 
-    # Sanity check against baseline
-    if fbs_parquet is not None:
-        print("  Running sanity check against baseline parquet...")
-        fbs_agg = aggregate_to_reference_format(fbs_filtered)
-        comparison = compare_with_reference(fbs_agg, fbs_parquet)
-        if not (comparison["row_count_match"] and comparison["data_match"]):
-            print("  WARNING: Sanity check detected differences!")
-            if config.STRICT_VERSION_CHECK:
-                try:
-                    user_input = input("\nContinue anyway? (yes/no) [default: yes]: ").strip().lower() or 'yes'
-                except EOFError:
-                    user_input = 'yes'
-                    print("  Non-interactive mode: defaulting to 'yes'")
-                if user_input not in ['yes', 'y']:
-                    print("Aborted by user.")
-                    return False
-
     # Step 4: Load all reference inputs
     print("\nStep 4: Loading reference inputs...")
     inputs = _load_pipeline_inputs(config_dict)
@@ -920,9 +1033,28 @@ To switch models/years, edit MODELNAME in config.py
         action="store_true",
         help="Only check requirements, don't run extraction"
     )
+    parser.add_argument(
+        "--sef-version",
+        default=None,
+        metavar="VERSION",
+        help=(
+            "Override SEF_VERSION from config.py (e.g. --sef-version v1.4.0). "
+            "Outputs land in outputs/<VERSION>/ and R data is read from data/<VERSION>/. "
+            "Ensure the matching flowsa version is installed in this venv."
+        ),
+    )
     
     args = parser.parse_args()
-    
+
+    # Apply version override FIRST — before check_requirements() which reads config
+    if args.sef_version:
+        try:
+            config.apply_version(args.sef_version)
+            print(f"SEF version overridden to: {args.sef_version}")
+        except ValueError as e:
+            print(f"ERROR: {e}")
+            return 1
+
     print_banner()
     
     # Check requirements first

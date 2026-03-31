@@ -1,22 +1,33 @@
 """
-FlowSA v2.0.3 Installation Script
+FlowSA Installation Script
 
-This script installs the exact version of FlowSA used to generate the reference
-parquet file (v2.0.3 with git hash 1cb504c).
-
-This ensures reproducibility and consistency with baseline emissions data.
+Installs the FlowSA version required by SEF_VERSION in config.py.
+Version details (tag, hash, GitHub org) are read directly from config.py,
+so this script stays in sync automatically when SEF_VERSION changes.
 """
 
 import subprocess
 import sys
 import os
+import importlib.util
+import pathlib
 
-# Target version details
-# Installing from GitHub release tag v2.0.3
-FLOWSA_VERSION_EXPECTED = "2.0.3"
-FLOWSA_GIT_TAG = "v2.0.3"  # GitHub release tag
-FLOWSA_GIT_HASH = "1cb504c0e7a656ec8d9f2bf00b479df855838c43"  # Full hash for reference
-FLOWSA_SHORT_HASH = "1cb504c"  # Short hash for display
+# config.py imports appdirs; ensure it is available before loading it
+try:
+    import appdirs  # noqa: F401
+except ImportError:
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "appdirs", "-q"])
+
+# Load version constants directly from config.py
+_cfg_path = pathlib.Path(__file__).resolve().parents[2] / "config.py"
+_spec = importlib.util.spec_from_file_location("config", _cfg_path)
+_cfg = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(_cfg)
+
+FLOWSA_VERSION_EXPECTED = _cfg.REQUIRED_FLOWSA_VERSION
+FLOWSA_GIT_TAG          = _cfg.REQUIRED_FLOWSA_GIT_TAG
+FLOWSA_SHORT_HASH       = _cfg.REQUIRED_FLOWSA_GIT_HASH
+GITHUB_ORG              = _cfg.GITHUB_ORG
 
 def run_command(cmd, description, show_output=False):
     """Run a command and handle errors."""
@@ -82,7 +93,7 @@ def run_command(cmd, description, show_output=False):
 def main():
     """Main installation function."""
     print("="*80)
-    print("FlowSA v2.0.3 Installation")
+    print(f"FlowSA v{FLOWSA_VERSION_EXPECTED} Installation")
     print("="*80)
     print(f"Target version: {FLOWSA_VERSION_EXPECTED}")
     print(f"Installing from GitHub release tag: {FLOWSA_GIT_TAG}")
@@ -100,7 +111,7 @@ def main():
         print("ERROR: Incompatible Python Version")
         print("="*80)
         print(f"You have Python {python_version.major}.{python_version.minor}")
-        print(f"FlowSA v2.0.3 requires Python 3.9, 3.10, or 3.11")
+        print(f"FlowSA v{FLOWSA_VERSION_EXPECTED} requires Python 3.9, 3.10, or 3.11")
         print("")
         print("Python 3.14 is too new - pandas 2.0.3 cannot build on it!")
         print("")
@@ -113,8 +124,8 @@ def main():
         print("  2. Download Python 3.11 from: https://www.python.org/downloads/")
         print("")
         print("See PYTHON_VERSION_FIX.md for detailed instructions")
-        print("="*80)
-        return False
+        print("=" * 80)
+        sys.exit(1)  # hard-exit immediately — no further output
     
     # Step 1: Uninstall existing FlowSA
     print("\n" + "="*80)
@@ -127,7 +138,7 @@ def main():
     
     # Step 2: Install FlowSA from specific git release tag
     print("\n" + "="*80)
-    print("STEP 2: Installing FlowSA v2.0.3 from GitHub release tag")
+    print(f"STEP 2: Installing FlowSA v{FLOWSA_VERSION_EXPECTED} from GitHub release tag")
     print("="*80)
     print("\nNOTE: This step typically takes 2-5 minutes as it:")
     print("  - Clones the FlowSA repository from GitHub")
@@ -135,11 +146,11 @@ def main():
     print("  - Builds and installs all dependencies")
     print("\nPlease be patient... (Press Ctrl+C to cancel if needed)")
     
-    install_url = f"git+https://github.com/USEPA/flowsa.git@{FLOWSA_GIT_TAG}"
+    install_url = f"git+https://github.com/{GITHUB_ORG}/flowsa.git@{FLOWSA_GIT_TAG}"
     install_cmd = [python_exe, "-m", "pip", "install", install_url]
     
     # Show real-time output for this long-running command
-    if not run_command(install_cmd, "Installing FlowSA v2.0.3", show_output=True):
+    if not run_command(install_cmd, f"Installing FlowSA v{FLOWSA_VERSION_EXPECTED}", show_output=True):
         print("\nERROR: Installation failed!")
         print("\nTroubleshooting:")
         print("1. Ensure git is installed and in PATH")
@@ -188,7 +199,7 @@ def main():
             print(f"\nSUCCESS: FlowSA v{installed_version} installed correctly!")
             print(f"Installed from GitHub release tag: {FLOWSA_GIT_TAG}")
             print("\nYou can now run:")
-            print("  python run_extraction.py")
+            print("  python generate_ghg_dataset.py")
             return True
         else:
             print(f"\nWARNING: Version mismatch!")
@@ -205,14 +216,35 @@ def main():
 
 if __name__ == "__main__":
     print("\n")
+
+    # Guard: must be running inside a virtual environment
+    if sys.prefix == sys.base_prefix:
+        venv_python = str(pathlib.Path(__file__).resolve().parents[2] / ".venv" / "Scripts" / "python.exe")
+        print("=" * 80)
+        print("ERROR: Not running inside a virtual environment")
+        print("=" * 80)
+        print(f"Current Python: {sys.executable}")
+        print("")
+        print("FlowSA must be installed into the project .venv, not the system Python.")
+        print("")
+        print("Fix:")
+        print("  1. Activate the project venv first:")
+        print("       .venv\\Scripts\\activate")
+        print("  2. Then re-run:")
+        print("       python scripts/tools/install_flowsa.py")
+        print("")
+        print("Or run directly via the venv Python without activating:")
+        print(f"       {venv_python} scripts/tools/install_flowsa.py")
+        print("=" * 80)
+        sys.exit(1)
+
     success = main()
-    
-    print("\n" + "="*80)
+
+    print("\n" + "=" * 80)
     if success:
         print("Installation completed successfully!")
     else:
-        print("Installation completed with warnings/errors.")
-        print("Please review the output above.")
-    print("="*80)
-    
+        print("Installation failed — see errors above.")
+    print("=" * 80)
+
     sys.exit(0 if success else 1)

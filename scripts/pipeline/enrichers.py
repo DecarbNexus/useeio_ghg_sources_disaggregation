@@ -53,10 +53,10 @@ def enrich_with_metadata(fbs_data, meta_map):
     merged.drop(columns=[c for c in ["meta_id", "__meta_id"] if c in merged.columns], inplace=True)
     
     # Count successful matches
-    records_with_ipcc = merged["IPCC_Category"].notna().sum() if "IPCC_Category" in merged.columns else 0
-    match_rate = (records_with_ipcc / len(merged)) * 100
+    records_matched = merged["chapter"].notna().sum() if "chapter" in merged.columns else 0
+    match_rate = (records_matched / len(merged)) * 100
     
-    print(f"[SUCCESS] Successfully matched {records_with_ipcc:,} records with IPCC categories ({match_rate:.1f}%)")
+    print(f"[SUCCESS] Successfully matched {records_matched:,} records with EPA GHGI metadata ({match_rate:.1f}%)")
     
     return merged
 
@@ -339,8 +339,8 @@ def enrich_with_useeio(fbs_data, naics_to_useeio_dict, allocation_dict=None):
     
     print(f"[SUCCESS] Added USEEIO code to {matched_count:,} records")
     if expanded_count > 0:
-        print(f"  Expanded {expanded_count:,} additional rows from 1:many NAICS→BEA mappings")
-        print(f"  Total rows: {len(fbs_data):,} → {len(enriched_data):,}")
+        print(f"  Expanded {expanded_count:,} additional rows from 1:many NAICS->BEA mappings")
+        print(f"  Total rows: {len(fbs_data):,} -> {len(enriched_data):,}")
     
     return enriched_data
 
@@ -413,6 +413,7 @@ def enrich_with_ghg_source_categories(fbs_data, mapping_df):
     
     # Initialize the new columns
     enriched_data['IPCC/UNFCCC Category'] = None
+    enriched_data['IPCC Category Code'] = None
     enriched_data['Activity Category'] = None
     enriched_data['Activity Subcategory'] = None
     enriched_data['Activity Type'] = None
@@ -464,6 +465,7 @@ def enrich_with_ghg_source_categories(fbs_data, mapping_df):
         if not match.empty:
             # Take the first match if there are multiple
             enriched_data.at[idx, 'IPCC/UNFCCC Category'] = match.iloc[0]['IPCC/UNFCCC Category']
+            enriched_data.at[idx, 'IPCC Category Code'] = match.iloc[0].get('IPCC Category Code', '')
             enriched_data.at[idx, 'Activity Category'] = match.iloc[0]['Activity Category']
             enriched_data.at[idx, 'Activity Subcategory'] = match.iloc[0]['Activity Subcategory']
             
@@ -476,10 +478,41 @@ def enrich_with_ghg_source_categories(fbs_data, mapping_df):
     
     print(f"[SUCCESS] Added comprehensive GHG categorization to {matched_count:,} records")
     print(f"  - IPCC/UNFCCC Category")
+    print(f"  - IPCC Category Code")
     print(f"  - Activity Category")
     print(f"  - Activity Subcategory")
     print(f"  - Activity Type (where applicable)")
-    
+
+    # Detect rows with a MetaSources value that found no mapping entry
+    unmatched_mask = (
+        enriched_data['Activity Category'].isna()
+        & enriched_data['MetaSources'].notna()
+        & (enriched_data['MetaSources'].astype(str).str.strip() != '')
+    )
+    if unmatched_mask.any():
+        unmatched_count = int(unmatched_mask.sum())
+        unmatched_pairs = (
+            enriched_data.loc[unmatched_mask, ['MetaSources', 'ActivityProducedBy']]
+            .drop_duplicates()
+            .sort_values(['MetaSources', 'ActivityProducedBy'])
+            .reset_index(drop=True)
+        )
+        print(f"\n  WARNING: {unmatched_count:,} rows had no match in activity_categorization.csv")
+        print(f"  Unique unmatched (MetaSources, ActivityProducedBy) pairs: {len(unmatched_pairs)}")
+        for _, up_row in unmatched_pairs.iterrows():
+            apb = up_row['ActivityProducedBy']
+            apb_str = repr(apb) if pd.notna(apb) and str(apb).strip() else '(empty)'
+            print(f"    MetaSources={up_row['MetaSources']!r}  ActivityProducedBy={apb_str}")
+
+        unmatched_path = os.path.join(config.OUTPUT_DIR, 'unmatched_activity_categorization.csv')
+        os.makedirs(config.OUTPUT_DIR, exist_ok=True)
+        unmatched_pairs.to_csv(unmatched_path, index=False)
+        print(f"  Saved unmatched pairs to: {unmatched_path}")
+        print(f"  To fix: add a row for each pair to {config.METASOURCE_TO_GHGSOURCE_CSV}")
+        print(f"  See docs/USER_GUIDE.md § 'Filling gaps in activity_categorization.csv'")
+    else:
+        print(f"  All rows with MetaSources matched successfully.")
+
     return enriched_data
 
 def enrich_with_gas_category(fbs_data, flowable_to_gas_dict):
@@ -627,8 +660,8 @@ def enrich_with_ar5_100_gwp(fbs_data, uuid_to_gwp_dict):
     
     total_enriched = matched_count + already_co2e_count
     print(f"[SUCCESS] Added AR5-100 GWP to {total_enriched:,} records")
-    print(f"  - From IPCC lookup (kg → MTCO2e): {matched_count:,}")
-    print(f"  - Already in CO2e (kg CO2e → MTCO2e): {already_co2e_count:,}")
+    print(f"  - From IPCC lookup (kg -> MTCO2e): {matched_count:,}")
+    print(f"  - Already in CO2e (kg CO2e -> MTCO2e): {already_co2e_count:,}")
     print(f"[SUCCESS] Calculated Emissions (MTCO2e) for {total_enriched:,} records")
     
     if unmatched_flowables:
@@ -670,18 +703,11 @@ def enrich_with_fuel(fbs_data, fuel_by_table, fuel_by_term):
     enriched_data = fbs_data.copy()
     
     # Initialize the new column
-    enriched_data['Fuel Consumed'] = None
+    enriched_data['Fuel'] = None
     
     table_match_count = 0
     term_match_count = 0
     term_override_count = 0  # Track when term lookup overrides table lookup
-    
-    # Debug: Check what data we have
-    print(f"DEBUG: fuel_by_table is {'available' if fuel_by_table else 'MISSING/EMPTY'}")
-    print(f"DEBUG: fuel_by_term is {'available' if fuel_by_term else 'MISSING/EMPTY'}")
-    print(f"DEBUG: Columns in fbs_data: {', '.join(fbs_data.columns.tolist())}")
-    print(f"DEBUG: 'PrimaryActivity' column exists: {'PrimaryActivity' in fbs_data.columns}")
-    print(f"  Logic: Term lookup (more precise) overrides table lookup if found")
     
     # Step 1: Match by table reference (fallback)
     if fuel_by_table and "MetaSources" in fbs_data.columns:
@@ -692,11 +718,16 @@ def enrich_with_fuel(fbs_data, fuel_by_table, fuel_by_term):
             if pd.isna(meta_sources) or not meta_sources:
                 continue
             
-            # Extract table reference (part before the period)
-            table_ref = str(meta_sources).split('.')[0].strip()
-            
-            if table_ref in fuel_by_table:
-                enriched_data.at[idx, 'Fuel Consumed'] = fuel_by_table[table_ref]
+            # Match semantics are driven by the CSV key format:
+            # - A suffix key (e.g. EPA_GHGI_T_A_5.non_manufacturing_natural_gas) targets
+            #   only that exact activity set → try exact match first.
+            # - A suffix-less key (e.g. EPA_GHGI_T_3_14) acts as a wildcard for all
+            #   activity sets from that table → fall back to the prefix if no exact match.
+            meta_sources_key = str(meta_sources).strip()
+            lookup_key = meta_sources_key if meta_sources_key in fuel_by_table \
+                else meta_sources_key.split('.')[0]
+            if lookup_key in fuel_by_table:
+                enriched_data.at[idx, 'Fuel'] = fuel_by_table[lookup_key]
                 table_match_count += 1
     
     # Step 2: Match by term in PrimaryActivity (overrides table matches if found - more precise)
@@ -705,9 +736,6 @@ def enrich_with_fuel(fbs_data, fuel_by_table, fuel_by_term):
         
         # Sort lookup terms by length (longest first) to prioritize more specific terms
         sorted_lookup = sorted(fuel_by_term.items(), key=lambda x: len(x[0]), reverse=True)
-        
-        # Debug: Show what terms we're looking for
-        print(f"  DEBUG: Looking for {len(sorted_lookup)} fuel terms: {', '.join([term for term, _ in sorted_lookup[:10]])}{'...' if len(sorted_lookup) > 10 else ''}")
         
         # Track which fuels were found
         fuels_found = set()
@@ -760,19 +788,12 @@ def enrich_with_fuel(fbs_data, fuel_by_table, fuel_by_term):
             
             # If we found matches, join them with " | " and store (overrides table lookup)
             if matched_fuels:
-                had_table_match = pd.notna(enriched_data.at[idx, 'Fuel Consumed']) and enriched_data.at[idx, 'Fuel Consumed'] != ''
-                enriched_data.at[idx, 'Fuel Consumed'] = ' | '.join(sorted(matched_fuels.keys()))
+                had_table_match = pd.notna(enriched_data.at[idx, 'Fuel']) and enriched_data.at[idx, 'Fuel'] != ''
+                enriched_data.at[idx, 'Fuel'] = ' | '.join(sorted(matched_fuels.keys()))
                 if had_table_match:
                     term_override_count += 1
                 else:
                     term_match_count += 1
-        
-        # Debug: Show which fuels were actually found
-        print(f"  DEBUG: Fuels found in data: {', '.join(sorted(fuels_found)) if fuels_found else 'NONE'}")
-        all_possible_fuels = set([fuel for _, fuel in sorted_lookup])
-        missing_fuels = all_possible_fuels - fuels_found
-        if missing_fuels:
-            print(f"  DEBUG: Fuels NOT found: {', '.join(sorted(missing_fuels))}")
     
     # Final count: table matches that weren't overridden + new term matches + term overrides
     final_table_only = table_match_count - term_override_count

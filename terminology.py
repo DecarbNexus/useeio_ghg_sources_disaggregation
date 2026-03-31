@@ -18,7 +18,7 @@ TERMINOLOGY = {
     'activity_level_4': 'Activity',
     
     # Fuel dimension (independent)
-    'fuel': 'Fuel Consumed',
+    'fuel': 'Fuel',
     
     # Gas hierarchy (2 levels, independent)
     'gas_level_1': 'Gas Category',

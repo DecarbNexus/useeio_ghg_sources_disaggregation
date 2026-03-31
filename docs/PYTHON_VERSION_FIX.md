@@ -54,7 +54,7 @@ python install_flowsa_2.0.3.py
 
 Or manually:
 ```bash
-pip install git+https://github.com/USEPA/flowsa.git@1cb504c0e7a656ec8d9f2bf00b479df855838c43
+pip install git+https://github.com/cornerstone-data/flowsa.git@1cb504c0e7a656ec8d9f2bf00b479df855838c43
 ```
 
 ## Why This Happens
@@ -112,7 +112,7 @@ If you can't install Python 3.11, you have two options:
 pip install pandas==2.0.3
 
 # Then install flowsa
-pip install git+https://github.com/USEPA/flowsa.git@1cb504c
+pip install git+https://github.com/cornerstone-data/flowsa.git@1cb504c
 ```
 
 **Option B: Use conda (recommended for data science)**
@@ -120,7 +120,7 @@ pip install git+https://github.com/USEPA/flowsa.git@1cb504c
 # Install miniconda first, then:
 conda create -n flowsa python=3.11
 conda activate flowsa
-pip install git+https://github.com/USEPA/flowsa.git@1cb504c
+pip install git+https://github.com/cornerstone-data/flowsa.git@1cb504c
 ```
 
 ## Next Steps

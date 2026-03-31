@@ -81,12 +81,13 @@ from .exporters import (
 
 from .validators import (
     aggregate_to_reference_format,
-    compare_with_reference,
     validate_data,
 )
 
 from .utils import (
     get_emissions_intensity_col,
+    get_emissions_intensity_kgco2e_col,
+    get_emissions_intensity_mtco2e_musd_col,
     check_flowsa_version,
     validate_flowsa_version,
     filter_columns,
@@ -96,6 +97,8 @@ from .utils import (
     _extract_meta_id,
     _deduplicate_and_simplify_activities,
     _parse_primary_activity_value,
+    compute_ghg_source_id,
+    GHG_CLASSIFICATION_COLS,
 )
 
 from .transform import (

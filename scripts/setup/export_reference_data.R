@@ -1,6 +1,6 @@
 # Export Reference Data from useeior for Python Pipeline
 #
-# This script builds the USEEIOv2.2.22-GHG model and exports seven CSVs
+# This script builds the USEEIOv2.2.22-GHG model and exports nine CSVs
 # that the Python pipeline needs:
 #
 #   1. adjusted_output.csv             — CPI-adjusted 2022 industry output in 2017$
@@ -10,6 +10,8 @@
 #   5. industry_output_2022.csv        — Raw 2022 industry output (reference)
 #   6. industry_cpi.csv                — Multi-year industry CPI table (reference)
 #   7. B_matrix.csv                    — Full B matrix (flows × commodities, validation truth)
+#   8. naics_to_useeio_crosswalk.csv   — NAICS-to-USEEIO crosswalk (model$crosswalk)
+#   9. sector_classification.csv       — USEEIO sector classification (model$Industries + model$Commodities)
 #
 # Usage:
 #   Rscript scripts/setup/export_reference_data.R
@@ -21,19 +23,35 @@
 # 0. Configuration — keep in sync with config.py
 # =============================================================================
 
-USEEIOR_TAG <- "v1.5.3"
-USEEIOR_VER <- "1.5.3"
-MODEL_NAME  <- "USEEIOv2.2.22-GHG"
-DATA_YEAR   <- 2022
+# ── Set this ONE value to switch Supply Chain Emission Factor releases ────────
+SEF_VERSION <- "v1.4.0"  # keep in sync with config.py
+# ─────────────────────────────────────────────────────────────────────────────
+
+SEF_SPECS <- list(
+  "v1.3.0" = list(useeior_tag = "v1.5.3",  useeior_ver = "1.5.3",
+                  model_name  = "USEEIOv2.2.22-GHG",      data_year = 2022),
+  "v1.4.0" = list(useeior_tag = "SEFv1.4", useeior_ver = "1.8.0",
+                  model_name  = "USEEIOv2.6.0-phoebe-23", data_year = 2023)
+)
+
+if (is.null(SEF_SPECS[[SEF_VERSION]])) stop("Unknown SEF_VERSION: ", SEF_VERSION)
+.s <- SEF_SPECS[[SEF_VERSION]]
+
+GITHUB_ORG  <- "cornerstone-data"
+USEEIOR_TAG <- .s$useeior_tag
+USEEIOR_VER <- .s$useeior_ver
+MODEL_NAME  <- .s$model_name
+DATA_YEAR   <- .s$data_year
 IO_YEAR     <- 2017
 
 MODEL_SPEC_URL <- paste0(
-  "https://raw.githubusercontent.com/USEPA/supply-chain-factors/main/",
-  "model-specs/USEEIOv2.2.22-GHG.yml"
+  "https://raw.githubusercontent.com/", GITHUB_ORG,
+  "/supply-chain-factors/main/model-specs/", MODEL_NAME, ".yml"
 )
 
-# Output directory (relative to project root)
-OUTPUT_DIR <- "data"
+# Output directory (relative to project root) — version-stamped so multiple
+# SEF versions can coexist: data/SEF_v1.3.0/, data/SEF_v1.4.0/, etc.
+OUTPUT_DIR <- file.path("data", paste0("SEF_", SEF_VERSION))
 
 # =============================================================================
 # 1. Install / verify useeior
@@ -48,10 +66,22 @@ installed_ver <- tryCatch(
   error = function(e) NULL
 )
 
+# If the wrong version is already loaded in this R session, R cannot replace it
+# without a restart. Detect this early and stop with a clear message.
+if (!is.null(installed_ver) && installed_ver != USEEIOR_VER &&
+    "useeior" %in% loadedNamespaces()) {
+  stop(
+    "useeior ", installed_ver, " is loaded in this R session, but ",
+    USEEIOR_VER, " is required.\n",
+    "Please restart R (Session > Restart R in RStudio, or close/reopen R) ",
+    "and re-run this script."
+  )
+}
+
 if (is.null(installed_ver) || installed_ver != USEEIOR_VER) {
   message("Installing useeior ", USEEIOR_TAG, " from GitHub...")
   remotes::install_github(
-    paste0("USEPA/useeior@", USEEIOR_TAG),
+    paste0("cornerstone-data/useeior@", USEEIOR_TAG),
     dependencies = TRUE,
     upgrade      = "never"
   )
@@ -60,13 +90,20 @@ if (is.null(installed_ver) || installed_ver != USEEIOR_VER) {
 }
 
 library(useeior)
+library(dplyr)
+library(tidyr)
+library(stringr)
+if (as.character(packageVersion("useeior")) != USEEIOR_VER) {
+  stop("useeior loaded as ", packageVersion("useeior"),
+       " but ", USEEIOR_VER, " is required. Restart R and re-run.")
+}
 message("Loaded useeior version: ", packageVersion("useeior"))
 
 # =============================================================================
 # 2. Build the model
 # =============================================================================
 
-spec_local <- file.path(tempdir(), "USEEIOv2.2.22-GHG.yml")
+spec_local <- file.path(tempdir(), paste0(MODEL_NAME, ".yml"))
 if (!file.exists(spec_local)) {
   message("Downloading model spec from supply-chain-factors repo...")
   download.file(MODEL_SPEC_URL, destfile = spec_local, quiet = TRUE)
@@ -123,11 +160,11 @@ out_path <- file.path(OUTPUT_DIR, "V_n.csv")
 write.csv(V_n, out_path)
 message("Exported: ", out_path, " (", nrow(V_n), " rows x ", ncol(V_n), " cols)")
 
-# --- 4d. Raw 2022 industry output (reference) --------------------------------
-output_2022 <- model$MultiYearIndustryOutput[, as.character(DATA_YEAR), drop = FALSE]
-out_path <- file.path(OUTPUT_DIR, "industry_output_2022.csv")
-write.csv(output_2022, out_path)
-message("Exported: ", out_path, " (", nrow(output_2022), " rows)")
+# --- 4e. Raw industry output for DATA_YEAR (reference) ----------------------
+output_year <- model$MultiYearIndustryOutput[, as.character(DATA_YEAR), drop = FALSE]
+out_path <- file.path(OUTPUT_DIR, paste0("industry_output_", DATA_YEAR, ".csv"))
+write.csv(output_year, out_path)
+message("Exported: ", out_path, " (", nrow(output_year), " rows)")
 
 # --- 4e. Multi-year industry CPI (reference) ---------------------------------
 cpi <- model$MultiYearIndustryCPI
@@ -141,6 +178,51 @@ out_path <- file.path(OUTPUT_DIR, "B_matrix.csv")
 write.csv(B, out_path)
 message("Exported: ", out_path, " (", nrow(B), " rows x ", ncol(B), " cols)")
 
+# --- 4g. NAICS-to-USEEIO crosswalk (directly from model$crosswalk) ----------
+crosswalk <- model$crosswalk
+out_path  <- file.path(OUTPUT_DIR, "naics_to_useeio_crosswalk.csv")
+write.csv(crosswalk, out_path, row.names = FALSE)
+message("Exported: ", out_path, " (", nrow(crosswalk), " rows)")
+
+# --- 4h. USEEIO sector classification (model$Industries + model$Commodities) -
+sector_classification <- model$Industries %>%
+  dplyr::select(Code, `Industry name` = Name) %>%
+  dplyr::left_join(
+    model$Commodities %>%
+      dplyr::select(Code, `Commodity name` = Name, Category, Subcategory, Description),
+    by = "Code"
+  ) %>%
+  tidyr::separate_wider_delim(
+    Category,
+    delim    = ": ",
+    names    = c("Category Code", "Category Name"),
+    too_many = "merge",
+    too_few  = "align_start"
+  ) %>%
+  tidyr::separate_wider_delim(
+    Subcategory,
+    delim    = ": ",
+    names    = c("Subcategory Code", "Subcategory Name"),
+    too_many = "merge",
+    too_few  = "align_start"
+  ) %>%
+  dplyr::mutate(
+    Description = stringr::str_remove(Description, "^(BEA Code & Name is '?\\w+:.*?'?\\.\\s*)")
+  ) %>%
+  dplyr::select(
+    `Category Code`,
+    `Category Name`,
+    `Subcategory Code`,
+    `Subcategory Name`,
+    `Sector code`   = Code,
+    `Sector name`   = `Industry name`,
+    `Commodity name`,
+    Description
+  )
+out_path <- file.path(OUTPUT_DIR, "sector_classification.csv")
+write.csv(sector_classification, out_path, row.names = FALSE)
+message("Exported: ", out_path, " (", nrow(sector_classification), " rows)")
+
 # =============================================================================
 # 5. Summary
 # =============================================================================
@@ -151,8 +233,10 @@ message("  adjusted_output.csv            — CPI-adjusted industry output (", n
 message("  adjusted_commodity_output.csv  — CPI-adjusted commodity output (", nrow(adjusted_commodity), " sectors)")
 message("  naics_bea_allocation.csv       — Allocation weights (", nrow(allocation), " rows)")
 message("  V_n.csv                        — Market share matrix (", nrow(V_n), " industries x ", ncol(V_n), " commodities)")
-message("  industry_output_2022.csv       — Raw 2022 output (", nrow(output_2022), " sectors)")
+message("  industry_output_", DATA_YEAR, ".csv       — Raw ", DATA_YEAR, " output (", nrow(output_year), " sectors)")
 message("  industry_cpi.csv               — CPI table (", nrow(cpi), " sectors x ", ncol(cpi), " years)")
 message("  B_matrix.csv                   — B matrix (", nrow(B), " flows x ", ncol(B), " commodities)")
+message("  naics_to_useeio_crosswalk.csv  — NAICS-to-USEEIO crosswalk (", nrow(crosswalk), " rows)")
+message("  sector_classification.csv      — Sector classification (", nrow(sector_classification), " rows)")
 message("\nRun the Python pipeline next:")
 message("  python scripts/generate_ghg_dataset.py")

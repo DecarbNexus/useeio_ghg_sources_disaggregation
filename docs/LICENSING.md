@@ -173,8 +173,8 @@ For licensing questions or concerns:
 
 - MIT License: https://opensource.org/licenses/MIT
 - CC BY 4.0: https://creativecommons.org/licenses/by/4.0/
-- FlowSA Repository: https://github.com/USEPA/flowsa
-- USEEIOR Repository: https://github.com/USEPA/useeior
+- FlowSA Repository: https://github.com/cornerstone-data/flowsa
+- USEEIOR Repository: https://github.com/cornerstone-data/useeior
 - EPA GHGI: https://www.epa.gov/ghgemissions/inventory-us-greenhouse-gas-emissions-and-sinks
 
 ---

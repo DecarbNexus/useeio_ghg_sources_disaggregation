@@ -1,8 +1,8 @@
 # FlowSA - pinned to specific version for reproducibility
 # This version matches EPA Supply Chain Emission Factors v1.3.0
-# Install with: pip install git+https://github.com/USEPA/flowsa.git@v2.0.3
+# Install with: pip install git+https://github.com/cornerstone-data/flowsa.git@v2.1.0
 # Or use the installation script: python scripts/install_flowsa_2.0.3.py
-git+https://github.com/USEPA/flowsa.git@v2.0.3
+git+https://github.com/cornerstone-data/flowsa.git@v2.1.0
 
 # Data processing dependencies
 pandas>=2.2.0

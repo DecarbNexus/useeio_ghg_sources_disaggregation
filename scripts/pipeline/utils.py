@@ -4,6 +4,7 @@ Utility Functions for FlowBySector Data Processing
 This module contains helper functions used across the enrichment pipeline.
 """
 
+import hashlib
 import os
 import sys
 import subprocess
@@ -16,6 +17,43 @@ sys.path.append(str(parent_dir))
 import config
 
 
+# Ordered list of columns that uniquely identify a GHG emission source type.
+# These are the join columns between the disaggregated CSVs and the classification table.
+GHG_CLASSIFICATION_COLS = [
+    'Activity Category',
+    'IPCC/UNFCCC Category',
+    'IPCC Category Code',
+    'Activity Subcategory',
+    'Activity Type',
+    'Activity',
+    'Fuel',
+    'Gas Category',
+    'Gas',
+]
+
+
+def compute_ghg_source_id(df):
+    """
+    Return a stable 8-character hex ID for each row based on its GHG emission source type.
+
+    The ID is the first 8 characters of the SHA-256 hash of the pipe-joined values of
+    GHG_CLASSIFICATION_COLS. Columns missing from *df* are treated as empty string.
+    The same source type will always produce the same ID regardless of row order or
+    which output file (industry, commodity, classification table) is being built.
+
+    Parameters
+    ----------
+    df : pandas.DataFrame
+
+    Returns
+    -------
+    pandas.Series of str (dtype object), same index as *df*
+    """
+    available = [c for c in GHG_CLASSIFICATION_COLS if c in df.columns]
+    combined = df[available].fillna('').astype(str).agg('|'.join, axis=1)
+    return combined.apply(lambda s: hashlib.sha256(s.encode('utf-8')).hexdigest()[:8])
+
+
 def get_emissions_intensity_col():
     """
     Get the emissions intensity column name with the model year.
@@ -26,6 +64,16 @@ def get_emissions_intensity_col():
         Column name like "Emissions Intensity (kg/USD_2022)"
     """
     return f"Emissions Intensity (kg/USD_{config.MODEL_YEAR})"
+
+
+def get_emissions_intensity_kgco2e_col():
+    """Get the kgCO2e emissions intensity column name with the model year."""
+    return f"Emissions Intensity (kgCO2e/USD_{config.MODEL_YEAR})"
+
+
+def get_emissions_intensity_mtco2e_musd_col():
+    """Get the MTCO2e-per-million-USD emissions intensity column name with the model year."""
+    return f"Emissions Intensity (MTCO2e/million_USD_{config.MODEL_YEAR})"
 
 
 def check_flowsa_version():
@@ -112,10 +160,10 @@ def validate_flowsa_version():
             "",
             "To fix this, reinstall the correct version:",
             f"  pip uninstall flowsa",
-            f"  pip install git+https://github.com/USEPA/flowsa.git@{config.REQUIRED_FLOWSA_GIT_TAG}",
+            f"  pip install git+https://github.com/{config.GITHUB_ORG}/flowsa.git@{config.REQUIRED_FLOWSA_GIT_TAG}",
             "",
             "Or run the installation script:",
-            f"  python install_flowsa_2.0.3.py",
+            f"  python scripts/tools/install_flowsa.py",
             "",
             "Or to skip version checking, set STRICT_VERSION_CHECK = False in config.py",
             "="*80
@@ -228,7 +276,20 @@ def rename_and_create_columns(fbs_data):
             lambda row: row['FlowAmount'] if row['FlowAmount Unit'] == 'kg CO2e' else None,
             axis=1
         )
-        
+
+        # For rows that have Emissions (kg) and AR5-100 GWP but no kgCO2e yet,
+        # compute kgCO2e = Emissions (kg) × AR5-100 GWP
+        if 'AR5-100 GWP' in enriched_data.columns:
+            mask = (
+                enriched_data['Emissions (kgCO2e)'].isna()
+                & enriched_data['Emissions (kg)'].notna()
+                & enriched_data['AR5-100 GWP'].notna()
+            )
+            enriched_data.loc[mask, 'Emissions (kgCO2e)'] = (
+                enriched_data.loc[mask, 'Emissions (kg)']
+                * enriched_data.loc[mask, 'AR5-100 GWP']
+            )
+
         # Count how many of each
         kg_count = enriched_data['Emissions (kg)'].notna().sum()
         kgco2e_count = enriched_data['Emissions (kgCO2e)'].notna().sum()
@@ -269,7 +330,7 @@ def generate_event_id(row):
         sanitize(row.get('USEEIO Sector Code')),
         sanitize(row.get('Activity')),  # This is ActivityProducedBy after renaming
         sanitize(row.get('Gas')),  # This is Flowable after renaming
-        sanitize(row.get('Fuel Consumed'))
+        sanitize(row.get('Fuel'))
     ]
     
     return '_'.join(parts)
@@ -371,9 +432,6 @@ def _parse_primary_activity_value(pa_value):
     
     return primary_activities
 
-def get_emissions_intensity_col():
-    """Get the emissions intensity column name with the model year."""
-    return f"Emissions Intensity (kg/USD_{config.MODEL_YEAR})"
 
 
 def _extract_meta_id(val):
@@ -452,7 +510,7 @@ def build_emission_event_full(row):
         
         "consumesFuel": {
             "@type": "Fuel",
-            "name": get_value('Fuel Consumed'),
+            "name": get_value('Fuel'),
             "category": get_value('Fuel Category')
         },
         

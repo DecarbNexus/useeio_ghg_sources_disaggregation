@@ -257,13 +257,15 @@ def transform_to_commodity_form(df_normalized, market_share_matrix, commodity_ou
     
     # ----- Step 4: Pivot to matrix form -----
     # rows = _flow_id, cols = USEEIO Sector Code, values = intensity
+    # NOTE: Do NOT pass fill_value=0.0 to pivot_table — pandas 2.0.x has a bug
+    # that silently replaces very small (but valid) floating-point values with 0.
+    # Use .fillna(0.0) after the pivot instead.
     intensity_industry = agg_df.pivot_table(
         index='_flow_id',
         columns='USEEIO Sector Code',
         values=emissions_intensity_col,
         aggfunc='sum',
-        fill_value=0.0,
-    )
+    ).fillna(0.0)
     
     print(f"  Industry intensity matrix: {intensity_industry.shape[0]} flows × {intensity_industry.shape[1]} industries")
     
@@ -355,8 +357,7 @@ def transform_to_commodity_form(df_normalized, market_share_matrix, commodity_ou
             columns='USEEIO Sector Code',
             values=kgco2e_intensity_col,
             aggfunc='sum',
-            fill_value=0.0,
-        )
+        ).fillna(0.0)
 
         co2e_common = co2e_intensity_industry.columns.intersection(market_share_matrix.index)
         co2e_I = co2e_intensity_industry.reindex(columns=co2e_common, fill_value=0.0)

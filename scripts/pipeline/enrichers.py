@@ -18,6 +18,19 @@ import config
 from .utils import _extract_meta_id, _deduplicate_and_simplify_activities
 
 
+def _prompt_continue(issue_description, saved_path):
+    """Warn about a data mismatch, print the saved file path, then optionally halt."""
+    print(f"\n  [MISMATCH] {issue_description}")
+    print(f"  File saved: {saved_path}")
+    try:
+        answer = input("  Continue? [Y/n]: ").strip().lower()
+    except (EOFError, KeyboardInterrupt):
+        answer = ''
+    if answer in ('n', 'no'):
+        print("  Stopping. Re-run after reviewing the file.")
+        sys.exit(0)
+
+
 def enrich_with_metadata(fbs_data, meta_map):
     """
     Enrich FlowBySector data with EPA GHGI metadata.
@@ -419,7 +432,8 @@ def enrich_with_ghg_source_categories(fbs_data, mapping_df):
     enriched_data['Activity Type'] = None
     
     matched_count = 0
-    
+    matched_mapping_indices = set()
+
     for idx, row in enriched_data.iterrows():
         meta_sources = row.get("MetaSources", "")
         activity_produced_by = row.get("ActivityProducedBy", "")
@@ -475,7 +489,8 @@ def enrich_with_ghg_source_categories(fbs_data, mapping_df):
                 enriched_data.at[idx, 'Activity Type'] = activity_type
             
             matched_count += 1
-    
+            matched_mapping_indices.update(match.index.tolist())
+
     print(f"[SUCCESS] Added comprehensive GHG categorization to {matched_count:,} records")
     print(f"  - IPCC/UNFCCC Category")
     print(f"  - IPCC Category Code")
@@ -489,6 +504,17 @@ def enrich_with_ghg_source_categories(fbs_data, mapping_df):
         & enriched_data['MetaSources'].notna()
         & (enriched_data['MetaSources'].astype(str).str.strip() != '')
     )
+
+    # CSV-side unmatched: mapping rows whose (MetaSources, ActivityProducedBy) pair
+    # was never used to fill in any dataset row during this run.
+    csv_unmatched = (
+        mapping_df.loc[~mapping_df.index.isin(matched_mapping_indices),
+                       ['MetaSources', 'ActivityProducedBy']]
+        .drop_duplicates()
+        .sort_values(['MetaSources', 'ActivityProducedBy'])
+        .reset_index(drop=True)
+    )
+
     if unmatched_mask.any():
         unmatched_count = int(unmatched_mask.sum())
         unmatched_pairs = (
@@ -503,15 +529,26 @@ def enrich_with_ghg_source_categories(fbs_data, mapping_df):
             apb = up_row['ActivityProducedBy']
             apb_str = repr(apb) if pd.notna(apb) and str(apb).strip() else '(empty)'
             print(f"    MetaSources={up_row['MetaSources']!r}  ActivityProducedBy={apb_str}")
+    else:
+        unmatched_pairs = pd.DataFrame(columns=['MetaSources', 'ActivityProducedBy'])
+        print(f"  All rows with MetaSources matched successfully.")
 
-        unmatched_path = os.path.join(config.OUTPUT_DIR, 'unmatched_activity_categorization.csv')
+    if not unmatched_pairs.empty or not csv_unmatched.empty:
+        unmatched_path = os.path.join(config.OUTPUT_DIR, 'unmatched_activity_categorization.xlsx')
         os.makedirs(config.OUTPUT_DIR, exist_ok=True)
-        unmatched_pairs.to_csv(unmatched_path, index=False)
+        with pd.ExcelWriter(unmatched_path, engine='openpyxl') as writer:
+            unmatched_pairs.to_excel(writer, sheet_name='Dataset Unmatched', index=False)
+            csv_unmatched.to_excel(writer, sheet_name='CSV Unmatched', index=False)
         print(f"  Saved unmatched pairs to: {unmatched_path}")
+        if not csv_unmatched.empty:
+            print(f"  CSV-side: {len(csv_unmatched)} mapping rows were never used by any dataset row")
         print(f"  To fix: add a row for each pair to {config.METASOURCE_TO_GHGSOURCE_CSV}")
         print(f"  See docs/USER_GUIDE.md § 'Filling gaps in activity_categorization.csv'")
-    else:
-        print(f"  All rows with MetaSources matched successfully.")
+        _prompt_continue(
+            f"{len(unmatched_pairs)} dataset (MetaSources, ActivityProducedBy) pairs had no match; "
+            f"{len(csv_unmatched)} CSV rows were never used",
+            unmatched_path
+        )
 
     return enriched_data
 
@@ -708,6 +745,7 @@ def enrich_with_fuel(fbs_data, fuel_by_table, fuel_by_term):
     table_match_count = 0
     term_match_count = 0
     term_override_count = 0  # Track when term lookup overrides table lookup
+    matched_table_keys = set()
     
     # Step 1: Match by table reference (fallback)
     if fuel_by_table and "MetaSources" in fbs_data.columns:
@@ -729,6 +767,7 @@ def enrich_with_fuel(fbs_data, fuel_by_table, fuel_by_term):
             if lookup_key in fuel_by_table:
                 enriched_data.at[idx, 'Fuel'] = fuel_by_table[lookup_key]
                 table_match_count += 1
+                matched_table_keys.add(lookup_key)
     
     # Step 2: Match by term in PrimaryActivity (overrides table matches if found - more precise)
     if fuel_by_term and "PrimaryActivity" in fbs_data.columns:
@@ -737,8 +776,9 @@ def enrich_with_fuel(fbs_data, fuel_by_table, fuel_by_term):
         # Sort lookup terms by length (longest first) to prioritize more specific terms
         sorted_lookup = sorted(fuel_by_term.items(), key=lambda x: len(x[0]), reverse=True)
         
-        # Track which fuels were found
+        # Track which fuels and terms were found
         fuels_found = set()
+        matched_terms = set()
     else:
         print("  Step 2: SKIPPED - Condition failed:")
         print(f"    fuel_by_term exists: {fuel_by_term is not None and len(fuel_by_term) > 0}")
@@ -747,6 +787,7 @@ def enrich_with_fuel(fbs_data, fuel_by_table, fuel_by_term):
             print(f"    fuel_by_term has {len(fuel_by_term)} entries")
         sorted_lookup = []
         fuels_found = set()
+        matched_terms = set()
     
     if sorted_lookup:  # Only process if we have terms to match
         
@@ -783,6 +824,7 @@ def enrich_with_fuel(fbs_data, fuel_by_table, fuel_by_term):
                         matched_fuels[fossil_fuel].append(pos)
                         matched_positions.update(match_range)
                         fuels_found.add(fossil_fuel)
+                        matched_terms.add(lookup_term)
                     
                     start_pos = pos + 1
             
@@ -802,5 +844,49 @@ def enrich_with_fuel(fbs_data, fuel_by_table, fuel_by_term):
     print(f"  - By table reference only: {final_table_only:,}")
     print(f"  - By term matching (new): {term_match_count:,}")
     print(f"  - By term matching (override): {term_override_count:,}")
-    
+
+    # Detect unmatched dataset rows (MetaSources present but no fuel assigned)
+    fuel_unmatched_mask = (
+        enriched_data['Fuel'].isna()
+        & enriched_data['MetaSources'].notna()
+        & (enriched_data['MetaSources'].astype(str).str.strip() != '')
+    )
+    dataset_unmatched_fuel = (
+        enriched_data.loc[fuel_unmatched_mask, ['MetaSources', 'PrimaryActivity']]
+        .drop_duplicates()
+        .sort_values(['MetaSources', 'PrimaryActivity'])
+        .reset_index(drop=True)
+    )
+
+    # CSV-side unmatched: table keys and term keys never triggered during this run
+    csv_unmatched_table = pd.DataFrame(
+        [(k, v) for k, v in fuel_by_table.items() if k not in matched_table_keys],
+        columns=['Key', 'Fuel']
+    ).assign(Source='Table').sort_values('Key').reset_index(drop=True)
+
+    csv_unmatched_terms = pd.DataFrame(
+        [(k, v) for k, v in fuel_by_term.items() if k not in matched_terms],
+        columns=['Key', 'Fuel']
+    ).assign(Source='Term').sort_values('Key').reset_index(drop=True)
+
+    csv_unmatched_fuel = pd.concat(
+        [csv_unmatched_table, csv_unmatched_terms], ignore_index=True
+    )[['Source', 'Key', 'Fuel']]
+
+    if not dataset_unmatched_fuel.empty or not csv_unmatched_fuel.empty:
+        fuel_unmatched_path = os.path.join(config.OUTPUT_DIR, 'unmatched_fuel.xlsx')
+        os.makedirs(config.OUTPUT_DIR, exist_ok=True)
+        with pd.ExcelWriter(fuel_unmatched_path, engine='openpyxl') as writer:
+            dataset_unmatched_fuel.to_excel(writer, sheet_name='Dataset Unmatched', index=False)
+            csv_unmatched_fuel.to_excel(writer, sheet_name='CSV Unmatched', index=False)
+        print(f"\n  Dataset rows with no fuel: {len(dataset_unmatched_fuel)} unique (MetaSources, PrimaryActivity) pairs")
+        if not csv_unmatched_fuel.empty:
+            print(f"  CSV entries never used: {len(csv_unmatched_fuel)} ({len(csv_unmatched_table)} table, {len(csv_unmatched_terms)} term)")
+        print(f"  Saved fuel unmatched pairs to: {fuel_unmatched_path}")
+        _prompt_continue(
+            f"{len(dataset_unmatched_fuel)} dataset rows had no fuel match; "
+            f"{len(csv_unmatched_fuel)} CSV entries were never used",
+            fuel_unmatched_path
+        )
+
     return enriched_data

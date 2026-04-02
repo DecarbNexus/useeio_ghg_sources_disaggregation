@@ -1,0 +1,17 @@
+﻿MetaSources,Fuel
+EPA_GHGI_T_2_1.electric_power,Aggregated Fossil Fuels
+EPA_GHGI_T_3_14,Aggregated Fossil Fuels
+EPA_GHGI_T_3_15,Aggregated Fossil Fuels
+EPA_GHGI_T_3_25,Aggregated Fossil Fuels
+EPA_GHGI_T_3_45,Oil
+EPA_GHGI_T_3_47,Oil
+EPA_GHGI_T_3_49,Oil
+EPA_GHGI_T_3_64,Natural Gas
+EPA_GHGI_T_3_66,Natural Gas
+EPA_GHGI_T_3_68,Natural Gas
+EPA_GHGI_T_A_5.coal_manufacturing_co2,Coal
+EPA_GHGI_T_A_5.natural_gas_manufacturing,Natural Gas
+EPA_GHGI_T_A_5.non_manufacturing_coal,Coal
+EPA_GHGI_T_A_5.non_manufacturing_natural_gas,Natural Gas
+EPA_GHGI_T_A_5.petroleum,Petroleum
+EPA_GHGI_T_A_5.direct_attribution,Aggregated Fossil Fuels

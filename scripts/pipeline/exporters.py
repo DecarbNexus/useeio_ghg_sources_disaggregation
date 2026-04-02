@@ -19,6 +19,34 @@ import config
 from .utils import build_emission_event_full, generate_event_id, compute_ghg_source_id
 from terminology import TERMINOLOGY, get_jsonld_property
 
+# Version-specific EPA GHGI report metadata (publication year lags model year by ~2 years)
+_EPA_GHGI_META = {
+    "v1.3.0": {
+        "label":           "EPA GHGI Report (2022)",
+        "report_url":      "https://www.epa.gov/ghgemissions/inventory-us-greenhouse-gas-emissions-and-sinks-1990-2022",
+        "main_text_zip":   "https://www.epa.gov/system/files/other-files/2024-06/2024-main-text-tables.zip",
+        "annexes_pdf":     "https://www.epa.gov/system/files/documents/2024-04/us-ghg-inventory-2024-annexes.pdf",
+        "annex_tables_zip":"https://www.epa.gov/system/files/other-files/2024-06/2024-annex-tables.zip",
+        "ghg_explorer":    "https://cfpub.epa.gov/ghgdata/inventoryexplorer/chartindex.html",
+        "ghgi_cite":       "U.S. EPA (2024). Inventory of U.S. GHG Emissions and Sinks: 1990-2022. EPA 430-R-24-004.",
+        "flowsa_cite":     "U.S. EPA (2023). FlowSA v2.0.3. MIT License. https://github.com/cornerstone-data/flowsa",
+        "useeior_cite":    "U.S. EPA (2022). useeior v1.5.3. MIT License. https://github.com/cornerstone-data/useeior",
+        "sef_cite":        "U.S. EPA (2024). Supply Chain Emission Factors v1.3.0. https://github.com/cornerstone-data/supply-chain-factors",
+    },
+    "v1.4.0": {
+        "label":           "EPA GHGI Report (2023)",
+        "report_url":      "https://www.edf.org/freedom-information-act-documents-epas-greenhouse-gas-inventory?tab=complete_report",
+        "main_text_zip":   None,
+        "annexes_pdf":     None,
+        "annex_tables_zip":None,
+        "ghg_explorer":    None,
+        "ghgi_cite":       "U.S. EPA (2025). Inventory of U.S. GHG Emissions and Sinks: 1990-2023.",
+        "flowsa_cite":     "Cornerstone Data (2024). FlowSA v2.1.0. MIT License. https://github.com/cornerstone-data/flowsa",
+        "useeior_cite":    "Cornerstone Data (2024). useeior v1.8.0. MIT License. https://github.com/cornerstone-data/useeior",
+        "sef_cite":        "Cornerstone Data (2025). Supply Chain Emission Factors v1.4.0. https://github.com/cornerstone-data/supply-chain-factors",
+    },
+}
+
 def build_hierarchical_jsonld(df, include_all_fields=True):
     """
     Build hierarchical JSON-LD structure from flat DataFrame.
@@ -907,6 +935,7 @@ def save_outputs(fbs_parquet, fbs_calculated, enriched_data, config_dict, commod
         excel_path = os.path.join(subdir, f"{base_filename}.xlsx")
         try:
             # Create metadata sheets
+            _ghgi = _EPA_GHGI_META.get(config.SEF_VERSION, _EPA_GHGI_META["v1.4.0"])
             author_info = pd.DataFrame({
                 'Field': [
                     'Author',
@@ -923,13 +952,13 @@ def save_outputs(fbs_parquet, fbs_calculated, enriched_data, config_dict, commod
                     'Cite EPA GHGI',
                     'Cite FlowSA',
                     'Cite USEEIOR',
+                    'Cite Supply Chain Emission Factors',
                     '',  # Blank row
                     'License Compliance',
-                    'Third-Party Licenses',
-                    'Full Citation Info'
-                ],
+                    'Third-Party Licenses'
+                    ],
                 'Value': [
-                    'DecarbNexus',
+                    'Damien Lieber',
                     'DecarbNexus LLC',
                     'decarbnexus.com',
                     'contact@decarbnexus.com',
@@ -938,15 +967,15 @@ def save_outputs(fbs_parquet, fbs_calculated, enriched_data, config_dict, commod
                     'CC BY 4.0',
                     'https://creativecommons.org/licenses/by/4.0/',
                     '',  # Blank
-                    'You must cite this dataset AND the original sources (EPA GHGI, FlowSA, USEEIOR)',
-                    'DecarbNexus (2025). U.S. GHG Emissions by USEEIO Sector. DecarbNexus.',
-                    'EPA (2024). Inventory of U.S. GHG Emissions and Sinks: 1990-2022. EPA 430-R-24-004',
-                    'Birney et al. (2023). FlowSA v2.0.3. U.S. EPA. MIT License.',
-                    'Li et al. (2022). useeior. Applied Sciences 12(9):4469. MIT License.',
+                    'You must cite this dataset AND the original sources (EPA GHGI, FlowSA, USEEIOR, SCF)',
+                    f'DecarbNexus (2026). U.S. Greenhouse Gas Emissions by USEEIO Sector — Disaggregated EPA GHGI Data ({config.SEF_VERSION}). https://github.com/DecarbNexus/useeio_ghg_sources_disaggregation',
+                    _ghgi['ghgi_cite'],
+                    _ghgi['flowsa_cite'],
+                    _ghgi['useeior_cite'],
+                    _ghgi['sef_cite'],
                     '',  # Blank
-                    'FlowSA and USEEIOR are MIT licensed. Full license texts in outputs/THIRD_PARTY_LICENSES.txt',
-                    'See outputs/THIRD_PARTY_LICENSES.txt for MIT license text (FlowSA, USEEIOR)',
-                    'See outputs/CITATION.md for complete BibTeX citations and attribution guide'
+                    'FlowSA, USEEIOR, and SCF are MIT licensed. Full license texts in outputs/THIRD_PARTY_LICENSES.txt',
+                    'See outputs/THIRD_PARTY_LICENSES.txt for MIT license text (FlowSA, USEEIOR, SCF)'
                 ]
             })
             
@@ -955,42 +984,40 @@ def save_outputs(fbs_parquet, fbs_calculated, enriched_data, config_dict, commod
             
             model_specs = pd.DataFrame({
                 'Field': [
-                    'Dataset Version',
-                    'Release Year',
-                    '',  # Blank row
+                    'SEF Version',
                     'Model Name',
                     'Model Description',
                     'Model Year',
                     'FlowSA Version',
+                    'USEEIOR Version',
                     'Reference File',
                     'IPCC Indicator',
                     'IPCC GWP Data File',
                     'Input-Output Perspective',
                     '',  # Blank row
-                    'EPA GHGI Report (2022)',
-                    'Main Text Tables (zip)',
-                    'All Annexes (pdf)',
-                    'Annex Tables (zip)',
-                    'GHG Inventory Data Explorer'
+                    _ghgi['label'],
+                    *(['Main Text Tables (zip)'] if _ghgi.get('main_text_zip') else []),
+                    *(['All Annexes (pdf)'] if _ghgi.get('annexes_pdf') else []),
+                    *(['Annex Tables (zip)'] if _ghgi.get('annex_tables_zip') else []),
+                    *(['GHG Inventory Data Explorer'] if _ghgi.get('ghg_explorer') else []),
                 ],
                 'Value': [
-                    '1.0',
-                    '2025',
-                    '',  # Blank
+                    config.SEF_VERSION,
                     config.MODELNAME,
                     config.MODEL_DESCRIPTION,
                     str(config.MODEL_YEAR),
                     config.REQUIRED_FLOWSA_VERSION,
+                    config.USEEIOR_VER,
                     config.FILE_NAME_PARQUET,
                     config.IPCC_INDICATOR,
                     config.IPCC_AR5_100_PARQUET,
                     perspective,
                     '',  # Blank
-                    'https://www.epa.gov/ghgemissions/inventory-us-greenhouse-gas-emissions-and-sinks-1990-2022',
-                    'https://www.epa.gov/system/files/other-files/2024-06/2024-main-text-tables.zip',
-                    'https://www.epa.gov/system/files/documents/2024-04/us-ghg-inventory-2024-annexes.pdf',
-                    'https://www.epa.gov/system/files/other-files/2024-06/2024-annex-tables.zip',
-                    'https://cfpub.epa.gov/ghgdata/inventoryexplorer/chartindex.html'
+                    _ghgi['report_url'],
+                    *([_ghgi['main_text_zip']] if _ghgi.get('main_text_zip') else []),
+                    *([_ghgi['annexes_pdf']] if _ghgi.get('annexes_pdf') else []),
+                    *([_ghgi['annex_tables_zip']] if _ghgi.get('annex_tables_zip') else []),
+                    *([_ghgi['ghg_explorer']] if _ghgi.get('ghg_explorer') else []),
                 ]
             })
             

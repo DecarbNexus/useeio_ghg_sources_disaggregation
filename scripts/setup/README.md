@@ -8,7 +8,7 @@ useeior R package. This is a one-time step (re-run only if the model version cha
 ### Prerequisites
 
 - **R >= 4.1** with internet access
-- The script will auto-install `useeior v1.5.3` and its dependencies
+- The script will auto-install `useeior` and its dependencies
 
 ### Run
 
@@ -18,15 +18,15 @@ Rscript scripts/setup/export_reference_data.R
 
 ### What It Does
 
-Builds the `USEEIOv2.2.22-GHG` model and exports five CSVs to `data/`:
+Builds the `USEEIO` model and exports five CSVs to `data/`:
 
 | File | Description |
 |------|-------------|
-| `adjusted_output.csv` | CPI-adjusted 2022 industry output in 2017$ (the CbS denominator) |
+| `adjusted_industry_output.csv` | CPI-adjusted 2022 industry output in 2017$ (the CbS denominator) |
 | `adjusted_commodity_output.csv` | CPI-adjusted 2022 commodity output in 2017$ (back-conversion multiplier) |
 | `naics_bea_allocation.csv` | NAICS→BEA allocation weights based on industry output |
 | `V_n.csv` | Market share matrix — industries × commodities (used in matrix multiply) |
-| `industry_output_2022.csv` | Raw 2022 industry output (for reference) |
+| `industry_output.csv` | Raw 2022 industry output (for reference) |
 | `industry_cpi.csv` | Multi-year industry CPI table (for reference) |
 | `B_matrix.csv` | Full B matrix — flows × commodities (validation truth) |
 

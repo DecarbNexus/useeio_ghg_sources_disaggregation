@@ -748,8 +748,9 @@ def _generate_qcqa_workbook(commodity_data, output_dir):
         co2e_only_summary = pd.DataFrame(columns=['Gas Category', 'Gas', 'N', 'Total_kgCO2e', 'Unique_Sectors'])
 
     # --- Write workbook ---
-    qcqa_path = os.path.join(output_dir, 'QCQA.xlsx')
-    os.makedirs(output_dir, exist_ok=True)
+    commodity_dir = os.path.join(output_dir, 'commodity')
+    qcqa_path = os.path.join(commodity_dir, 'QCQA.xlsx')
+    os.makedirs(commodity_dir, exist_ok=True)
     try:
         with pd.ExcelWriter(qcqa_path, engine='openpyxl') as writer:
             comparison_df.to_excel(writer, sheet_name='Comparison', index=False)

@@ -10,7 +10,7 @@ Modify the values here to customize the analysis for different models or years.
 # =============================================================================
 
 # ── Set this ONE value to switch Supply Chain Emission Factor releases ────────
-SEF_VERSION = "v1.3.0"  # Options: "v1.3.0", "v1.4.0"
+SEF_VERSION = "v1.4.0"  # Options: "v1.3.0", "v1.4.0"
 # ─────────────────────────────────────────────────────────────────────────────
 
 # Version specs lookup — add a new entry here when a new SEF release is published.

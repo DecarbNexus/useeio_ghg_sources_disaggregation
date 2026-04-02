@@ -117,8 +117,9 @@ Everything else (model year, FlowSA version, file paths) is derived automaticall
 ├── data/
 │   ├── SEF_v1.3.0/                      # R-exported reference data for v1.3.0
 │   │   ├── activity_categorization.csv  # IPCC codes + activity classification lookup
-│   │   ├── adjusted_output.csv          # CPI-adjusted industry output (from R)
-│   │   ├── adjusted_commodity_output.csv
+│   │   ├── cpi_adjusted_industry_output.csv   # CPI-adjusted industry output (from R)
+│   │   ├── cpi_adjusted_commodity_output.csv  # CPI-adjusted commodity output (from R)
+│   │   ├── raw_industry_output_2022.csv       # Raw 2022 industry output (reference)
 │   │   ├── naics_bea_allocation.csv     # NAICS→BEA allocation weights (from R)
 │   │   ├── B_matrix.csv                 # useeior B matrix for QC/QA (from R)
 │   │   ├── V_n.csv                      # Market share matrix (from R)

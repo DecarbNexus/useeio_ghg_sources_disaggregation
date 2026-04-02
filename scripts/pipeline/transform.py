@@ -101,7 +101,7 @@ def normalize_emissions_by_output(df, adjusted_output_dict):
         Enriched data with emissions in kg
     adjusted_output_dict : dict
         Dictionary mapping USEEIO sector codes to CPI-adjusted output values in USD
-        (from data/adjusted_output.csv, exported by R)
+        (from data/SEF_{version}/cpi_adjusted_industry_output.csv, exported by R)
         
     Returns:
     --------

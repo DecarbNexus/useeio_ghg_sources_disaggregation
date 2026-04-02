@@ -21,6 +21,19 @@
 
     <section class="controls">
       <div class="control-row">
+        <label for="sefVersionSelect">SEF Version:</label>
+        <select id="sefVersionSelect">
+          <option value="v1.4.0" selected>v1.4.0 (2023 GHG data)</option>
+          <option value="v1.3.0">v1.3.0 (2022 GHG data)</option>
+        </select>
+        <label for="formTypeSelect">Form:</label>
+        <select id="formTypeSelect">
+          <option value="industry" selected>Industry</option>
+          <option value="commodity">Commodity</option>
+        </select>
+      </div>
+
+      <div class="control-row">
         <label for="sectorSelect">USEEIO Sector:</label>
         <input id="sectorSearch" type="search" placeholder="Type to filter sectors…" aria-label="Search sectors" />
         <select id="sectorSelect"></select>
@@ -60,6 +73,6 @@
       </p>
     </footer>
 
-    <script src="sunburst.js?v=20251107-3"></script>
+    <script src="sunburst.js?v=20260402-1"></script>
   </body>
 </html>

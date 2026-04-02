@@ -1083,7 +1083,8 @@ def save_outputs(fbs_parquet, fbs_calculated, enriched_data, config_dict, commod
                     model_specs.to_excel(writer, sheet_name='Model_Specs', index=False)
                     # Main data
                     export_data.to_excel(writer, sheet_name='Enriched', index=False)
-                    fbs_parquet.to_excel(writer, sheet_name='Baseline', index=False)
+                    if suffix == '_industry':
+                        fbs_parquet.to_excel(writer, sheet_name='Baseline', index=False)
                     # Reference data
                     if ghg_classification_df is not None:
                         ghg_classification_df.to_excel(writer, sheet_name='GHG_Classification', index=False)
@@ -1091,12 +1092,8 @@ def save_outputs(fbs_parquet, fbs_calculated, enriched_data, config_dict, commod
                         sector_classification_df.to_excel(writer, sheet_name='Sector_Classification', index=False)
                     if naics_useeio_df is not None:
                         naics_useeio_df.to_excel(writer, sheet_name='NAICS_to_USEEIO', index=False)
-                    if v_n_df is not None:
+                    if v_n_df is not None and suffix == '_commodity':
                         v_n_df.to_excel(writer, sheet_name='V_n_Matrix', index=True)
-                    if x_df is not None:
-                        x_df.to_excel(writer, sheet_name='x_Vector', index=False)
-                    if b_matrix_df is not None:
-                        b_matrix_df.to_excel(writer, sheet_name='B_Matrix', index=False)
                     if b_matrix_long_df is not None:
                         b_matrix_long_df.to_excel(writer, sheet_name='B_Matrix_Long', index=False)
                 print(f"  [SUCCESS] Excel: {base_filename}.xlsx (with Author_Info, Model_Specs, Baseline, and reference data tabs)")
@@ -1115,12 +1112,8 @@ def save_outputs(fbs_parquet, fbs_calculated, enriched_data, config_dict, commod
                         sector_classification_df.to_excel(writer, sheet_name='Sector_Classification', index=False)
                     if naics_useeio_df is not None:
                         naics_useeio_df.to_excel(writer, sheet_name='NAICS_to_USEEIO', index=False)
-                    if v_n_df is not None:
+                    if v_n_df is not None and suffix == '_commodity':
                         v_n_df.to_excel(writer, sheet_name='V_n_Matrix', index=True)
-                    if x_df is not None:
-                        x_df.to_excel(writer, sheet_name='x_Vector', index=False)
-                    if b_matrix_df is not None:
-                        b_matrix_df.to_excel(writer, sheet_name='B_Matrix', index=False)
                     if b_matrix_long_df is not None:
                         b_matrix_long_df.to_excel(writer, sheet_name='B_Matrix_Long', index=False)
                 print(f"  [SUCCESS] Excel: {base_filename}.xlsx (with Author_Info, Model_Specs, and reference data tabs)")

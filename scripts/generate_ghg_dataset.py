@@ -454,7 +454,7 @@ def _run_enrichment_pipeline(fbs_filtered, inputs):
 def _run_commodity_transformation(enriched_data, inputs):
     """Transform industry-form emissions to commodity-form using economic data files.
 
-    Uses CPI-adjusted industry output (adjusted_output.csv), commodity output (q.csv),
+    Uses CPI-adjusted industry output (cpi_adjusted_industry_output.csv), commodity output (q.csv),
     and the V_n market-share matrix via matrix multiply (B_industry @ V_n).
 
     Returns (commodity_data, enriched_data). enriched_data is returned because

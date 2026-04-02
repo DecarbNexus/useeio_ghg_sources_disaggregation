@@ -22,11 +22,11 @@ Builds the `USEEIO` model and exports five CSVs to `data/`:
 
 | File | Description |
 |------|-------------|
-| `adjusted_industry_output.csv` | CPI-adjusted 2022 industry output in 2017$ (the CbS denominator) |
-| `adjusted_commodity_output.csv` | CPI-adjusted 2022 commodity output in 2017$ (back-conversion multiplier) |
+| `cpi_adjusted_industry_output.csv` | CPI-adjusted industry output in 2017$ (the CbS denominator) |
+| `cpi_adjusted_commodity_output.csv` | CPI-adjusted commodity output in 2017$ (back-conversion multiplier) |
 | `naics_bea_allocation.csv` | NAICS→BEA allocation weights based on industry output |
 | `V_n.csv` | Market share matrix — industries × commodities (used in matrix multiply) |
-| `industry_output.csv` | Raw 2022 industry output (for reference) |
+| `raw_industry_output_{year}.csv` | Raw industry output for the model year (for reference) |
 | `industry_cpi.csv` | Multi-year industry CPI table (for reference) |
 | `B_matrix.csv` | Full B matrix — flows × commodities (validation truth) |
 

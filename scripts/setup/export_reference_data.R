@@ -3,11 +3,11 @@
 # This script builds the USEEIOv2.2.22-GHG model and exports nine CSVs
 # that the Python pipeline needs:
 #
-#   1. adjusted_output.csv             — CPI-adjusted 2022 industry output in 2017$
-#   2. adjusted_commodity_output.csv   — CPI-adjusted 2022 commodity output in 2017$
+#   1. cpi_adjusted_industry_output.csv — CPI-adjusted industry output in {DATA_YEAR}$ in 2017$
+#   2. cpi_adjusted_commodity_output.csv — CPI-adjusted commodity output in {DATA_YEAR}$ in 2017$
 #   3. naics_bea_allocation.csv        — NAICS-to-BEA allocation weights (output-based)
 #   4. V_n.csv                         — Market share matrix (industries × commodities)
-#   5. industry_output_2022.csv        — Raw 2022 industry output (reference)
+#   5. raw_industry_output_{DATA_YEAR}.csv  — Raw {DATA_YEAR} industry output (reference)
 #   6. industry_cpi.csv                — Multi-year industry CPI table (reference)
 #   7. B_matrix.csv                    — Full B matrix (flows × commodities, validation truth)
 #   8. naics_to_useeio_crosswalk.csv   — NAICS-to-USEEIO crosswalk (model$crosswalk)
@@ -134,14 +134,14 @@ if (!dir.exists(OUTPUT_DIR)) {
 # --- 4a. CPI-adjusted industry output (CbS denominator) ---------------------
 # adjustOutputbyCPI(outputyear, referenceyear, location_acronym, IsRoUS, model, output_type)
 adjusted <- adjustOutputbyCPI_fn(DATA_YEAR, IO_YEAR, "US", FALSE, model, "Industry")
-out_path <- file.path(OUTPUT_DIR, "adjusted_output.csv")
+out_path <- file.path(OUTPUT_DIR, "cpi_adjusted_industry_output.csv")
 write.csv(adjusted, out_path)
 message("Exported: ", out_path, " (", nrow(adjusted), " rows)")
 
 # --- 4b. CPI-adjusted commodity output (back-conversion denominator) --------
 # Same call as 4a but with output_type = "Commodity"
 adjusted_commodity <- adjustOutputbyCPI_fn(DATA_YEAR, IO_YEAR, "US", FALSE, model, "Commodity")
-out_path <- file.path(OUTPUT_DIR, "adjusted_commodity_output.csv")
+out_path <- file.path(OUTPUT_DIR, "cpi_adjusted_commodity_output.csv")
 write.csv(adjusted_commodity, out_path)
 message("Exported: ", out_path, " (", nrow(adjusted_commodity), " rows)")
 
@@ -162,7 +162,7 @@ message("Exported: ", out_path, " (", nrow(V_n), " rows x ", ncol(V_n), " cols)"
 
 # --- 4e. Raw industry output for DATA_YEAR (reference) ----------------------
 output_year <- model$MultiYearIndustryOutput[, as.character(DATA_YEAR), drop = FALSE]
-out_path <- file.path(OUTPUT_DIR, paste0("industry_output_", DATA_YEAR, ".csv"))
+out_path <- file.path(OUTPUT_DIR, paste0("raw_industry_output_", DATA_YEAR, ".csv"))
 write.csv(output_year, out_path)
 message("Exported: ", out_path, " (", nrow(output_year), " rows)")
 
@@ -229,11 +229,11 @@ message("Exported: ", out_path, " (", nrow(sector_classification), " rows)")
 
 message("\n=== Export complete ===")
 message("Files written to: ", normalizePath(OUTPUT_DIR))
-message("  adjusted_output.csv            — CPI-adjusted industry output (", nrow(adjusted), " sectors)")
-message("  adjusted_commodity_output.csv  — CPI-adjusted commodity output (", nrow(adjusted_commodity), " sectors)")
-message("  naics_bea_allocation.csv       — Allocation weights (", nrow(allocation), " rows)")
-message("  V_n.csv                        — Market share matrix (", nrow(V_n), " industries x ", ncol(V_n), " commodities)")
-message("  industry_output_", DATA_YEAR, ".csv       — Raw ", DATA_YEAR, " output (", nrow(output_year), " sectors)")
+message("  cpi_adjusted_industry_output.csv   — CPI-adjusted industry output (", nrow(adjusted), " sectors)")
+message("  cpi_adjusted_commodity_output.csv  — CPI-adjusted commodity output (", nrow(adjusted_commodity), " sectors)")
+message("  naics_bea_allocation.csv           — Allocation weights (", nrow(allocation), " rows)")
+message("  V_n.csv                            — Market share matrix (", nrow(V_n), " industries x ", ncol(V_n), " commodities)")
+message("  raw_industry_output_", DATA_YEAR, ".csv     — Raw ", DATA_YEAR, " output (", nrow(output_year), " sectors)")
 message("  industry_cpi.csv               — CPI table (", nrow(cpi), " sectors x ", ncol(cpi), " years)")
 message("  B_matrix.csv                   — B matrix (", nrow(B), " flows x ", ncol(B), " commodities)")
 message("  naics_to_useeio_crosswalk.csv  — NAICS-to-USEEIO crosswalk (", nrow(crosswalk), " rows)")

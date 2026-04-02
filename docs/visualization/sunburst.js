@@ -1,33 +1,34 @@
 // USEEIO GHG Sources Disaggregation – Interactive Sunburst
-// - Loads event-based sunburst JSON from GitHub
+// - Loads sunburst JSON for a selected SEF version and form type
 // - Lets user select a USEEIO Sector
 // - 3-level hierarchy: Activity Category -> Activity Type -> Gas Category
-// - Uses optimized D3.js format (no JSON-LD transformation needed)
 
 // Repo configuration
 const OWNER = "DecarbNexus";
 const REPO = "Flowsa_extract_GHG_sources";
-const DATA_FILENAME = "industry_sunburst.json"; // D3.js hierarchy format
-const CLASS_FILENAME = "sector_classification.jsonld"; // JSON-LD format
 
-// Data URLs - prefer GitHub Pages deployment, fallback to repo
-const DATA_URLS = [
-  // Same-origin (GitHub Pages)
-  "data/" + DATA_FILENAME,
-  // Raw from main branch (industry subdirectory)
-  `https://raw.githubusercontent.com/${OWNER}/${REPO}/main/outputs/industry/${DATA_FILENAME}`,
-  // Relative path for local testing
-  "../outputs/industry/" + DATA_FILENAME,
-];
+// SEF version → data year mapping
+const SEF_VERSION_YEAR = { 'v1.3.0': '2022', 'v1.4.0': '2023' };
 
-const CLASS_URLS = [
-  // Same-origin (GitHub Pages)
-  "data/" + CLASS_FILENAME,
-  // Raw from main branch
-  `https://raw.githubusercontent.com/${OWNER}/${REPO}/main/docs/data/${CLASS_FILENAME}`,
-  // Relative path for local testing
-  "../docs/data/" + CLASS_FILENAME,
-];
+// Build sunburst data URLs for a given SEF version and form type
+function getDataUrls(sefVersion, formType) {
+  const year = SEF_VERSION_YEAR[sefVersion] || '2022';
+  const filename = `GHG_national_${year}_m2_${formType}_sunburst.json`;
+  return [
+    `data/SEF_${sefVersion}_${formType}_sunburst.json`,
+    `https://raw.githubusercontent.com/${OWNER}/${REPO}/main/outputs/SEF_${sefVersion}/${formType}/${filename}`,
+    `../outputs/SEF_${sefVersion}/${formType}/${filename}`,
+  ];
+}
+
+// Build sector classification CSV URLs for a given SEF version
+function getClassUrls(sefVersion) {
+  return [
+    `data/SEF_${sefVersion}_sector_classification.csv`,
+    `https://github.com/DecarbNexus/useeio_sectors_disaggregation/releases/download/v1.2/SEF_${sefVersion}_sector_classification.csv`,
+    `../data/SEF_${sefVersion}/sector_classification.csv`,
+  ];
+}
 
 // Dynamic sizing
 let WIDTH = 700;
@@ -51,6 +52,12 @@ let lastTappedNode = null;
 // Chart scale factor
 const CHART_SCALE = 0.75; // 75% of container width
 
+// Module-level dataset state (updated by loadDataset on version/form change)
+let allData = null;
+let allSectors = [];
+let currentClassMap = new Map();
+const classDataCache = new Map(); // keyed by "sefVersion|formType"
+
 async function loadJSON(urls, description) {
   let lastErr;
   for (const url of urls) {
@@ -68,45 +75,29 @@ async function loadJSON(urls, description) {
   throw new Error(`Failed to load ${description} from any URL: ` + lastErr);
 }
 
-async function tryLoadClassification() {
+async function tryLoadClassification(sefVersion, formType) {
+  const urls = getClassUrls(sefVersion);
+  const nameCol = formType === 'commodity' ? 'Commodity name' : 'Sector name';
   let lastErr;
-  for (const url of CLASS_URLS) {
+  for (const url of urls) {
     try {
       const res = await fetch(url, { cache: "no-store" });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const jsonld = await res.json();
-      
-      // Extract from JSON-LD format
-      const graph = jsonld['@graph'] || [];
-      
+      const text = await res.text();
+      const rows = d3.csvParse(text);
       const map = new Map();
-      
-      // Process each category in the graph
-      for (const category of graph) {
-        const subcategories = category.subcategories || [];
-        
-        for (const subcategory of subcategories) {
-          const sectors = subcategory.sectors || [];
-          
-          for (const sector of sectors) {
-            const code = sector.sector_code;
-            const name = sector.sector_name || sector.commodity_name || code;
-            
-            if (code) {
-              map.set(code, { sector_name: name });
-            }
-          }
-        }
+      for (const row of rows) {
+        const code = row['Sector code'];
+        const name = row[nameCol] || row['Sector name'] || code;
+        if (code) map.set(code, name);
       }
-
-      console.log(`Loaded sector classification from: ${url} (sectors: ${map.size})`);
+      console.log(`Loaded classification from: ${url} (${map.size} sectors, column: ${nameCol})`);
       return { map };
     } catch (e) {
       lastErr = e;
-      continue;
     }
   }
-  console.warn("Classification JSON-LD not found; defaulting to sector codes.", lastErr);
+  console.warn("Classification CSV not found; defaulting to sector codes.", lastErr);
   return { map: new Map() };
 }
 
@@ -394,24 +385,13 @@ function renderSunburst(rootData, centerLabel, minShare) {
 }
 
 async function init() {
-  const classData = await tryLoadClassification();
-  const allData = await loadJSON(DATA_URLS, "sunburst data");
-
-  const toName = (code) => {
-    const rec = classData.map.get(code);
-    return (rec && rec.sector_name) ? rec.sector_name : code;
-  };
-
-  // Get unique USEEIO sectors from the hierarchy
-  // allData structure: {name: "GHG Emissions", children: [{name: "sector_code", useeio_code: "...", ...}, ...]}
-  const uniqueCodes = allData.children ? allData.children.map(d => d.useeio_code).filter(Boolean) : [];
-  let sectors = uniqueCodes.map((code) => ({ code, name: toName(code) }));
-  sectors.sort((a, b) => d3.ascending(a.name, b.name));
-  const allSectors = sectors.slice();
-
   const select = document.getElementById("sectorSelect");
   const search = document.getElementById("sectorSearch");
-  
+  const sefVersionSelect = document.getElementById("sefVersionSelect");
+  const formTypeSelect = document.getElementById("formTypeSelect");
+
+  const toName = (code) => currentClassMap.get(code) || code;
+
   function populateSelect(items, keepValue) {
     const prev = keepValue || select.value;
     while (select.firstChild) select.removeChild(select.firstChild);
@@ -428,8 +408,6 @@ async function init() {
       select.selectedIndex = 0;
     }
   }
-
-  populateSelect(allSectors);
 
   // Fuzzy search
   const norm = (s) => (s || "").toLowerCase();
@@ -474,13 +452,13 @@ async function init() {
         populateSelect(allSectors, select.value);
         return;
       }
-      // Exact match only - filter by code or name containing the search string
-      const filtered = allSectors.filter(s => 
-        s.code.toLowerCase().includes(q.toLowerCase()) || 
+      // Filter by code or name containing the search string
+      const filtered = allSectors.filter(s =>
+        s.code.toLowerCase().includes(q.toLowerCase()) ||
         s.name.toLowerCase().includes(q.toLowerCase())
       );
       populateSelect(filtered.slice(0, 50), select.value);
-      
+
       // If exact code match exists, auto-select and redraw
       const exactMatch = filtered.find(s => s.code.toLowerCase() === q.toLowerCase());
       if (exactMatch && select.value !== exactMatch.code) {
@@ -504,9 +482,9 @@ async function init() {
   function redraw() {
     const chosen = select.value;
     setLoading(true);
-    
+
     const sectorName = toName(chosen);
-    
+
     // Update figure title
     const title = `${sectorName} Scope 1 emissions disaggregated by Activity Category, Activity Type, and Gas Category (% of total Scope 1 MTCO2e emissions)`;
     const titleEl = document.getElementById("figureTitle");
@@ -521,20 +499,57 @@ async function init() {
     setLoading(false);
   }
 
+  async function loadDataset(sefVersion, formType) {
+    setLoading(true);
+    try {
+      // Load (or retrieve cached) sector classification
+      const cacheKey = `${sefVersion}|${formType}`;
+      let classData;
+      if (classDataCache.has(cacheKey)) {
+        classData = classDataCache.get(cacheKey);
+      } else {
+        classData = await tryLoadClassification(sefVersion, formType);
+        classDataCache.set(cacheKey, classData);
+      }
+      currentClassMap = classData.map;
+
+      // Load sunburst data
+      allData = await loadJSON(getDataUrls(sefVersion, formType), "sunburst data");
+
+      // Rebuild sector list, preserving current selection if the code exists in new dataset
+      const prevCode = select.value;
+      const uniqueCodes = allData.children ? allData.children.map(d => d.useeio_code).filter(Boolean) : [];
+      allSectors = uniqueCodes.map(code => ({ code, name: toName(code) }));
+      allSectors.sort((a, b) => d3.ascending(a.name, b.name));
+      populateSelect(allSectors, prevCode);
+
+      // Default to iron and steel mills if no valid prior selection
+      if (!prevCode || !allSectors.some(s => s.code === prevCode)) {
+        const def = allSectors.find(s => s.name.toLowerCase().includes("iron and steel") || s.code === "331110");
+        if (def) select.value = def.code;
+      }
+    } finally {
+      setLoading(false);
+    }
+    redraw();
+  }
+
+  // Wire dataset-selection events
+  sefVersionSelect.addEventListener("change", () => {
+    if (search) search.value = '';
+    loadDataset(sefVersionSelect.value, formTypeSelect.value);
+  });
+  formTypeSelect.addEventListener("change", () => {
+    if (search) search.value = '';
+    loadDataset(sefVersionSelect.value, formTypeSelect.value);
+  });
+
   document.getElementById("redrawBtn").addEventListener("click", redraw);
   select.addEventListener("change", redraw);
   document.getElementById("minPct").addEventListener("change", redraw);
 
-  // Initial render with default sector: Iron and steel mills and ferroalloy manufacturing
-  const defaultSector = allSectors.find(s => 
-    s.name.toLowerCase().includes("iron and steel") || s.code === "331110"
-  );
-  if (defaultSector) {
-    select.value = defaultSector.code;
-  } else {
-    select.selectedIndex = 0;
-  }
-  redraw();
+  // Initial dataset load
+  await loadDataset(sefVersionSelect.value, formTypeSelect.value);
 
   // Redraw on resize
   let resizeTimer = null;

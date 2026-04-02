@@ -17,7 +17,7 @@ Supports **EPA Supply Chain Emission Factors v1.3.0** (2022 model year) and **v1
 ## Just here for the data? (no coding required)
 
 ### Interactive visualization
-Explore sector emissions interactively: https://open.decarbnexus.com/useeio_ghg_sources_disaggregation/
+Explore sector emissions interactively: https://decarbnexus.github.io/useeio_ghg_sources_disaggregation/
 
 ### Download data files
 All data files are published in the [**Releases**](https://github.com/DecarbNexus/useeio_ghg_sources_disaggregation/releases) section.
